@@ -1,0 +1,44 @@
+{
+    "tags": {
+        "0": {
+            "label": "Koncert 🎵",
+            "bgColor": "#000000",
+            "textColor": "#FFFFFF"
+        },
+        "1": {
+            "label": "DJ(s) 🪩",
+            "bgColor": "#FFFFFF",
+            "textColor": "#000000"
+        },
+        "2": {
+            "label": "Punk 🎸",
+            "bgColor": "#FFFFFF",
+            "textColor": "#FF0000"
+        }
+    },
+    "events": [
+        {
+            "label": "punkovka",
+            "date": "2000-12-30",
+            "doors": "20:00",
+            "cash": "150",
+            "fbEvent": "https://fb.me/e/L7meqwd9",
+            "tickets": null,
+            "tags": [
+                "0",
+                "2"
+            ]
+        },
+        {
+            "label": "ramelos",
+            "date": "2022-10-01",
+            "doors": "21:00",
+            "cash": "200",
+            "fbEvent": "https://fb.me/e/L7meqwd9",
+            "tickets": "https://google.com",
+            "tags": [
+                "1"
+            ]
+        }
+    ]
+}
