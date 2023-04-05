@@ -24,10 +24,18 @@
 
 <slot />
 
-<!-- <style lang="scss">
+<style lang="scss">
+	@font-face {
+	font-family: 'NeueMachina';
+	src: url('/neueMachina/NeueMachina-Regular.otf');
+}
+
+@font-face {
+	font-family: 'NeueMachina';
+	src: url('/neueMachina/NeueMachina-Ultrabold.otf');
+	font-weight: bold;
+}
 	:root {
-		--black: black;
-		--white: white;
 		--yellow: #f9d204;
 	}
 
@@ -35,30 +43,12 @@
 		scroll-behavior: smooth;
 	}
 
-	:global(body) {
-		background-color: var(--black);
-		color: var(--white);
+	:global(.neue) {
+		font-family: 'NeueMachina';
 	}
 
-	:global(.montserrat) {
-		font-family: 'Montserrat', sans-serif;
+	:global(.neue-bold) {
+		font-family: 'NeueMachina';
+		font-weight: bold;
 	}
-
-	:global(.roboto) {
-		font-family: 'Roboto', sans-serif;
-	}
-
-	:global(.unbounded) {
-		font-family: 'Unbounded', cursive;
-	}
-
-	:global(.black-on-white) {
-		color: var(--black);
-		background-color: var(--white);
-	}
-
-	:global(.white-on-black) {
-		color: var(--white);
-		background-color: var(--black);
-	}
-</style> -->
+</style>

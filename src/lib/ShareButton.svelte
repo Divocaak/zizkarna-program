@@ -1,7 +1,12 @@
 <script>
-	export let url;
-	export let title = url.split("/").splice(-1)[0];
-    export let text;
+	export let label;
+	let text = 'Přijď do Žižkárny na ' + label;
+	
+	import { page } from '$app/stores';
+	export let urlSuffix = "";
+	let url = $page.url.href + urlSuffix;
+	
+	export let title = url.split('/').splice(-1)[0];
 
 	let complete = false;
 
@@ -20,7 +25,7 @@
 </script>
 
 <button on:click={handleClick} class="btn btn-outline-secondary">
-    <i class="bi bi-share-fill pe-2" />
+	<i class="bi bi-share-fill pe-2" />
 	{#if complete}
 		<slot name="complete">Odkaz zkopírován</slot>
 	{:else}

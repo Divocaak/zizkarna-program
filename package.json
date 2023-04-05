@@ -23,5 +23,8 @@
 		"svelte": "^3.54.0",
 		"vite": "^4.2.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"add-to-calendar-button": "^2.2.4"
+	}
 }

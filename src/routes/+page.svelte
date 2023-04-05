@@ -1,9 +1,7 @@
 <script>
-	import content from '$lib/content.json';
+	import events from '$lib/content/events.json';
+	import tags from '$lib/content/tags.json';
 	import Card from '$lib/Card.svelte';
-
-	var tags = content['tags'];
-	var events = content['events'];
 </script>
 
 <div class="my-5">
