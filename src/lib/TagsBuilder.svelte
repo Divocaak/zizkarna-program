@@ -1,13 +1,12 @@
 <script>
-	export let tagsBank;
-	export let actualTags;
+	export let tags;
 </script>
 
-{#each actualTags as tag}
+{#each tags as tag}
 	<span
 		class="badge bg-secondary mx-1 neue"
-		style="background-color:{tagsBank[tag].bgColor}!important;color:{tagsBank[tag].textColor}!important;"
+		style="background-color:#{tag.bgColor}!important;color:#{tag.textColor}!important;"
 	>
-		{tagsBank[tag].label}
+		{tag.label}
 	</span>
 {/each}

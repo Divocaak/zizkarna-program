@@ -9,33 +9,27 @@
 	import BandLinkButton from '$lib/BandLinkButton.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 
-	import tags from '$lib/content/tags.json';
-
 	export let data;
-	let event = data.event;
+	let event = data.event[0];
+	let bands = data.bands;
 </script>
 
-<div
-	class="bg-img"
-	style="background-image: url('/imgs/{event.thumbnail != null
-		? event.thumbnail
-		: 'placeholder.png'}');"
-/>
+<div class="bg-img" style="background-image: url('/imgs/{event.id}.jpg');" />
 <div class="content bg-light text-center py-5 mx-5 px-5 border border-dark border-5">
 	<div class="back-arrow">
 		<!-- svelte-ignore a11y-missing-content -->
 		<a href="/" class="btn btn-close" />
 	</div>
-	<h1 class="display-1 neue-bold">{event.label}</h1>
+	<h1 class="display-1 neue-bold">{event.eventLabel}</h1>
 	<div style="font-size:1.3rem">
-		<TagsBuilder tagsBank={tags} actualTags={event.tags} />
+		<TagsBuilder tags={event.tags} />
 	</div>
 	<div class="row my-5" style="font-size:1.2rem">
 		<div class="col-4">
 			<DateText date={event.date} />
 		</div>
 		<div class="col-4">
-			<CashText cash={event.cash} />š
+			<CashText cash={event.cash} />
 		</div>
 		<div class="col-4">
 			<DoorsText doors={event.doors} />
@@ -46,19 +40,19 @@
 			<ShareButton label={event.label} />
 		</div>
 		<div class="col">
-			<AddToCalButtons {event} />
+			<AddToCalButtons label={event.eventLabel} date={event.date} doors={event.doors} />
 		</div>
 	</div>
-	{#each event.bands as band}
+	{#each bands as band}
 		<h2 class="display-2 neue mt-5 pt-5">{band.label}</h2>
-		<p class="neue">{band.desc}</p>
+		<p class="neue">{band.description}</p>
 		{#each band.links as link}
 			<BandLinkButton link={link.link} label={link.label} type={link.type} />
 		{/each}
 		<div class="row justify-content-center mt-4">
 			{#each band.imgs as path}
 				<div class="col-4">
-					<img src="/imgs/{path}" alt={path} class="img-fluid d-inline-block" />
+					<img src="/imgs/{band.id}{path}" alt={path} class="img-fluid d-inline-block" />
 				</div>
 			{/each}
 		</div>

@@ -1,6 +1,5 @@
 <script>
 	export var event;
-	export var tags;
 
 	import Saos from 'saos';
 	import ShareButton from '$lib/ShareButton.svelte';
@@ -10,7 +9,7 @@
 	import DoorsText from '$lib/DoorsText.svelte';
 	import CashText from '$lib/CashText.svelte';
 	import DateText from '$lib/DateText.svelte';
-	import TagsBuilder from './TagsBuilder.svelte';
+	import TagsBuilder from '$lib/TagsBuilder.svelte';
 </script>
 
 <Saos
@@ -21,15 +20,16 @@
 >
 	<div class="row d-flex justify-content-center mx-5 px-5">
 		<div class="col">
+			<!-- TODO alt image? -->
 			<img
 				class="img-fluid"
-				src="/imgs/{event.thumbnail != null ? event.thumbnail : 'placeholder.png'}"
+				src="/imgs/{event.id}.jpg"
 				alt="event thumbnail"
 			/>
 		</div>
 		<div class="col">
-			<h1 class="neue-bold">{event.label}</h1>
-			<TagsBuilder tagsBank={tags} actualTags={event.tags} />
+			<h1 class="neue-bold">{event.eventLabel}</h1>
+			<TagsBuilder tags={event.tags} />
 			<hr class="border-2" />
 			<DateText date={event.date} />
 			<CashText cash={event.cash} />
@@ -41,7 +41,7 @@
 			<FacebookEventButton fbEvent={event.fbEvent} />
 			<TicketsButton tickets={event.tickets} />
 			<ShareButton urlSuffix={event.id} label={event.label} />
-			<AddToCalButtons {event} />
+			<AddToCalButtons label={event.eventLabel} date={event.date} doors={event.doors}/>
 		</div>
 	</div>
 </Saos>
