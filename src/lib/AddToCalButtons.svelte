@@ -4,7 +4,7 @@
 </script>
 
 <div class="mt-1">
-    <i class="bi bi-google pe-2">
+    <i class="bi bi-google pe-2 d-inline-flex">
         <add-to-calendar-button
             name={label}
             options="Google"
@@ -17,12 +17,11 @@
             buttonStyle="date"
             listStyle="modal"
             language="cs"
-            size=2
+            size=1
             hideCheckmark
-            inline
         />
     </i>
-    <i class="bi bi-apple pe-2">
+    <i class="bi bi-apple pe-2 d-inline-flex">
         <add-to-calendar-button
             name={label}
             options="Apple"
@@ -35,9 +34,8 @@
             buttonStyle="date"
             listStyle="modal"
             language="cs"
-            size=2
+            size=1
             hideCheckmark
-            inline
         />
     </i>
 </div>

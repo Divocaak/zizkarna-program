@@ -8,7 +8,7 @@ export const load = async ({ params, fetch }) => {
 
     for (let i = 0; i < dataBands.length; i++) {
         let band = dataBands[i];
-        let json = await import(/* @vite-ignore */ "../../../static/bandImgs/" + band.id + "/band.json");
+        let json = await import(/* @vite-ignore */ "../../../static/bands/" + band.id + "/band.json");
         band["imgs"] = json.imgs;
         band["links"] = json.links;
     }

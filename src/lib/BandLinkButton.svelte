@@ -1,24 +1,49 @@
 <script>
+	const Types = {
+		YouTube: 'YouTube',
+		Spotify: 'Spotify',
+		AppleMusic: 'Apple Music',
+		Other: 'Jiný odkaz'
+	};
+
 	export let link;
-	export let type = null;
-	export let label;
+
+	// NOTE tvar https://[něco podle čeho switch]/
+	// lomeno na konci nutné!
+
+	let type;
+	let tmp = link.substring(8, link.length);
+	switch (tmp.substring(0, tmp.indexOf('/'))) {
+		case 'youtu.be':
+			type = Types.YouTube;
+			break;
+		case 'sptfy.com':
+			type = Types.Spotify;
+			break;
+		case 'music.apple.com':
+			type = Types.AppleMusic;
+			break;
+		default:
+			type = Types.Other;
+			break;
+	}
 </script>
 
-{#if type == 'youtube'}
-	<a href={link} class="btn btn-outline-secondary me-1 yt" target="_blank"
-		><i class="bi bi-youtube pe-2" />{label}</a
+{#if type == Types.YouTube}
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 yt" target="_blank"
+		><i class="bi bi-youtube pe-2" />{type}</a
 	>
-{:else if type == 'spotify'}
-	<a href={link} class="btn btn-outline-secondary me-1 spotify" target="_blank"
-		><i class="bi bi-spotify pe-2" />{label}</a
+{:else if type == Types.Spotify}
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 spotify" target="_blank"
+		><i class="bi bi-spotify pe-2" />{type}</a
 	>
-{:else if type == 'applemusic'}
-	<a href={link} class="btn btn-outline-secondary me-1 applemusic" target="_blank">
-		<i class="bi bi-music-note-beamed pe-2" />{label}
+{:else if type == Types.AppleMusic}
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 applemusic" target="_blank">
+		<i class="bi bi-music-note-beamed pe-2" />{type}
 	</a>
 {:else}
-	<a href={link} class="btn btn-outline-secondary me-1" target="_blank">
-		<i class="bi bi-link-45deg pe-2" />{label}
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1" target="_blank">
+		<i class="bi bi-link-45deg pe-2" />{type} ({tmp})
 	</a>
 {/if}
 

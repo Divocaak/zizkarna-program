@@ -18,17 +18,17 @@
 	top={200}
 	bottom={50}
 >
-	<div class="row d-flex justify-content-center mx-5 px-5">
-		<div class="col">
+	<div class="row d-flex justify-content-center mx-md-5 px-3 px-md-5">
+		<div class="col-12 col-md-6">
 			<!-- TODO alt image? -->
 			<img
 				class="img-fluid"
-				src="/imgs/{event.id}.jpg"
+				src="/events/{event.id}.jpg"
 				alt="event thumbnail"
 			/>
 		</div>
-		<div class="col">
-			<h1 class="neue-bold">{event.eventLabel}</h1>
+		<div class="col-12 col-md-6">
+			<h1 class="mt-3 mt-md-0 neue-bold">{event.eventLabel}</h1>
 			<TagsBuilder tags={event.tags} />
 			<hr class="border-2" />
 			<DateText date={event.date} />

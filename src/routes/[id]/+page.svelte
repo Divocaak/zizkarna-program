@@ -14,8 +14,8 @@
 	let bands = data.bands;
 </script>
 
-<div class="bg-img" style="background-image: url('/imgs/{event.id}.jpg');" />
-<div class="content bg-light text-center py-5 mx-5 px-5 border border-dark border-5">
+<div class="bg-img" style="background-image: url('/events/{event.id}.jpg');" />
+<div class="content bg-light text-center py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5">
 	<div class="back-arrow">
 		<!-- svelte-ignore a11y-missing-content -->
 		<a href="/" class="btn btn-close" />
@@ -25,34 +25,34 @@
 		<TagsBuilder tags={event.tags} />
 	</div>
 	<div class="row my-5" style="font-size:1.2rem">
-		<div class="col-4">
+		<div class="col-12 col-md-4">
 			<DateText date={event.date} />
 		</div>
-		<div class="col-4">
+		<div class="col-12 col-md-4">
 			<CashText cash={event.cash} />
 		</div>
-		<div class="col-4">
+		<div class="col-12 col-md-4">
 			<DoorsText doors={event.doors} />
 		</div>
-		<div class="col-6">
+		<div class="col-12 col-md-6">
 			<FacebookEventButton fbEvent={event.fbEvent} />
 			<TicketsButton tickets={event.tickets} />
 			<ShareButton label={event.label} />
 		</div>
-		<div class="col">
+		<div class="mt-3 mt-md-0 col-12 col-md-6">
 			<AddToCalButtons label={event.eventLabel} date={event.date} doors={event.doors} />
 		</div>
 	</div>
 	{#each bands as band}
-		<h2 class="display-2 neue mt-5 pt-5">{band.label}</h2>
+		<h2 class="display-2 neue mt-0 mt-md-5 pt-0 pt-md-5">{band.label}</h2>
 		<p class="neue">{band.description}</p>
 		{#each band.links as link}
-			<BandLinkButton link={link.link} label={link.label} type={link.type} />
+			<BandLinkButton {link} />
 		{/each}
-		<div class="row justify-content-center mt-4">
+		<div class="row justify-content-center my-4 pb-5">
 			{#each band.imgs as path}
-				<div class="col-4">
-					<img src="/imgs/{band.id}{path}" alt={path} class="img-fluid d-inline-block" />
+				<div class="col-12 col-md-4 mb-1 mb-md-0">
+					<img src="/bands/{band.id}/{path}" alt={path} class="img-fluid d-inline-block" />
 				</div>
 			{/each}
 		</div>
