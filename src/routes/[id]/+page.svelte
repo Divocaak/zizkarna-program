@@ -10,7 +10,7 @@
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 
 	export let data;
-	let event = data.event[0];
+	let event = data.event;
 	let bands = data.bands;
 </script>
 

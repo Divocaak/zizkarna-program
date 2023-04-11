@@ -1,6 +1,6 @@
 export const load = async ({params, fetch}) => {
 
-    const result = await fetch("/api/event");
+    const result = await fetch("/api/eventsAll");
     const data = await result.json();
 
     return {

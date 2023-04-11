@@ -22,19 +22,35 @@
 	></script>
 </svelte:head>
 
+<nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
+	<a class="navbar-brand ps-5 neue-bold d-flex align-items-center" href="/">
+		<img src="/logo.svg" width="40" height="40" class="d-inline-block align-top me-3" alt="logo svg" style="filter:invert(100%);">
+		Žižkárna program
+	  </a>
+	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+	  <span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+	  <div class="pe-5 navbar-nav ms-auto">
+		<a class="nav-item nav-link neue" href="/#closest">Nejbližší akce</a>
+		<a class="nav-item nav-link neue" href="/#future">Na co se můžete těšit</a>
+		<a class="nav-item nav-link neue" href="/#older">Uplynulé akce</a>
+	  </div>
+	</div>
+  </nav>
 <slot />
 
 <style lang="scss">
 	@font-face {
-	font-family: 'NeueMachina';
-	src: url('/neueMachina/NeueMachina-Regular.otf');
-}
+		font-family: 'NeueMachina';
+		src: url('/neueMachina/NeueMachina-Regular.otf');
+	}
 
-@font-face {
-	font-family: 'NeueMachina';
-	src: url('/neueMachina/NeueMachina-Ultrabold.otf');
-	font-weight: bold;
-}
+	@font-face {
+		font-family: 'NeueMachina';
+		src: url('/neueMachina/NeueMachina-Ultrabold.otf');
+		font-weight: bold;
+	}
 	:root {
 		--yellow: #f9d204;
 	}

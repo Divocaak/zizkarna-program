@@ -1,5 +1,6 @@
 <script>
 	export var event;
+	export var disabled = false;
 
 	import Saos from 'saos';
 	import ShareButton from '$lib/ShareButton.svelte';
@@ -22,7 +23,7 @@
 		<div class="col-12 col-md-6">
 			<!-- TODO alt image? -->
 			<img
-				class="img-fluid"
+				class="img-fluid border border-dark border-3" class:disabled={disabled}
 				src="/events/{event.id}.jpg"
 				alt="event thumbnail"
 			/>
@@ -67,5 +68,9 @@
 			transform: rotateX(-50deg) translateX(200vw) skewX(50deg);
 			opacity: 1;
 		}
+	}
+
+	.disabled{
+		filter:saturate(0%);
 	}
 </style>
