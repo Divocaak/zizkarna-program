@@ -8,3 +8,5 @@ const config = {
 };
 
 export default config;
+
+/* URGENT ČUČFEST FOTKY ID 21 */

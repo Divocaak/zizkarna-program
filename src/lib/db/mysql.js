@@ -1,3 +1,4 @@
+import { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_SOCKET } from "$env/static/private";
 import mysql from 'mysql2';
 
 let mysqlconn = null;
@@ -5,14 +6,13 @@ let mysqlconn = null;
 export function mysqlconnFn() {
 
     if (!mysqlconn) {
-        // URGENT env vars
-        // https://joyofcode.xyz/sveltekit-environment-variables
         mysqlconn = mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'Pgema333',
-            database: 'zizkarna_program',
-            socketPath: "/tmp/mysql.sock"
+            host: DB_HOST,
+            port: DB_PORT,
+            user: DB_USER,
+            password: DB_PASSWORD,
+            database: DB_NAME,
+            socketPath: DB_SOCKET
         });
 
         mysqlconn.connect(function (err) {
