@@ -14,7 +14,7 @@
 	let bands = data.bands;
 </script>
 
-<div class="bg-img" style="background-image: url('/events/{event.id}.jpg'), url('/events/placeholder.jpg');" />
+<div class="bg-img" style="background-image: url('/events/{event.id}.jpg'), url('/events/save/placeholder.jpg');" />
 <div class="content bg-light text-center py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5">
 	<div class="back-arrow">
 		<!-- svelte-ignore a11y-missing-content -->

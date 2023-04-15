@@ -12,7 +12,7 @@
 	import DateText from '$lib/DateText.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 
-	const handleImageError = ev => ev.target.src = "/events/placeholder.jpg";
+	const handleImageError = ev => ev.target.src = "/events/save/placeholder.jpg";
 </script>
 
 <Saos
