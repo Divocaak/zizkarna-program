@@ -16,10 +16,8 @@
 </script>
 
 <Saos
-	animation={'from-left 1s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'}
-	animation_out={'to-right 1s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'}
-	top={200}
-	bottom={50}
+	animation={'from-left .7s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'}
+	once={true}
 >
 	<div class="row d-flex justify-content-center mx-md-5 px-3 px-md-5">
 		<div class="col-12 col-md-6">
@@ -52,22 +50,11 @@
 <style>
 	@keyframes -global-from-left {
 		0% {
-			transform: rotateX(50deg) translateX(-200vw) skewX(-50deg);
+			transform: rotateX(50deg) translateX(-150vw) skewX(-50deg);
 			opacity: 1;
 		}
 		100% {
 			transform: rotateX(0deg) translateX(0) skewX(0deg);
-			opacity: 1;
-		}
-	}
-
-	@keyframes -global-to-right {
-		0% {
-			transform: rotateX(0deg) translateX(0vw) skewX(0deg);
-			opacity: 1;
-		}
-		100% {
-			transform: rotateX(-50deg) translateX(200vw) skewX(50deg);
 			opacity: 1;
 		}
 	}

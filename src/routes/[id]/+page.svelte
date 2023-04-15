@@ -11,7 +11,7 @@
 
 	export let data;
 	let event = data.event;
-	let bands = data.bands;;
+	let bands = data.bands;
 </script>
 
 <div class="bg-img" style="background-image: url('/events/{event.id}.jpg'), url('/events/placeholder.jpg');" />
@@ -51,7 +51,7 @@
 		{/each}
 		<div class="row justify-content-center my-4 pb-5">
 			{#each band.imgs as path}
-				<div class="col-12 col-md-4 mb-1 mb-md-0">
+				<div class="col-12 col-md-4 mb-1 mb-md-0 mt-2">
 					<img src="/bands/{band.id}/{path}" alt={path} class="img-fluid d-inline-block" />
 				</div>
 			{/each}

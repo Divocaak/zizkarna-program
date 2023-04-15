@@ -31,4 +31,5 @@
 			<hr class="border-2 mx-5" />
 		{/each}
 	{/if}
+	<!-- TODO footer -->
 </div>
