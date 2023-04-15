@@ -1,3 +1,5 @@
+source ~/.bash_profile
+
 cd 2
 smartresizeall
 cd ../
