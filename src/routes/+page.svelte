@@ -4,8 +4,11 @@
 
 	var closest = data.events.closest.slice(0, 3);
 	var future = data.events.closest.slice(3, data.events.closest.length);
-
 </script>
+
+<svelte:head>
+	<title>Program v Žižkárně</title>
+</svelte:head>
 
 <div class="my-5">
 	<h1 id="closest" class="neue-bold display-3">// Nejbližší akce</h1>
@@ -31,5 +34,4 @@
 			<hr class="border-2 mx-5" />
 		{/each}
 	{/if}
-	<!-- TODO footer -->
 </div>

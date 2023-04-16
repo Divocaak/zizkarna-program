@@ -5,7 +5,7 @@
 	import { page } from '$app/stores';
 	export let urlSuffix = "";
 	let url = $page.url.href + urlSuffix;
-	
+
 	export let title = url.split('/').splice(-1)[0];
 
 	let complete = false;

@@ -41,7 +41,7 @@
 			>
 			<FacebookEventButton fbEvent={event.fbEvent} />
 			<TicketsButton tickets={event.tickets} />
-			<ShareButton urlSuffix={event.id} label={event.label} />
+			<ShareButton urlSuffix={event.id} label={event.eventLabel} />
 			<AddToCalButtons label={event.eventLabel} date={event.date} doors={event.doors}/>
 		</div>
 	</div>
