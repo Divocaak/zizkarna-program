@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
+		"start": "HOST=127.0.0.1 PORT=3002 node build",
 		"preview": "vite preview",
 		"test": "playwright test",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
