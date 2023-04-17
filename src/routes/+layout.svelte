@@ -35,6 +35,8 @@
 		<a class="nav-item nav-link neue" href="/#closest">Nejbližší akce</a>
 		<a class="nav-item nav-link neue" href="/#future">Na co se můžete těšit</a>
 		<a class="nav-item nav-link neue" href="/#older">Uplynulé akce</a>
+		<div class="d-none d-md-block border-start border-1 mx-1"></div>
+		<a class="nav-item nav-link neue" href="/info">Dramaturgie</a>
 	  </div>
 	</div>
   </nav>
@@ -51,12 +53,10 @@
 		src: url('/neueMachina/NeueMachina-Ultrabold.otf');
 		font-weight: bold;
 	}
-	:root {
-		--yellow: #f9d204;
-	}
 
 	:global(html) {
 		scroll-behavior: smooth;
+		overflow-x: hidden;
 	}
 
 	:global(.neue) {

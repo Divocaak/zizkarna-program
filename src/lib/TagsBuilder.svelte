@@ -1,5 +1,5 @@
 <script>
-	export let tags;
+	export let tags = [];
 </script>
 
 {#each tags as tag}

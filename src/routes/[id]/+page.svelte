@@ -11,11 +11,23 @@
 
 	export let data;
 	let event = data.event;
-	let bands = data.bands;;
+	let bands = [];
+	if (data.bands !== undefined) {
+		bands = data.bands;
+	}
 </script>
 
-<div class="bg-img" style="background-image: url('/events/{event.id}.jpg'), url('/events/placeholder.jpg');" />
-<div class="content bg-light text-center py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5">
+<svelte:head>
+	<title>Program v Žižkárně: {event.eventLabel}</title>
+</svelte:head>
+
+<div
+	class="bg-img"
+	style="background-image: url('/events/{event.id}.jpg'), url('/events/save/placeholder.jpg');"
+/>
+<div
+	class="content bg-light text-center py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5"
+>
 	<div class="back-arrow">
 		<!-- svelte-ignore a11y-missing-content -->
 		<a href="/" class="btn btn-close" />
@@ -37,7 +49,7 @@
 		<div class="col-12 col-md-6">
 			<FacebookEventButton fbEvent={event.fbEvent} />
 			<TicketsButton tickets={event.tickets} />
-			<ShareButton label={event.label} />
+			<ShareButton label={event.eventLabel} />
 		</div>
 		<div class="mt-3 mt-md-0 col-12 col-md-6">
 			<AddToCalButtons label={event.eventLabel} date={event.date} doors={event.doors} />
@@ -51,7 +63,7 @@
 		{/each}
 		<div class="row justify-content-center my-4 pb-5">
 			{#each band.imgs as path}
-				<div class="col-12 col-md-4 mb-1 mb-md-0">
+				<div class="col-12 col-md-4 mb-1 mb-md-0 mt-2">
 					<img src="/bands/{band.id}/{path}" alt={path} class="img-fluid d-inline-block" />
 				</div>
 			{/each}

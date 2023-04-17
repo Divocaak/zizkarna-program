@@ -1,3 +1,6 @@
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+
 export const load = async ({ params, fetch }) => {
 
     const result = await fetch("/api/event?id=" + params.id);
@@ -6,11 +9,17 @@ export const load = async ({ params, fetch }) => {
     const resultBands = await fetch("/api/bandsFromEvent?id=" + params.id);
     const dataBands = await resultBands.json();
 
-     for (let i = 0; i < dataBands.length; i++) {
-        let band = dataBands[i];
-        let json = await import(/* @vite-ignore */ "../../../static/bands/" + band.id + "/band.json");
-        band["imgs"] = json.imgs;
-        band["links"] = json.links;
+    for (let i = 0; i < dataBands.length; i++) {
+
+        let json = null;
+        // NOTE local
+        //json = await require("../../../static/bands/" + dataBands[i].id  + "/band.json");
+        // BUG
+        // NOTE server
+        json = await require("../../client/bands/" + dataBands[i].id + "/band.json");
+
+        dataBands[i]["imgs"] = (json !== null) ? json.imgs : [];
+        dataBands[i]["links"] = (json !== null) ? json.links : [];
     }
 
     return {
