@@ -1,12 +1,9 @@
-import { mysqlconnFn } from "$lib/db/mysql";
-
+import {pool} from "$lib/db/mysql.js";
 
 export async function GET({ request, params, url }) {
 
-    let mysqlconn = mysqlconnFn();
-
     let result = {};
-    await mysqlconn.promise()
+    await pool.promise()
         .query("SELECT e.id, e.label AS eventLabel, e.date, e.doors, e.cash, e.fbEvent, e.tickets, t.label AS tagLabel, t.bgColor, t.textColor FROM tag_in_event te INNER JOIN event e ON e.id=te.id_event INNER JOIN tag t ON t.id=te.id_tag WHERE e.id = ?;", url.searchParams.get("id"))
         .then(function ([rows, fields]) {
             rows.forEach(row => {
