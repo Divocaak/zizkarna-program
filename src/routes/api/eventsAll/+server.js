@@ -1,18 +1,17 @@
-import { mysqlconnFn } from "$lib/db/mysql";
-
+import { pool } from "$lib/db/mysql.js";
 
 export async function GET() {
-
-    let mysqlconn = mysqlconnFn();
 
     var older = "SELECT e.id, e.label AS eventLabel, e.date, e.doors, e.cash, e.fbEvent, e.tickets, t.label AS tagLabel, t.bgColor, t.textColor FROM tag_in_event te INNER JOIN event e ON e.id=te.id_event INNER JOIN tag t ON t.id=te.id_tag WHERE e.date < CURRENT_DATE() ORDER BY e.date DESC";
     var closest = "SELECT e.id, e.label AS eventLabel, e.date, e.doors, e.cash, e.fbEvent, e.tickets, t.label AS tagLabel, t.bgColor, t.textColor FROM tag_in_event te INNER JOIN event e ON e.id=te.id_event INNER JOIN tag t ON t.id=te.id_tag WHERE e.date >= CURRENT_DATE() ORDER BY e.date ASC";
 
-    let results = { "older": {}, "closest": {}};
-    await mysqlconn.promise().query(older).then(([rows, fields]) => rows.forEach(row => jsonEvent(row, results, "older")));
-    await mysqlconn.promise().query(closest).then(([rows, fields]) => rows.forEach(row => jsonEvent(row, results, "closest")));
+    let results = { "older": {}, "closest": {} };
+    await pool.promise().query(older).then(([rows, fields]) => rows.forEach(row => jsonEvent(row, results, "older")));
+    await pool.promise().query(closest).then(([rows, fields]) => rows.forEach(row => jsonEvent(row, results, "closest")));
+    // BUG možná už je to fixnutý
+    // jestli ne, tak se musí po každým request returnout connection
 
-    var toRet = {"older": [], "closest": []};
+    var toRet = { "older": [], "closest": [] };
     for (var event in results.older) {
         toRet.older.push(results.older[event]);
     }
