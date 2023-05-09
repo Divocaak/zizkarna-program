@@ -9,6 +9,10 @@
 	import BandLinkButton from '$lib/BandLinkButton.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 
+	import { onMount } from 'svelte';
+	var url = '';
+	onMount(() => (url = window.location.origin));
+
 	export let data;
 	let event = data.event;
 	let bands = [];
@@ -23,7 +27,7 @@
 
 <div
 	class="bg-img"
-	style="background-image: url('/events/{event.id}.jpg'), url('/events/save/placeholder.jpg');"
+	style="background-image: url('{url}/dynamic/events/{event.id}.jpg'), url('/placeholder.jpg');"
 />
 <div
 	class="content bg-light text-center py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5"
@@ -64,7 +68,11 @@
 		<div class="row justify-content-center my-4 pb-5">
 			{#each band.imgs as path}
 				<div class="col-12 col-md-4 mb-1 mb-md-0 mt-2">
-					<img src="/bands/{band.id}/{path}" alt={path} class="img-fluid d-inline-block" />
+					<img
+						src="{url}/dynamic/bands/{band.id}/{path}"
+						alt={path}
+						class="img-fluid d-inline-block"
+					/>
 				</div>
 			{/each}
 		</div>

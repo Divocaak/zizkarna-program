@@ -1,3 +1,4 @@
+import { URL } from "$env/static/private";
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 
@@ -11,15 +12,11 @@ export const load = async ({ params, fetch }) => {
 
     for (let i = 0; i < dataBands.length; i++) {
 
-        let json = null;
-        // NOTE local
-        //json = await require("../../../static/bands/" + dataBands[i].id  + "/band.json");
-        // BUG
-        // NOTE server
-        json = await require("../../client/bands/" + dataBands[i].id + "/band.json");
+        await fetch(URL + "/dynamic/bands/" + dataBands[i].id + "/band.json").then((res) => res.json()).then(function (data){
+            dataBands[i]["imgs"] = (data !== null) ? data.imgs : [];
+            dataBands[i]["links"] = (data !== null) ? data.links : [];
+        });
 
-        dataBands[i]["imgs"] = (json !== null) ? json.imgs : [];
-        dataBands[i]["links"] = (json !== null) ? json.links : [];
     }
 
     return {

@@ -12,18 +12,20 @@
 	import DateText from '$lib/DateText.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 
-	const handleImageError = ev => ev.target.src = "/events/save/placeholder.jpg";
+	import { onMount } from 'svelte';
+	var url = "";
+	onMount(() => (url = window.location.origin));
+
+	const handleImageError = (ev) => (ev.target.src = '/placeholder.jpg');
 </script>
 
-<Saos
-	animation={'from-left .7s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'}
-	once={true}
->
+<Saos animation={'from-left .7s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'} once={true}>
 	<div class="row d-flex justify-content-center mx-md-5 px-3 px-md-5">
 		<div class="col-12 col-md-6">
 			<img
-				class="img-fluid border border-dark border-3" class:disabled={disabled}
-				src="/events/{event.id}.jpg"
+				class="img-fluid border border-dark border-3"
+				class:disabled
+				src="{url}/dynamic/events/{event.id}.jpg"
 				alt="event thumbnail"
 				on:error={handleImageError}
 			/>
@@ -42,7 +44,7 @@
 			<FacebookEventButton fbEvent={event.fbEvent} />
 			<TicketsButton tickets={event.tickets} />
 			<ShareButton urlSuffix={event.id} label={event.eventLabel} />
-			<AddToCalButtons label={event.eventLabel} date={event.date} doors={event.doors}/>
+			<AddToCalButtons label={event.eventLabel} date={event.date} doors={event.doors} />
 		</div>
 	</div>
 </Saos>
@@ -59,7 +61,7 @@
 		}
 	}
 
-	.disabled{
-		filter:saturate(0%);
+	.disabled {
+		filter: saturate(0%);
 	}
 </style>
