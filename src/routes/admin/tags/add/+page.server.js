@@ -15,3 +15,5 @@ export const actions = {
     return result.message;
   }
 };
+
+/* BUG VYČISTIT DB */

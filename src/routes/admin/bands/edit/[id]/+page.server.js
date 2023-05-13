@@ -1,20 +1,21 @@
 import { ADMIN_PASSWORD } from "$env/static/private";
-import { URL } from "$env/static/private";
 import fs from "fs";
 
 export const load = async ({ params, fetch }) => {
-  let band = {};
-  const path = "@dynamic/bands/" + params.id + "/band.json";
-  await fetch(path).then((res) => res.json()).then((data) => band = data).catch(() => {
+  let band = { links: [], imgs: [] };
+  const path = "/dynamic/bands/" + params.id;
+  const jsonPath = path + "/band.json";
+  await fetch(jsonPath).then((res) => res.json()).then((data) => band = data).catch(() => {
     try {
-      if (!fs.existsSync(path)) {
-        fs.mkdirSync(path, { recursive: true });
+      if (!fs.existsSync("." + jsonPath)) {
+        fs.mkdirSync("." + path, { recursive: true });
+        fs.writeFileSync("." + jsonPath, JSON.stringify(band));
       }
     } catch (err) {
-      return {"error": err}
+      return { "error": err };
     }
   });
-  return band;
+  return { id: params.id, json: band };
 }
 
 /** @type {import('./$types').Actions} */
@@ -22,12 +23,15 @@ export const actions = {
   default: async (event) => {
     const formData = Object.fromEntries(await event.request.formData());
     if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
-    const response = await event.fetch('/api/admin/bands/create', {
-      method: 'post',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ label: formData.label, description: formData.description })
-    });
-    const result = await response.json();
-    return result.message;
+    const jsonPath = "./dynamic/bands/" + formData.id + "/band.json";
+    try {
+      if (!fs.existsSync(jsonPath)) {
+        fs.mkdirSync(jsonPath, { recursive: true });
+      }
+      fs.writeFileSync(jsonPath, formData.json);
+    } catch (err) {
+      return "error při zápisu"
+    }
+    return "upraveno";
   }
 };

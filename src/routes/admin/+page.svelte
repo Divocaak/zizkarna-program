@@ -3,8 +3,7 @@
 <a href="/admin/bands">kapely</a><br />
 <a href="/admin/tags">tagy</a>
 
-// TODO add band to event
-// TODO add tag to event
+<p>jediná věc, co jde zpětně smazat/upravit je json předpis kapely: odkazy a fotky. zbytek musí dělat vojtěch přes databázi, protože je línej to kódovat :))</p>
 
 <style lang="scss">
 	:global(table.admin-table) {

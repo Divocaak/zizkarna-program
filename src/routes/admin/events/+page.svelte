@@ -17,6 +17,12 @@
 			<td>
 				<a href={event.fbEvent} target="_blank">{event.label}</a>
 			</td>
+			<td>
+				<a href="/admin/events/edit/{event.id}">upravit</a>
+			</td>
+			<td>
+				<a href="/{event.id}">zobrazit</a>
+			</td>
 		</tr>
 	{/each}
 </table>

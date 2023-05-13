@@ -1,20 +1,10 @@
-import path from 'path';
 import adapter from '@sveltejs/adapter-node';
 
-export default {
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
 	kit: {
-		adapter: adapter(),
-		vite: {
-			resolve: {
-				alias: {
-					"$dynamic": path.resolve("./dynamic")
-				}
-			}
-		}
+		adapter: adapter()
 	}
 };
 
-/* 
-	"$dynamic": ["../dynamic"],
-	"$dynamic/*": ["../dynamic/*"]
-*/
+export default config;
