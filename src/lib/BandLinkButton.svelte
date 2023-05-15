@@ -9,10 +9,7 @@
 	};
 
 	export let link;
-
-	// NOTE tvar https://[něco podle čeho switch]/
-	// lomeno na konci nutné!
-
+	
 	let type;
 	let tmp = link.substring(8, link.length);
 	switch (tmp.substring(0, tmp.indexOf('/'))) {

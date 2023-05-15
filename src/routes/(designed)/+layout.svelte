@@ -1,3 +1,8 @@
+<script>
+	/* import Analytics from '$lib/Analytics.svelte';
+	var adsBlockerNotPresent = true; */
+</script>
+
 <svelte:head>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,24 +27,44 @@
 	></script>
 </svelte:head>
 
+<!-- {#if adsBlockerNotPresent === undefined}
+	<p>ad block detected</p>
+{:else}
+	<Analytics />
+{/if} -->
 <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
 	<a class="navbar-brand ps-5 neue-bold d-flex align-items-center" href="/">
-		<img src="/logo.svg" width="40" height="40" class="d-inline-block align-top me-3" alt="logo svg" style="filter:invert(100%);">
+		<img
+			src="/logo.svg"
+			width="40"
+			height="40"
+			class="d-inline-block align-top me-3"
+			alt="logo svg"
+			style="filter:invert(100%);"
+		/>
 		Žižkárna program
-	  </a>
-	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-	  <span class="navbar-toggler-icon"></span>
+	</a>
+	<button
+		class="navbar-toggler"
+		type="button"
+		data-bs-toggle="collapse"
+		data-bs-target="#navbarNavAltMarkup"
+		aria-controls="navbarNavAltMarkup"
+		aria-expanded="false"
+		aria-label="Toggle navigation"
+	>
+		<span class="navbar-toggler-icon" />
 	</button>
 	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-	  <div class="pe-5 navbar-nav ms-auto">
-		<a class="nav-item nav-link neue" href="/#closest">Nejbližší akce</a>
-		<a class="nav-item nav-link neue" href="/#future">Na co se můžete těšit</a>
-		<a class="nav-item nav-link neue" href="/#older">Uplynulé akce</a>
-		<div class="d-none d-md-block border-start border-1 mx-1"></div>
-		<a class="nav-item nav-link neue" href="/info">Dramaturgie</a>
-	  </div>
+		<div class="pe-5 navbar-nav ms-auto">
+			<a class="nav-item nav-link neue" href="/#closest">Nejbližší akce</a>
+			<a class="nav-item nav-link neue" href="/#future">Na co se můžete těšit</a>
+			<a class="nav-item nav-link neue" href="/#older">Uplynulé akce</a>
+			<div class="d-none d-md-block border-start border-1 mx-1" />
+			<a class="nav-item nav-link neue" href="/info">Dramaturgie</a>
+		</div>
 	</div>
-  </nav>
+</nav>
 <slot />
 
 <style lang="scss">

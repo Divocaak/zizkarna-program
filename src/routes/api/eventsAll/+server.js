@@ -8,8 +8,6 @@ export async function GET() {
     let results = { "older": {}, "closest": {} };
     await pool.promise().query(older).then(([rows, fields]) => rows.forEach(row => jsonEvent(row, results, "older")));
     await pool.promise().query(closest).then(([rows, fields]) => rows.forEach(row => jsonEvent(row, results, "closest")));
-    // BUG možná už je to fixnutý
-    // jestli ne, tak se musí po každým request returnout connection
 
     var toRet = { "older": [], "closest": [] };
     for (var event in results.older) {
