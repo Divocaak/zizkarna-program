@@ -11,10 +11,6 @@
 	import DateText from '$lib/DateText.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 
-	import { onMount } from 'svelte';
-	var url = '';
-	onMount(() => (url = window.location.origin));
-
 	const handleImageError = (ev) => (ev.target.src = '/placeholder.jpg');
 </script>
 
@@ -23,7 +19,7 @@
 		<img
 			class="img-fluid border border-dark border-3"
 			class:disabled
-			src="{url}/dynamic/events/{event.id}.jpg"
+			src="./dynamic/events/{event.id}.jpg"
 			alt="event thumbnail"
 			on:error={handleImageError}
 		/>
