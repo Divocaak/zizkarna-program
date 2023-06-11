@@ -1,6 +1,9 @@
 <script>
 	export let data;
 	export let form;
+
+	const scpCommand = "scp -i ~/.ssh/jmhosting -r " + data.id + " program@jmhosting.eu:~/htdocs/program.zizkarna.cz/dynamic/bands";
+	const copyScp = () => {navigator.clipboard.writeText(scpCommand);}
 </script>
 
 {#if form !== null}<p>{form}</p>{/if}
@@ -20,9 +23,9 @@
 	</label><br />
 	<input type="submit" value="uložit" />
 </form>
-<p>
-	fotky musí přidat vojtěch přes databázi (srry ale nahrávání fotek se mi fakt nechtělo kódovat)
-</p>
+<p>scp příkaz pro nahrání fotek (posílá celou složku):</p>
+<code>{scpCommand}</code>
+<button on:click={copyScp}>kopírovat</button>
 <p>do předpisu zapsat jen názvy a formáty v json formát (příklad dole)</p>
 <p>nerozeznatelné domény nebudou nastylované (ikona, barva, název). rozeznatelné domény:</p>
 <ul>

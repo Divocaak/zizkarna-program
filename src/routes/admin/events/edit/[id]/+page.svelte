@@ -1,6 +1,9 @@
 <script>
 	export let data;
 	export let form;
+
+	const scpCommand = "scp -i ~/.ssh/jmhosting -r " + data.id + ".jpg program@jmhosting.eu:~/htdocs/program.zizkarna.cz/dynamic/events";
+	const copyScp = () => {navigator.clipboard.writeText(scpCommand);}
 </script>
 
 {#if form !== null}<p>{form}</p>{/if}
@@ -25,6 +28,9 @@
 	</label><br />
 	<input type="submit" value="uložit" />
 </form>
+<p>scp příkaz pro nahrání úvodní fotky:</p>
+<code>{scpCommand}</code>
+<button on:click={copyScp}>kopírovat</button>
 <p>vyplňuj jen idčka oddělená tečkou (příklad dole)</p>
 <pre>1.2.3</pre>
 <p>seznamy:</p>
