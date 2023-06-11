@@ -15,6 +15,6 @@ export const load = async ({ params, fetch }) => {
 
     return {
         event: data,
-        bands: dataBands
+        bands: dataBands,
     }
 }
