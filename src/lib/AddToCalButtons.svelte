@@ -1,6 +1,7 @@
 <script>
     export let label, date, doors;
     import 'add-to-calendar-button';
+    let dateToUse = new Date(date).toLocaleDateString("sv");
 </script>
 
 <div class="mt-1">
@@ -8,9 +9,9 @@
         <add-to-calendar-button
             name={label}
             options="Google"
-            location="Žižkárna"
-            startDate={date}
-            endDate={date}
+            location="Žižkárna, Žižkova tř. 171/28, České Budějovice 6, 370 04 České Budějovice, Česko"
+            startDate={dateToUse}
+            endDate={dateToUse}
             startTime={doors}
             endTime="23:59"
             timeZone="Europe/Prague"
@@ -25,9 +26,9 @@
         <add-to-calendar-button
             name={label}
             options="Apple"
-            location="Žižkárna"
-            startDate={date}
-            endDate={date}
+            location="Žižkárna, Žižkova tř. 171/28, České Budějovice 6, 370 04 České Budějovice, Česko"
+            startDate={dateToUse}
+            endDate={dateToUse}
             startTime={doors}
             endTime="23:59"
             timeZone="Europe/Prague"
