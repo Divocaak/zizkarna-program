@@ -2,8 +2,13 @@
 	export let data;
 	export let form;
 
-	const scpCommand = "scp -i ~/.ssh/jmhosting -r " + data.id + " program@jmhosting.eu:~/htdocs/program.zizkarna.cz/dynamic/bands";
-	const copyScp = () => {navigator.clipboard.writeText(scpCommand);}
+	const scpCommand =
+		'scp -i ~/.ssh/jmhosting -r ' +
+		data.id +
+		' program@jmhosting.eu:~/htdocs/program.zizkarna.cz/dynamic/bands';
+	const copyScp = () => {
+		navigator.clipboard.writeText(scpCommand);
+	};
 </script>
 
 {#if form !== null}<p>{form}</p>{/if}
@@ -43,3 +48,6 @@
 		imgs: ['0.jpg', '1.jpg']
 	})}
 </pre>
+{#each data.json['imgs'] as img}
+	<a href="/dynamic/bands/{data.id}/{img}" target="_blank" download="{data.id}_{img}">stáhnout {img}</a><br />
+{/each}

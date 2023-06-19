@@ -31,6 +31,7 @@
 <p>scp příkaz pro nahrání úvodní fotky:</p>
 <code>{scpCommand}</code>
 <button on:click={copyScp}>kopírovat</button>
+<a href="/dynamic/events/{data.id}.jpg" target="_blank" download="{data.id}.jpg">stáhnout úvodku</a><br />
 <p>vyplňuj jen idčka oddělená tečkou (příklad dole)</p>
 <pre>1.2.3</pre>
 <p>seznamy:</p>
