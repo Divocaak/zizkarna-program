@@ -37,5 +37,5 @@
 <!-- BUG správnej formát? -->
 <p>
 	// Harmonogram<br />
-	🚪 {event.doors} otevření Žižkárny
+	🚪 {event.doors.substring(0, event.doors.length - 3)} otevření Žižkárny
 </p>
