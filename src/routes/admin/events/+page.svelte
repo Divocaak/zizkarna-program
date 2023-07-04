@@ -23,6 +23,9 @@
 			<td>
 				<a href="/{event.id}">zobrazit</a>
 			</td>
+			<td>
+				<a href="/admin/events/fb/{event.id}">fb desc</a>
+			</td>
 		</tr>
 	{/each}
 </table>
