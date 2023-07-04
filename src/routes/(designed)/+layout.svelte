@@ -4,12 +4,6 @@
 </script>
 
 <svelte:head>
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link
-		href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Roboto:wght@300;400;500&family=Unbounded:wght@400;500;700;800&display=swap"
-		rel="stylesheet"
-	/>
 	<link
 		rel="stylesheet"
 		href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"
@@ -85,11 +79,11 @@
 	}
 
 	:global(.neue) {
-		font-family: 'NeueMachina';
+		font-family: 'NeueMachina', 'Courier New', monospace;
 	}
 
 	:global(.neue-bold) {
-		font-family: 'NeueMachina';
+		font-family: 'NeueMachina', 'Courier New', monospace;
 		font-weight: bold;
 	}
 </style>
