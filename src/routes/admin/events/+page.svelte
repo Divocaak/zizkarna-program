@@ -23,6 +23,9 @@
 			<td>
 				<a href="/{event.id}">zobrazit</a>
 			</td>
+			<td>
+				<a href="/admin/events/copy/{event.id}">copy srandy</a>
+			</td>
 		</tr>
 	{/each}
 </table>

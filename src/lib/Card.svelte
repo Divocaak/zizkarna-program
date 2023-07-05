@@ -12,7 +12,7 @@
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 </script>
 
-<div class="row d-flex justify-content-center mx-md-5 px-3 px-md-5">
+<div class="row d-flex justify-content-center mx-0 mx-md-5 px-3 px-md-5">
 	<div class="col-12 col-md-6 image-placeholder">
 		<img
 			class="img-fluid border border-dark border-3"
