@@ -10,9 +10,17 @@
 	import CashText from '$lib/CashText.svelte';
 	import DateText from '$lib/DateText.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
+
+	function showDetail() {
+		window.location = '/' + event.id;
+	}
 </script>
 
-<div class="row d-flex justify-content-center mx-0 mx-md-5 px-3 px-md-5">
+<div
+	class="row d-flex justify-content-center mx-0 mx-md-5 px-3 px-md-5"
+	on:click={showDetail}
+	on:keyup={showDetail}
+>
 	<div class="col-12 col-md-6 image-placeholder">
 		<img
 			class="img-fluid border border-dark border-3"
@@ -55,8 +63,8 @@
 		filter: saturate(0%);
 	}
 
-	.image-placeholder{		
-		background-image: url("/placeholder.jpg");
+	.image-placeholder {
+		background-image: url('/placeholder.jpg');
 		background-size: 50%;
 		background-position: top 25% center;
 		background-repeat: no-repeat;
