@@ -5,6 +5,7 @@
 		AppleMusic: 'Apple Music',
 		Facebook: "Facebook",
 		Instagram: "Instagram",
+		SoundCloud: "SoundCloud",
 		Other: 'Jiný odkaz'
 	};
 
@@ -31,6 +32,9 @@
 		case 'instagram.com':
 			type = Types.Instagram;
 			break;
+		case 'soundcloud.com':
+			type = Types.SoundCloud;
+			break;
 		default:
 			type = Types.Other;
 			break;
@@ -56,6 +60,10 @@
 {:else if type == Types.Instagram}
 	<a href={link} class="btn btn-outline-secondary mt-1 me-1 instagram" target="_blank">
 		<i class="bi bi-instagram pe-2" />{type}
+	</a>
+{:else if type == Types.SoundCloud}
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 soundcloud" target="_blank">
+		<i class="bi bi-cloud-fill pe-2" />{type}
 	</a>
 {:else}
 	<a href={link} class="btn btn-outline-secondary mt-1 me-1" target="_blank">
@@ -126,6 +134,19 @@
 
 	.instagram:hover {
 		background-color: #bc2a8d;
+		color: #f8f9fa;
+	}
+
+	.soundcloud,
+	.soundcloud:active,
+	.soundcloud:visited,
+	.soundcloud:focus {
+		border-color: #ff7700;
+		color: #ff7700;
+	}
+
+	.soundcloud:hover {
+		background-color: #ff7700;
 		color: #f8f9fa;
 	}
 </style>
