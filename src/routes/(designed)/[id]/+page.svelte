@@ -55,6 +55,11 @@
 			<AddToCalButtons label={event.eventLabel} date={event.date} doors={event.doors} />
 		</div>
 	</div>
+	{#if event.description != null}
+	<p class="neue">
+		{event.description}
+	</p>
+	{/if}
 	{#each bands as band}
 		<h2 class="display-2 neue mt-0 mt-md-5 pt-0 pt-md-5">{band.label}</h2>
 		<p class="neue">{band.description}</p>

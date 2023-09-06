@@ -11,8 +11,8 @@
 		<input type="text" id="label" name="label" maxlength="64" required />
 	</label><br />
 	<label for="description">
-		* popis (max 512)
-		<textarea type="text" id="description" name="description" maxlength="512" cols=40 rows=20 required />
+		* popis (max 1024)
+		<textarea type="text" id="description" name="description" maxlength="1024" cols=40 rows=20 required />
 	</label><br />
 	<label>
 		* admin heslo

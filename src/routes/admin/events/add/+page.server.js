@@ -14,7 +14,8 @@ export const actions = {
         doors: formData.doors,
         cash: formData.cash,
         fbEvent: formData.fbEvent != "" ? formData.fbEvent : null,
-        tickets: formData.tickets != "" ? formData.tickets : null
+        tickets: formData.tickets != "" ? formData.tickets : null,
+        description: formData.description != null ? formData.description : null
       })
     });
     const result = await response.json();
