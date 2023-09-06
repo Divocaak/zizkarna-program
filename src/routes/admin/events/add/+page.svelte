@@ -30,6 +30,10 @@
 		odkaz na předprodej (max 128)
 		<input type="text" id="tickets" name="tickets" maxlength=128/>
 	</label><br />
+	<label for="description">
+		popis (max 2048)
+		<textarea type="text" id="description" name="description" maxlength="2048" cols=40 rows=20 />
+	</label><br />
 	<label>
 		* admin heslo
 		<input name="password" type="password" required/>
