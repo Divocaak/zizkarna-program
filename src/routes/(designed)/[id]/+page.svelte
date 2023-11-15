@@ -25,18 +25,16 @@
 	class="bg-img"
 	style="background-image: url('/dynamic/events/{event.id}.jpg'), url('/placeholder.jpg');"
 />
-<div
-	class="content bg-light text-center py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5"
->
+<div class="content bg-light py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5">
 	<div class="back-arrow">
 		<!-- svelte-ignore a11y-missing-content -->
 		<a href="/" class="btn btn-close" />
 	</div>
 	<h1 class="display-1 neue-bold">{event.eventLabel}</h1>
-	<div style="font-size:1.3rem">
+	<div class="text-center" style="font-size:1.3rem">
 		<TagsBuilder tags={event.tags} />
 	</div>
-	<div class="row my-5" style="font-size:1.2rem">
+	<div class="row my-5 text-center" style="font-size:1.2rem">
 		<div class="col-12 col-md-4">
 			<DateText date={event.date} />
 		</div>
@@ -56,24 +54,22 @@
 		</div>
 	</div>
 	{#if event.description != null}
-	<p class="neue">
-		{event.description}
-	</p>
+		<p class="neue">
+			{event.description}
+		</p>
 	{/if}
 	{#each bands as band}
-		<h2 class="display-2 neue mt-0 mt-md-5 pt-0 pt-md-5">{band.label}</h2>
+		<h2 class="display-2 text-center neue mt-0 mt-md-5 pt-0 pt-md-5">{band.label}</h2>
 		<p class="neue">{band.description}</p>
-		{#each band.links as link}
-			<BandLinkButton {link} />
-		{/each}
+		<div class="text-center">
+			{#each band.links as link}
+				<BandLinkButton {link} />
+			{/each}
+		</div>
 		<div class="row justify-content-center my-4 pb-5">
 			{#each band.imgs as path}
 				<div class="col-12 col-md-4 mb-1 mb-md-0 mt-2">
-					<img
-						src="/dynamic/bands/{band.id}/{path}"
-						alt={path}
-						class="img-fluid d-inline-block"
-					/>
+					<img src="/dynamic/bands/{band.id}/{path}" alt={path} class="img-fluid d-inline-block" />
 				</div>
 			{/each}
 		</div>
