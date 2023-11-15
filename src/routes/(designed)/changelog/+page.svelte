@@ -11,6 +11,7 @@
 - upraven admin ssh command
 - seo prvky
 - band imgs placeholder
+- ikony a názvy tlačítek
 ## opraveno - clickable karty
 - placeholder event imgs
 # 6.9.23

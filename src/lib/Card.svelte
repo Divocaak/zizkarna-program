@@ -17,21 +17,27 @@
 </script>
 
 <div class="row d-flex justify-content-center mx-0 mx-md-5 px-3 px-md-5">
-	<div class="col-12 col-md-6">
+	<div
+		class="col-12 col-md-6"
+		on:click={showDetail}
+		on:keyup={showDetail}
+		tabindex="0"
+		role="button"
+	>
 		<img
 			class="img-fluid border border-dark border-3"
 			class:disabled
 			src="./dynamic/events/{event.id}.jpg"
 			alt={event.eventLabel}
-			on:click={showDetail}
-			on:keyup={showDetail}
 			onerror="this.src='placeholder.jpg';"
 		/>
 	</div>
 	<div class="col-12 col-md-6">
-		<h1 class="mt-3 mt-md-0 neue-bold" on:click={showDetail} on:keyup={showDetail}>
-			{event.eventLabel}
-		</h1>
+		<a style="text-decoration:none; color:var(--bs-heading-color);" href="/{event.id}">
+			<h1 class="mt-3 mt-md-0 neue-bold">
+				{event.eventLabel}
+			</h1>
+		</a>
 		<TagsBuilder tags={event.tags} />
 		<hr class="border-2" />
 		<DateText date={event.date} />
