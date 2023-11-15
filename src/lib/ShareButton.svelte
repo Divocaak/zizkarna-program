@@ -29,6 +29,6 @@
 	{#if complete}
 		<slot name="complete">Odkaz zkopírován</slot>
 	{:else}
-		<slot>Sdílet</slot>
+		<slot>Pozvat přátele</slot>
 	{/if}
 </button>

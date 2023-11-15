@@ -26,7 +26,7 @@
 </script>
 
 <a href="/admin/events">zpět</a>
-<p>{event.eventLabel}</p>
+<p>{dateFormatted} - {event.eventLabel} // Žižkárna</p>
 <p>
 	<b
 		>od čáry dolů zkopírovat celé do popisu události, kopírovací srandy pro <a
@@ -41,6 +41,7 @@
 	{/each}
 	//
 </p>
+<p>{event.description}</p>
 <p>👉 více informací na https://program.zizkarna.cz/{event.id}</p>
 {#each bands as band}
 	<p>
@@ -53,7 +54,7 @@
 		{/each}
 	</p>
 {/each}
-{#if event.tickets != null}<p>Předprodej: {event.tickets}</p>{/if}
+{#if event.tickets != null}<p>Předprodej za {event.presale} Kč: {event.tickets}</p>{/if}
 <p>Vstup na místě: {event.cash} Kč</p>
 <p>
 	// Harmonogram<br />
@@ -90,6 +91,7 @@
 
 <b>Popis</b>
 <div style="background-color:lightgrey">
+<p>{event.description}</p>
 {#each bands as band}
 	<p>
 		// {band.label}<br />

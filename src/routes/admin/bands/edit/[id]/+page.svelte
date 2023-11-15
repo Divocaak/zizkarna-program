@@ -5,7 +5,7 @@
 	const scpCommand =
 		'scp -i ~/.ssh/jmhosting -r ' +
 		data.id +
-		' program@jmhosting.eu:~/htdocs/program.zizkarna.cz/dynamic/bands';
+		' zizkarna-program@jmhosting.eu:~/htdocs/program.zizkarna.cz/dynamic/bands';
 	const copyScp = () => {
 		navigator.clipboard.writeText(scpCommand);
 	};

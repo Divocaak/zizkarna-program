@@ -2,7 +2,7 @@
 	export let data;
 	export let form;
 
-	const scpCommand = "scp -i ~/.ssh/jmhosting -r " + data.id + ".jpg program@jmhosting.eu:~/htdocs/program.zizkarna.cz/dynamic/events";
+	const scpCommand = "scp -i ~/.ssh/jmhosting -r " + data.id + ".jpg zizkarna-program@jmhosting.eu:~/htdocs/program.zizkarna.cz/dynamic/events";
 	const copyScp = () => {navigator.clipboard.writeText(scpCommand);}
 </script>
 
