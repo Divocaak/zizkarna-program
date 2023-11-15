@@ -39,11 +39,13 @@
 			<DateText date={event.date} />
 		</div>
 		<div class="col-12 col-md-4">
-			<CashText cash={event.cash} />
+			<CashText cash={event.cash} presale={event.presale} />
 		</div>
 		<div class="col-12 col-md-4">
 			<DoorsText doors={event.doors} />
 		</div>
+	</div>
+	<div class="row my-5 text-center" style="font-size:1.2rem">
 		<div class="col-12 col-md-6">
 			<FacebookEventButton fbEvent={event.fbEvent} />
 			<TicketsButton tickets={event.tickets} />

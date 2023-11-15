@@ -34,7 +34,7 @@
 		<TagsBuilder tags={event.tags} />
 		<hr class="border-2" />
 		<DateText date={event.date} />
-		<CashText cash={event.cash} />
+		<CashText cash={event.cash} presale={event.presale}/>
 		<DoorsText doors={event.doors} />
 		<hr class="border-2" />
 		<a href="/{event.id}" class="btn btn-outline-info neue"
