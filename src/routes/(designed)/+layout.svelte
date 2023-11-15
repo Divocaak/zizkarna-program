@@ -19,6 +19,18 @@
 		integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
 		crossorigin="anonymous"
 	></script>
+
+	<meta charset="windows-1250" />
+	<meta
+		name="description"
+		content="Aktuální program v Žižkárně na měsíce dopředu s historií uplynulých akcí. S pravidelným navštěvováním programu Ti už nikdy akce/koncert/trh/workshop/divadlo neuteče! Jsme nový kulturně-kreativní prostor v Českých Budějovických pro všechny generace. Snažíme se oživit areál bývalých Žižkových kasáren a nabídnout občanům Českých Budějovic místo pro setkávání, zábavu a kreativitu. Jsme otevření všem umělcům a kreativcům."
+	/>
+	<meta
+		name="keywords"
+		content="hudba, kultura, akce, budějce, české, budějovice, žižkárna, koncerty, trhy, kapely, farmářské, program, workshop, divadlo, party, dj"
+	/>
+	<meta name="author" content="Vojtěch Divoký" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </svelte:head>
 
 <!-- {#if adsBlockerNotPresent === undefined}
@@ -33,7 +45,7 @@
 			width="40"
 			height="40"
 			class="d-inline-block align-top me-3"
-			alt="logo svg"
+			alt="žižkárna logo"
 			style="filter:invert(100%);"
 		/>
 		Žižkárna program
