@@ -10,21 +10,21 @@
 	import CashText from '$lib/CashText.svelte';
 	import DateText from '$lib/DateText.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
-
-	function showDetail() {
-		window.location = '/' + event.id;
-	}
 </script>
 
 <div class="row d-flex justify-content-center mx-0 mx-md-5 px-3 px-md-5">
-	<div class="col-12 col-md-6">
+		<div
+		class="col-12 col-md-6"
+		on:click={showDetail}
+		on:keyup={showDetail}
+		tabindex="0"
+		role="button"
+	>
 		<img
 			class="img-fluid border border-dark border-3"
 			class:disabled
 			src="./dynamic/events/{event.id}.jpg"
 			alt={event.eventLabel}
-			on:click={showDetail}
-			on:keyup={showDetail}
 			onerror="this.src='placeholder.jpg';"
 		/>
 	</div>
