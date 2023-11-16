@@ -2,8 +2,7 @@
 	import selected from '$lib/admin/Store.js';
 	import TagForm from '$lib/admin/TagForm.svelte';
 	export let form;
-	
-	
+
 	let selectedData;
 	selected.subscribe((data) => {
 		selectedData = data;
@@ -14,4 +13,4 @@
 <h1>přidat tag</h1>
 <a href="/admin/tags">zpět</a>
 
-<TagForm data={selectedData}/>
+<TagForm data={selectedData} />

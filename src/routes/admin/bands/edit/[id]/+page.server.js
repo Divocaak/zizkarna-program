@@ -2,6 +2,9 @@ import { ADMIN_PASSWORD } from "$env/static/private";
 import fs from "fs";
 
 export const load = async ({ params, fetch }) => {
+  const result = await fetch("/api/admin/bands/get?id=" + params.id);
+  const data = await result.json();
+
   let band = { links: [], imgs: [] };
   const path = "/dynamic/bands/" + params.id;
   const jsonPath = path + "/band.json";
@@ -15,7 +18,8 @@ export const load = async ({ params, fetch }) => {
       return { "error": err };
     }
   });
-  return { id: params.id, json: band };
+
+  return { id: params.id, json: band, label: data.label, description: data.description };
 }
 
 /** @type {import('./$types').Actions} */
