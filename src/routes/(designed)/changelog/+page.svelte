@@ -21,7 +21,8 @@
 # 4.9.23
 ## přidáno
 - soundcloud social button
-## upraveno - clickable event card => detail page
+## upraveno
+- clickable event card => detail page
 # 4.7.23
 ## přidáno
 - fb event copy
