@@ -2,7 +2,7 @@ import { ADMIN_PASSWORD } from "$env/static/private";
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-  // NOTE https://medium.com/codex/intro-to-sveltekit-form-actions-de62000fdad4
+  // NOTE kdy se k tomuhle dostanu https://medium.com/codex/intro-to-sveltekit-form-actions-de62000fdad4
   default: async (event) => {
     const formData = Object.fromEntries(await event.request.formData());
     if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
