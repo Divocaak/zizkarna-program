@@ -9,4 +9,7 @@
 			<i class="bi bi-telephone pe-2" />722&nbsp;680&nbsp;481
 		</a>
 	</p>
+	<a class="text-muted" href="/changelog">
+		changelog
+	</a>
 </div>
