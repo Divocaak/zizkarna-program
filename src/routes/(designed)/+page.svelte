@@ -6,8 +6,8 @@
 		future,
 		older = null;
 
-	if (data.events.older !== []) older = data.events.older;
-	if (data.events.closest !== []) {
+	if (data.events.older != []) older = data.events.older;
+	if (data.events.closest != []) {
 		closest = data.events.closest.slice(0, 3);
 		future = data.events.closest.slice(3, data.events.closest.length);
 	}
