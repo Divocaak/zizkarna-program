@@ -10,10 +10,6 @@
 	import CashText from '$lib/CashText.svelte';
 	import DateText from '$lib/DateText.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
-
-	function showDetail() {
-		window.location = '/' + event.id;
-	}
 </script>
 
 <div class="row d-flex justify-content-center mx-0 mx-md-5 px-3 px-md-5">
