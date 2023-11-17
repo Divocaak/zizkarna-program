@@ -5,11 +5,13 @@ export const actions = {
   default: async (event) => {
     const formData = Object.fromEntries(await event.request.formData());
     if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
+
     const response = await event.fetch('/api/admin/bands/create', {
       method: 'post',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ label: formData.label, description: formData.description })
+      body: JSON.stringify({ label: formData.label, description: formData.description, json: formData.json })
     });
+    
     const result = await response.json();
     return result.message;
   }

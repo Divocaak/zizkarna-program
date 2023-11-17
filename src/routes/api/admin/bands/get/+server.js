@@ -11,5 +11,6 @@ export async function GET({ request, params, url }) {
                 };
             });
         });
+
     return new Response(JSON.stringify(result));
 }

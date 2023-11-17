@@ -21,5 +21,3 @@
 <p>scp příkaz pro nahrání fotek (posílá celou složku):</p>
 <code>{scpCommand}</code>
 <button on:click={copyScp}>kopírovat</button>
-
-<!-- URGENT update band endpoint -->

@@ -9,5 +9,3 @@
 <a href="/admin/bands">zpět</a>
 
 <BandForm />
-
-<!-- URGENT test new creation with json -->

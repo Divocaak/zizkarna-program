@@ -1,6 +1,22 @@
 import { ADMIN_PASSWORD } from "$env/static/private";
 import fs from "fs";
 
+/** @type {import('./$types').Actions} */
+export const actions = {
+  default: async (event) => {
+    const formData = Object.fromEntries(await event.request.formData());
+    if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
+
+    const response = await event.fetch('/api/admin/bands/update', {
+      method: 'post',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ id: formData.id, label: formData.label, description: formData.description, json: formData.json })
+    });
+    const result = await response.json();
+    return result.message;
+  }
+};
+
 export const load = async ({ params, fetch }) => {
   const result = await fetch("/api/admin/bands/get?id=" + params.id);
   const data = await result.json();
@@ -21,21 +37,3 @@ export const load = async ({ params, fetch }) => {
 
   return { id: params.id, json: band, label: data.label, description: data.description };
 }
-
-/** @type {import('./$types').Actions} */
-export const actions = {
-  default: async (event) => {
-    const formData = Object.fromEntries(await event.request.formData());
-    if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
-    const jsonPath = "./dynamic/bands/" + formData.id + "/band.json";
-    try {
-      if (!fs.existsSync(jsonPath)) {
-        fs.mkdirSync(jsonPath, { recursive: true });
-      }
-      fs.writeFileSync(jsonPath, formData.json);
-    } catch (err) {
-      return "error při zápisu"
-    }
-    return "upraveno";
-  }
-};
