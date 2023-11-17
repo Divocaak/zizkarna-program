@@ -6,11 +6,15 @@
 	}
 
 	:global(table) {
-		border-collapse: separate;
+		border-collapse: collapse;
 	}
-    
+
 	:global(td) {
 		border: 1.5px solid black;
-		padding: 3px;
+		padding: 5px;
+	}
+
+	:global(tr:nth-child(even)) {
+		background-color: lightgrey;
 	}
 </style>

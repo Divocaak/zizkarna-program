@@ -39,6 +39,8 @@
 		>
 	</label><br />
 	<!-- TODO add/remove tags -->
+	<!-- TODO připsat do changelogu -->
+	
 	<label>
 		* admin heslo
 		<input name="password" type="password" required />

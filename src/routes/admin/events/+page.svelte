@@ -15,16 +15,13 @@
 				{new Date(event.date).toLocaleDateString('cs-CZ', {})}
 			</td>
 			<td>
-				<a href={event.fbEvent} target="_blank">{event.label}</a>
+				<a href="/{event.id}">prog</a> {event.label} (<a href={event.fbEvent} target="_blank">facebook</a>)
 			</td>
 			<td>
 				<a href="/admin/events/edit/{event.id}">upravit</a>
 			</td>
 			<td>
-				<a href="/{event.id}">zobrazit</a>
-			</td>
-			<td>
-				<a href="/admin/events/copy/{event.id}">copy srandy</a>
+				<a href="/admin/events/copy/{event.id}">copy</a>
 			</td>
 		</tr>
 	{/each}
