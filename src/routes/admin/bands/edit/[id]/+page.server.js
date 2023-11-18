@@ -10,7 +10,7 @@ export const actions = {
     const response = await event.fetch('/api/admin/bands/update', {
       method: 'post',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ id: formData.id, label: formData.label, description: formData.description, json: formData.json })
+      body: JSON.stringify(formData)
     });
     const result = await response.json();
     return result.message;

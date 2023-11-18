@@ -4,8 +4,20 @@ import { pool } from "$lib/db/mysql.js";
 export async function POST({ request }) {
 
     const data = await request.json();
+    await pool.promise().query("UPDATE event SET label=?, date=?, doors=?, cash=?, presalePrice=?, fbEvent=?, tickets=?, description=? WHERE id=?;", [
+        data.label,
+        data.date,
+        data.doors,
+        data.cash,
+        data.presale != "" ? data.presale : null,
+        data.fbEvent != "" ? data.fbEvent : null,
+        data.tickets != "" ? data.tickets : null,
+        data.description != "" ? data.description : null,
+        data.id
+    ]);
 
-    let bandInserts = [];
+    // TODO rewrite new band/tag sys mby??
+    /* let bandInserts = [];
     data.bands.forEach(bandId => {
         if (isNaN(bandId)) return;
         bandInserts.push([data.id, bandId]);
@@ -19,7 +31,7 @@ export async function POST({ request }) {
         tagInserts.push([data.id, tagId]);
     });
     if (tagInserts.length > 0)
-        await pool.promise().query("INSERT INTO tag_in_event (id_event, id_tag) VALUES ?;", [tagInserts]);
+        await pool.promise().query("INSERT INTO tag_in_event (id_event, id_tag) VALUES ?;", [tagInserts]); */
 
     return new Response(JSON.stringify({ message: "přidáno do db" }, { status: 200 }));
 }

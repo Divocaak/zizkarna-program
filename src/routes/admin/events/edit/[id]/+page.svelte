@@ -15,10 +15,11 @@
 {#if form !== null}<p>{form}</p>{/if}
 <h1>upravit event</h1>
 <a href="/admin/events">zpět</a>
-<EventForm {data}/>
+<EventForm data={data.event} />
 
 <p>scp příkaz pro nahrání úvodní fotky:</p>
 <code>{scpCommand}</code>
 <button on:click={copyScp}>kopírovat</button>
-<a href="/dynamic/events/{data.id}.jpg" target="_blank" download="{data.id}.jpg">stáhnout úvodku</a
-><br />
+<a href="/dynamic/events/{data.id}.jpg" target="_blank" download="{data.id}.jpg">
+	stáhnout úvodku
+</a><br />

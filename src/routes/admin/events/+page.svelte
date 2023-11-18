@@ -15,7 +15,11 @@
 				{new Date(event.date).toLocaleDateString('cs-CZ', {})}
 			</td>
 			<td>
-				<a href="/{event.id}">prog</a> {event.label} (<a href={event.fbEvent} target="_blank">facebook</a>)
+				<a href="/{event.id}">prog</a>
+				{#if event.fbEvent != null}(<a href={event.fbEvent} target="_blank">facebook</a
+					>){:else}<span style="color:red"><b>FB</b></span>
+				{/if}
+				{event.label}
 			</td>
 			<td>
 				<a href="/admin/events/edit/{event.id}">upravit</a>
