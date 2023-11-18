@@ -1,5 +1,7 @@
 <script>
+	import Tag from '$lib/Tag.svelte';
 	export let data = null;
+	export let tags;
 </script>
 
 <form method="POST">
@@ -35,16 +37,27 @@
 	<label for="json">
 		* json<br />
 		<textarea type="text" id="json" name="json" cols="100" rows="10" required
-			>{data != null && data.json != null ? JSON.stringify(data.json) : '{ "links": [],"imgs": [] }'}</textarea
+			>{data != null && data.json != null
+				? JSON.stringify(data.json)
+				: '{ "links": [],"imgs": [] }'}</textarea
 		>
 	</label><br />
-	<!-- TODO add/remove tags -->
-	<!-- TODO připsat do changelogu -->
-	
+	<!-- TODO BAND add/remove tags -->
+	<!-- TODO BAND připsat do changelogu -->
 	<label>
 		* admin heslo
 		<input name="password" type="password" required />
 	</label><br />
+	{#each tags as tag}
+		<label for="tag_{tag.id}">
+			<!-- URGENT tady konec, edit band page, tags render -->
+			<!-- TODO BAND add data-tag-in-band-id attribute for already checked marks (edit band) -->
+			<!-- TODO BAND at form submit add all checkboxes with data-in-band-id attribute to check for changes at band-tag pairs -->
+			<!-- TODO BAND add attribute checked to already checked tags (edit band) -->
+			<input type="checkbox" id="tag_{tag.id}" name="tag_{tag.id}" />
+			<Tag {tag} />
+		</label><br /> 
+	{/each}
 	<input type="submit" value="uložit" />
 </form>
 

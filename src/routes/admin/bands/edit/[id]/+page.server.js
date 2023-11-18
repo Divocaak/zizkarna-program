@@ -21,6 +21,9 @@ export const load = async ({ params, fetch }) => {
   const result = await fetch("/api/admin/bands/get?id=" + params.id);
   const data = await result.json();
 
+  const resultTags = await fetch("/api/admin/tagInBand/get?id=" + params.id);
+  const dataTags = await resultTags.json();
+
   let band = { links: [], imgs: [] };
   const path = "/dynamic/bands/" + params.id;
   const jsonPath = path + "/band.json";
@@ -35,5 +38,5 @@ export const load = async ({ params, fetch }) => {
     }
   });
 
-  return { id: params.id, json: band, label: data.label, description: data.description };
+  return { id: params.id, json: band, label: data.label, description: data.description, tags: dataTags};
 }

@@ -1,5 +1,6 @@
 <script>
 	import selected from '$lib/admin/Store.js';
+	import Tag from '$lib/Tag.svelte';
 	export let data;
 </script>
 
@@ -10,44 +11,36 @@
 		<td>
 			<h1>seznam band tagů</h1>
 			<table>
-				{#each data.tags as tag}
-					{#if !tag.eventTag}
-						<tr>
-							<td>
-								<b>{tag.id}</b>
-							</td>
-							<td>
-								<span style="background-color: #{tag.bgColor}; color: #{tag.textColor}">
-									&nbsp;{tag.label}&nbsp;
-								</span>
-							</td>
-							<td>
-								<a href="/admin/tags/edit" on:click={() => selected.update(() => tag)}> upravit </a>
-							</td>
-						</tr>
-					{/if}
+				{#each data.band as tag}
+					<tr>
+						<td>
+							<b>{tag.id}</b>
+						</td>
+						<td>
+							<Tag {tag} />
+						</td>
+						<td>
+							<a href="/admin/tags/edit" on:click={() => selected.update(() => tag)}> upravit </a>
+						</td>
+					</tr>
 				{/each}
 			</table>
 		</td>
 		<td style="vertical-align:top">
 			<h1>seznam event tagů</h1>
 			<table>
-				{#each data.tags as tag}
-					{#if tag.eventTag}
-						<tr>
-							<td>
-								<b>{tag.id}</b>
-							</td>
-							<td>
-								<span style="background-color: #{tag.bgColor}; color: #{tag.textColor}">
-									&nbsp;{tag.label}&nbsp;
-								</span>
-							</td>
-							<td>
-								<a href="/admin/tags/edit" on:click={() => selected.update(() => tag)}> upravit </a>
-							</td>
-						</tr>
-					{/if}
+				{#each data.event as tag}
+					<tr>
+						<td>
+							<b>{tag.id}</b>
+						</td>
+						<td>
+							<Tag {tag} />
+						</td>
+						<td>
+							<a href="/admin/tags/edit" on:click={() => selected.update(() => tag)}> upravit </a>
+						</td>
+					</tr>
 				{/each}
 			</table>
 		</td>

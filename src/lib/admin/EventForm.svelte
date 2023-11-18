@@ -104,5 +104,5 @@
 	<input type="submit" value="uložit" />
 </form>
 
-<!-- TODO připsat do changelogu -->
-<!-- TODO band a tag přidávání -->
+<!-- TODO EVENT připsat do changelogu -->
+<!-- TODO EVENT band a tag přidávání -->

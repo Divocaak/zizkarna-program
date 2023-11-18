@@ -6,7 +6,7 @@ export const actions = {
     const formData = Object.fromEntries(await event.request.formData());
     if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
 
-    // TODO predelat na na novej vyklikavaci system asi??
+    // TODO EVENT predelat na na novej vyklikavaci system asi??
     /* let bandsData = formData.bands != "" ? formData.bands.split(".").map(Number) : [];
     let tagsData = formData.tags != "" ? formData.tags.split(".").map(Number) : []; */
 
@@ -22,12 +22,12 @@ export const actions = {
 };
 
 export const load = async ({ params, fetch }) => {
-  // NOTE mby dont use?
+  // NOTE EVENT mby dont use?
   const bandsResult = await fetch("/api/admin/bands/list");
   const bandsData = await bandsResult.json();
   
-  // NOTE mby dont use?
-  const tagsResult = await fetch("/api/admin/tags/list");
+  // NOTE EVENT mby dont use?
+  const tagsResult = await fetch("/api/admin/tags/list?eventTagsOnly=1");
   const tagsData = await tagsResult.json();
 
   const eventResult = await fetch("/api/admin/events/get?id=" + params.id);

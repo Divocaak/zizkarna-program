@@ -5,7 +5,7 @@ export async function POST({ request }) {
 
     const data = await request.json();
     const [sql, _] = await pool.promise().query("INSERT INTO band (label, description) VALUES (?, ?);", [data.label, data.description]);
-    
+
     // json creation
     const path = "./dynamic/bands/" + sql.insertId;
     const jsonPath = path + "/band.json";
@@ -17,5 +17,5 @@ export async function POST({ request }) {
         jsonError = err;
     }
 
-    return new Response(JSON.stringify({ message: jsonError?.message ?? "přidáno do db" }, { status: jsonError != null ? 500 : 200 }));
+    return new Response(JSON.stringify({ status: jsonError != null ? 500 : 200, message: jsonError?.message ?? sql.insertId }));
 }

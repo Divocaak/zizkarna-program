@@ -8,7 +8,7 @@
 	import TicketsButton from '$lib/TicketsButton.svelte';
 	import BandLinkButton from '$lib/BandLinkButton.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
-	import ImageWithPlaceholder from '../../../lib/ImageWithPlaceholder.svelte';
+	import ImageWithPlaceholder from '$lib/ImageWithPlaceholder.svelte';
 
 	export let data;
 	let event = data.event;
