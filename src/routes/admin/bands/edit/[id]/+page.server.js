@@ -5,6 +5,7 @@ import fs from "fs";
 export const actions = {
   default: async (event) => {
     const formData = Object.fromEntries(await event.request.formData());
+    console.log(formData);
     if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
 
     const response = await event.fetch('/api/admin/bands/update', {
@@ -23,6 +24,11 @@ export const load = async ({ params, fetch }) => {
 
   const resultTags = await fetch("/api/admin/tagInBand/get?id=" + params.id);
   const dataTags = await resultTags.json();
+  let selectedTags = [];
+  dataTags.forEach(tag => selectedTags.push(tag.id));
+
+  const resultTagsAll = await fetch("/api/admin/tags/list?eventTagsOnly=0");
+  const dataTagsAll = await resultTagsAll.json();
 
   let band = { links: [], imgs: [] };
   const path = "/dynamic/bands/" + params.id;
@@ -38,5 +44,5 @@ export const load = async ({ params, fetch }) => {
     }
   });
 
-  return { id: params.id, json: band, label: data.label, description: data.description, tags: dataTags};
+  return { id: params.id, json: band, label: data.label, description: data.description, tags: dataTagsAll, selectedTags: selectedTags };
 }

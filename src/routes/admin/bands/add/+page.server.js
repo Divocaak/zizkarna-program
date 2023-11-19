@@ -8,8 +8,8 @@ export const actions = {
 
     let newTagIds = [];
     Object.keys(formData).filter(function (key) {
-      if (key.indexOf('tag_') == 0) {
-        newTagIds.push(parseInt(key.replace("tag_", "")));
+      if (key.indexOf("new-tag_") == 0) {
+        newTagIds.push(parseInt(key.replace("new-tag_", "")));
         delete formData[key];
       }
     });

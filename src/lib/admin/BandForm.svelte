@@ -1,10 +1,27 @@
 <script>
+	import { enhance } from '$app/forms';
 	import Tag from '$lib/Tag.svelte';
 	export let data = null;
 	export let tags;
+	export let selectedTags = null;
+
+	function getTagName(id, tbId) {
+		/* URGENT tady musi byt tag_in_band.id, ne tag.id */
+		return selectedTags.includes(id) ? 'old-tag_' + tbId : 'new-tag_' + id;
+	}
 </script>
 
-<form method="POST">
+<form
+	method="POST"
+	use:enhance={({ formElement, formData, action, cancel }) => {
+		const elements = document.querySelectorAll(`[id^="old-tag_"]`);
+		let removedTagsIds = [];
+		elements.forEach((element) => {
+			if (!element.checked) removedTagsIds.push(parseInt(element.id.replace('old-tag_', '')));
+		});
+		if (removedTagsIds.length > 0) formData.set('removedTagsIds', removedTagsIds);
+	}}
+>
 	{#if data != null && data.id != null}
 		<label for="id">
 			id (readonly)
@@ -48,17 +65,20 @@
 		* admin heslo
 		<input name="password" type="password" required />
 	</label><br />
+	<input type="submit" value="uložit" /><br /><br>
 	{#each tags as tag}
-		<label for="tag_{tag.id}">
-			<!-- URGENT tady konec, edit band page, tags render -->
-			<!-- TODO BAND add data-tag-in-band-id attribute for already checked marks (edit band) -->
+		<label for={getTagName(tag.id, tag.tag_in_band_id)}>
 			<!-- TODO BAND at form submit add all checkboxes with data-in-band-id attribute to check for changes at band-tag pairs -->
 			<!-- TODO BAND add attribute checked to already checked tags (edit band) -->
-			<input type="checkbox" id="tag_{tag.id}" name="tag_{tag.id}" />
+			<input
+				type="checkbox"
+				id={getTagName(tag.id, tag.tag_in_band_id)}
+				name={getTagName(tag.id, tag.tag_in_band_id)}
+				checked={selectedTags != null ? selectedTags.includes(tag.id) : null}
+			/>
 			<Tag {tag} />
-		</label><br /> 
+		</label><br />
 	{/each}
-	<input type="submit" value="uložit" />
 </form>
 
 <p>do předpisu zapsat jen názvy a formáty v json formát (příklad dole)</p>
