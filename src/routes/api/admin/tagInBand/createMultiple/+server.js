@@ -12,5 +12,5 @@ export async function POST({ request }) {
 
     if (tagInserts.length > 0)
         await pool.promise().query("INSERT INTO tag_in_band (id_band, id_tag) VALUES ?;", [tagInserts]);
-    return new Response(JSON.stringify({ message: "přidáno do db" }, { status: 200 }));
+    return new Response(JSON.stringify({ message: "přidáno do db", status: 200 }));
 }

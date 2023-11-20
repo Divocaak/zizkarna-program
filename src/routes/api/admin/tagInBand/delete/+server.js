@@ -3,14 +3,8 @@ import { pool } from "$lib/db/mysql.js";
 export async function POST({ request }) {
 
     const data = await request.json();
-
-    let tagInserts = [];
-    data.tags.forEach(tagId => {
-        if (isNaN(tagId)) return;
-        tagInserts.push([data.id, tagId]);
-    });
-
-    if (tagInserts.length > 0)
-        await pool.promise().query("DELETE FROM tag_in_band WHERE id=?;", [tagInserts]);
-    return new Response(JSON.stringify({ message: "přidáno do db" }, { status: 200 }));
+    const arr = data.ids.split(",");
+    if (arr.length > 0)
+        await pool.promise().query("DELETE FROM tag_in_band WHERE id IN (?);", [arr]);
+    return new Response(JSON.stringify({ message: "přidáno do db", status: 200 }));
 }

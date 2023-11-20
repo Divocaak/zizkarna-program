@@ -15,10 +15,21 @@ export const actions = {
         cash: formData.cash,
         fbEvent: formData.fbEvent != "" ? formData.fbEvent : null,
         tickets: formData.tickets != "" ? formData.tickets : null,
-        description: formData.description != null ? formData.description : null
+        description: formData.description != null ? formData.description : null,
+        is_visible: formData.is_visible == "on"
       })
     });
     const result = await response.json();
     return result.message;
   }
 };
+
+export const load = async ({ params, fetch }) => {
+  const resultTags = await fetch("/api/admin/tags/list?eventTagsOnly=1");
+  const dataTags = await resultTags.json();
+
+  const resultBands = await fetch("/api/admin/bands/list");
+    const dataBands = await resultBands.json();
+
+  return { tags: dataTags, bands: dataBands };
+}

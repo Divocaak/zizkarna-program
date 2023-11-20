@@ -5,8 +5,35 @@ import fs from "fs";
 export const actions = {
   default: async (event) => {
     const formData = Object.fromEntries(await event.request.formData());
-    console.log(formData);
     if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
+
+    let newTagIds = [];
+    Object.keys(formData).filter(function (key) {
+      if (key.indexOf("new-tag_") == 0) {
+        newTagIds.push(parseInt(key.replace("new-tag_", "")));
+        delete formData[key];
+      }
+    });
+
+    if (newTagIds.length > 0) {
+      const tagsResponse = await event.fetch('/api/admin/tagInBand/createMultiple', {
+        method: 'post',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: formData.id, tags: newTagIds })
+      });
+      const tagsResult = await tagsResponse.json();
+      if (tagsResult.status != 200) return tagsResult.message;
+    }
+
+    if (formData.removedTagsIds != undefined) {
+      const oldTagsResponse = await event.fetch('/api/admin/tagInBand/delete', {
+        method: 'post',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ ids: formData.removedTagsIds })
+      });
+      const oldTagsResult = await oldTagsResponse.json();
+      if (oldTagsResult.status != 200) return oldTagsResult.message;
+    }
 
     const response = await event.fetch('/api/admin/bands/update', {
       method: 'post',
@@ -22,10 +49,8 @@ export const load = async ({ params, fetch }) => {
   const result = await fetch("/api/admin/bands/get?id=" + params.id);
   const data = await result.json();
 
-  const resultTags = await fetch("/api/admin/tagInBand/get?id=" + params.id);
-  const dataTags = await resultTags.json();
-  let selectedTags = [];
-  dataTags.forEach(tag => selectedTags.push(tag.id));
+  const resultSelectedTags = await fetch("/api/admin/tagInBand/get?id=" + params.id);
+  const dataSelectedTags = await resultSelectedTags.json();
 
   const resultTagsAll = await fetch("/api/admin/tags/list?eventTagsOnly=0");
   const dataTagsAll = await resultTagsAll.json();
@@ -44,5 +69,5 @@ export const load = async ({ params, fetch }) => {
     }
   });
 
-  return { id: params.id, json: band, label: data.label, description: data.description, tags: dataTagsAll, selectedTags: selectedTags };
+  return { id: params.id, json: band, label: data.label, description: data.description, tags: dataTagsAll, selectedTags: dataSelectedTags };
 }

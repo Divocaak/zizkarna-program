@@ -1,5 +1,28 @@
 <script>
+	import { invalidateAll } from '$app/navigation';
+	import { enhance } from '$app/forms';
+	import Tag from '$lib/Tag.svelte';
 	export let data = null;
+
+	export let tags;
+	export let selectedTags = null;
+	let selectedTagsKeys = selectedTags != null ? Object.keys(selectedTags) : null;
+	function getTagName(id) {
+		if (selectedTagsKeys == null) return 'new-tag_' + id;
+		return selectedTagsKeys.includes(id.toString())
+			? 'old-tag_' + selectedTags[id]
+			: 'new-tag_' + id;
+	}
+
+	export let bands;
+	export let selectedBands = null;
+	let selectedBandsKeys = selectedBands != null ? Object.keys(selectedBands) : null;
+	function getBandName(id) {
+		if (selectedBandsKeys == null) return 'new-band_' + id;
+		return selectedBandsKeys.includes(id.toString())
+			? 'old-band_' + selectedBands[id]
+			: 'new-band_' + id;
+	}
 
 	let dateStr = null;
 	if (data != null && data.date != null) {
@@ -89,19 +112,55 @@
 			>{data != null && data.description != null ? data.description : null}</textarea
 		>
 	</label><br />
-	<label for="bands">
-		* kapely<br />
-		<textarea type="text" id="bands" name="bands" cols="50" />
-	</label><br />
-	<label for="tags">
-		* tagy<br />
-		<textarea type="text" id="tags" name="tags" cols="50" />
+	<label for="is_visible">
+		zveřejnit?
+		<input
+			type="checkbox"
+			id="is_visible"
+			name="is_visible"
+			checked={data != null && data.is_visible != null ? data.is_visible : true}
+		/>
 	</label><br />
 	<label>
 		* admin heslo
 		<input name="password" type="password" required />
 	</label><br />
-	<input type="submit" value="uložit" />
+	<input type="submit" value="uložit" /><br /><br />
+	<div style="float:left;">
+		{#if selectedTagsKeys != null}
+			<p>zatím přiřazeno <b>{selectedBandsKeys.length}</b>/{bands.length} kapel</p>
+		{/if}
+		{#each bands as band}
+			<label for={getBandName(band.id)}>
+				<input
+					type="checkbox"
+					id={getBandName(band.id)}
+					name={getBandName(band.id)}
+					checked={selectedBandsKeys != null
+						? selectedBandsKeys.includes(band.id.toString())
+						: null}
+				/>
+				<input type="time" id={getBandName(band.id)} name={getBandName(band.id)} />
+				{band.label}
+			</label><br />
+		{/each}
+	</div>
+	<div>
+		{#if selectedTagsKeys != null}
+			<p>zatím přiřazeno <b>{selectedTagsKeys.length}</b>/{tags.length} tagů</p>
+		{/if}
+		{#each tags as tag}
+			<label for={getTagName(tag.id)}>
+				<input
+					type="checkbox"
+					id={getTagName(tag.id)}
+					name={getTagName(tag.id)}
+					checked={selectedTagsKeys != null ? selectedTagsKeys.includes(tag.id.toString()) : null}
+				/>
+				<Tag {tag} />
+			</label><br />
+		{/each}
+	</div>
 </form>
 
 <!-- TODO EVENT připsat do changelogu -->

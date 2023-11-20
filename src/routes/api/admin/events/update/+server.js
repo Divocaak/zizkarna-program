@@ -4,7 +4,8 @@ import { pool } from "$lib/db/mysql.js";
 export async function POST({ request }) {
 
     const data = await request.json();
-    await pool.promise().query("UPDATE event SET label=?, date=?, doors=?, cash=?, presalePrice=?, fbEvent=?, tickets=?, description=? WHERE id=?;", [
+    await pool.promise().query("UPDATE event SET is_visible=?, label=?, date=?, doors=?, cash=?, presalePrice=?, fbEvent=?, tickets=?, description=? WHERE id=?;", [
+        data.is_visible,
         data.label,
         data.date,
         data.doors,
@@ -26,5 +27,5 @@ export async function POST({ request }) {
         await pool.promise().query("INSERT INTO band_in_event (id_event, id_band) VALUES ?;", [bandInserts]);
      */
 
-    return new Response(JSON.stringify({ message: "přidáno do db" }, { status: 200 }));
+    return new Response(JSON.stringify({ message: "upraveno v db" }, { status: 200 }));
 }

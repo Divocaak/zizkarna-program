@@ -5,12 +5,15 @@
 - tag edit skrz admin
 - band edit skrz admin
 - event edit skrz admin
+- event visibility switch
 - band json lze vypsat už při vytváření bandu
+- band tagy lze přidávat a odebírat v band formuláři během editu/vytváření
 
 ## upraveno
 - tagy lze přidat ke kapelám (automatické přidání tagu kapely k eventu :o)
 - admin tables redesign (větší přehlednost)
 - tagy rozděleny na event a band kategorie
+- zlepšení fb buttonu (existuje/chybí) v admin event table
 
 
 # 15.11.23

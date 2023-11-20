@@ -23,14 +23,16 @@ export const actions = {
 
     if (result.status != 200) return result.message;
 
-    const tagsResponse = await event.fetch('/api/admin/tagInBand/createMultiple', {
-      method: 'post',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ id: result.message, tags: newTagIds })
-    });
-    const tagsResult = await tagsResponse.json();
+    if (newTagIds.length > 0) {
+      const tagsResponse = await event.fetch('/api/admin/tagInBand/createMultiple', {
+        method: 'post',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: result.message, tags: newTagIds })
+      });
+      const tagsResult = await tagsResponse.json();
+    }
 
-    return tagsResult.message;
+    return result.message;
   }
 };
 
