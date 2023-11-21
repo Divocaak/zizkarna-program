@@ -6,24 +6,19 @@
 	export let tags;
 	export let selectedTags = null;
 
-	let selectedTagsKeys = selectedTags != null ? Object.keys(selectedTags) : null;
-
-	function getTagName(id) {
-		if (selectedTagsKeys == null) return 'new-tag_' + id;
-		return selectedTagsKeys.includes(id.toString())
-			? 'old-tag_' + selectedTags[id]
-			: 'new-tag_' + id;
-	}
+	// URGENT rewrite: no primary key from composite (band id, tag id)
 </script>
 
 <form
 	method="POST"
 	use:enhance={({ formElement, formData, action, cancel }) => {
-		const elements = document.querySelectorAll(`[id^="old-tag_"]`);
+		/* BUG rew */
+		const elements = document.querySelectorAll(`[class^="old-tag_"]`);
 		let removedTagsIds = [];
 		elements.forEach((element) => {
 			if (!element.checked) removedTagsIds.push(parseInt(element.id.replace('old-tag_', '')));
 		});
+		
 		if (removedTagsIds.length > 0) formData.set('removedTagsIds', removedTagsIds);
 
 		return async ({ result, update }) => {
@@ -74,16 +69,20 @@
 		<input name="password" type="password" required />
 	</label><br />
 	<input type="submit" value="uložit" /><br /><br />
-	{#if selectedTagsKeys != null}
-		<p>zatím přiřazeno <b>{selectedTagsKeys.length}</b>/{tags.length} tagů</p>
+	{#if selectedTags != null}
+		<p>zatím přiřazeno <b>{selectedTags.length}</b>/{tags.length} tagů</p>
 	{/if}
 	{#each tags as tag}
-		<label for={getTagName(tag.id)}>
+		<label for="tag-{tag.id}">
+			<!-- URGENT if old tag, assing class to look for when submit (edit) -->
 			<input
 				type="checkbox"
-				id={getTagName(tag.id)}
-				name={getTagName(tag.id)}
-				checked={selectedTagsKeys != null ? selectedTagsKeys.includes(tag.id.toString()) : null}
+				id="tag-{tag.id}"
+				name="tag-{tag.id}"
+				class={selectedTags != null && selectedTags.includes(tag.id)
+					? 'old-tag_' + tag.id
+					: ''}
+				checked={selectedTags != null ? selectedTags.includes(tag.id) : null}
 			/>
 			<Tag {tag} />
 		</label><br />

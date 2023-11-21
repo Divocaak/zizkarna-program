@@ -4,16 +4,20 @@
 	import Tag from '$lib/Tag.svelte';
 	export let data = null;
 
+	// TODO rewrite: no primary key from composite (event id, tag id)
 	export let tags;
 	export let selectedTags = null;
 	let selectedTagsKeys = selectedTags != null ? Object.keys(selectedTags) : null;
 	function getTagName(id) {
 		if (selectedTagsKeys == null) return 'new-tag_' + id;
 		return selectedTagsKeys.includes(id.toString())
-			? 'old-tag_' + selectedTags[id]
-			: 'new-tag_' + id;
+		? 'old-tag_' + selectedTags[id]
+		: 'new-tag_' + id;
 	}
-
+	
+	// TODO rewrite: no primary key from composite (event id, band id)
+	// TODO insert on duplicate key update
+	// TODO delete
 	export let bands;
 	export let selectedBands = null;
 	let selectedBandsKeys = selectedBands != null ? Object.keys(selectedBands) : null;
