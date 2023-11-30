@@ -41,7 +41,7 @@
 		/>
 	</label><br />
 	<label for="eventTag">
-		eventový tag
+		tag pouze pro event
 		<input
 			type="checkbox"
 			id="eventTag"

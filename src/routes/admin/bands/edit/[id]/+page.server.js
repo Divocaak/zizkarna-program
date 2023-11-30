@@ -9,8 +9,8 @@ export const actions = {
 
     let newTagIds = [];
     Object.keys(formData).filter(function (key) {
-      if (key.indexOf("new-tag_") == 0) {
-        newTagIds.push(parseInt(key.replace("new-tag_", "")));
+      if (key.indexOf("tag-") == 0) {
+        newTagIds.push(parseInt(key.replace("tag-", "")));
         delete formData[key];
       }
     });
@@ -29,7 +29,7 @@ export const actions = {
       const oldTagsResponse = await event.fetch('/api/admin/tagInBand/delete', {
         method: 'post',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ ids: formData.removedTagsIds })
+        body: JSON.stringify({ id: formData.id, tags: formData.removedTagsIds })
       });
       const oldTagsResult = await oldTagsResponse.json();
       if (oldTagsResult.status != 200) return oldTagsResult.message;

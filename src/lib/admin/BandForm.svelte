@@ -6,19 +6,20 @@
 	export let tags;
 	export let selectedTags = null;
 
-	// URGENT rewrite: no primary key from composite (band id, tag id)
+	function idResolver(id) {
+		return selectedTags != null && selectedTags.includes(id) ? 'old-tag-' + id : 'tag-' + id;
+	}
 </script>
 
 <form
 	method="POST"
 	use:enhance={({ formElement, formData, action, cancel }) => {
-		/* BUG rew */
-		const elements = document.querySelectorAll(`[class^="old-tag_"]`);
+		const elements = document.querySelectorAll(`[id^="old-tag-"]`);
 		let removedTagsIds = [];
 		elements.forEach((element) => {
-			if (!element.checked) removedTagsIds.push(parseInt(element.id.replace('old-tag_', '')));
+			if (!element.checked) removedTagsIds.push(parseInt(element.id.replace('old-tag-', '')));
 		});
-		
+
 		if (removedTagsIds.length > 0) formData.set('removedTagsIds', removedTagsIds);
 
 		return async ({ result, update }) => {
@@ -73,15 +74,11 @@
 		<p>zatím přiřazeno <b>{selectedTags.length}</b>/{tags.length} tagů</p>
 	{/if}
 	{#each tags as tag}
-		<label for="tag-{tag.id}">
-			<!-- URGENT if old tag, assing class to look for when submit (edit) -->
+		<label for={idResolver(tag.id)}>
 			<input
 				type="checkbox"
-				id="tag-{tag.id}"
-				name="tag-{tag.id}"
-				class={selectedTags != null && selectedTags.includes(tag.id)
-					? 'old-tag_' + tag.id
-					: ''}
+				id={idResolver(tag.id)}
+				name={idResolver(tag.id)}
 				checked={selectedTags != null ? selectedTags.includes(tag.id) : null}
 			/>
 			<Tag {tag} />

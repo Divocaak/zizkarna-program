@@ -6,14 +6,6 @@ export const actions = {
     let formData = Object.fromEntries(await event.request.formData());
     if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
 
-    let newTagIds = [];
-    Object.keys(formData).filter(function (key) {
-      if (key.indexOf("tag_") == 0) {
-        newTagIds.push(parseInt(key.replace("tag_", "")));
-        delete formData[key];
-      }
-    });
-
     const response = await event.fetch('/api/admin/bands/create', {
       method: 'post',
       headers: { 'content-type': 'application/json' },
@@ -22,6 +14,14 @@ export const actions = {
     const result = await response.json();
 
     if (result.status != 200) return result.message;
+
+    let newTagIds = [];
+    Object.keys(formData).filter(function (key) {
+      if (key.indexOf("tag-") == 0) {
+        newTagIds.push(parseInt(key.replace("tag-", "")));
+        delete formData[key];
+      }
+    });
 
     if (newTagIds.length > 0) {
       const tagsResponse = await event.fetch('/api/admin/tagInBand/createMultiple', {
