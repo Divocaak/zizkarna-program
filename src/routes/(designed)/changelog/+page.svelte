@@ -83,5 +83,9 @@
 - db pool
 `;
   </script>
+
+<svelte:head>
+	<title>Changelog</title>
+</svelte:head>
   
   <SvelteMarkdown {source} />

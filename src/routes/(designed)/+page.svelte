@@ -15,6 +15,10 @@
 
 <svelte:head>
 	<title>Program v Žižkárně</title>
+	<meta
+		name="description"
+		content="Aktuální program v Žižkárně na měsíce dopředu s historií uplynulých akcí. S pravidelným navštěvováním programu Ti už nikdy akce/koncert/trh/workshop/divadlo neuteče! Jsme nový kulturně-kreativní prostor v Českých Budějovických pro všechny generace. Snažíme se oživit areál bývalých Žižkových kasáren a nabídnout občanům Českých Budějovic místo pro setkávání, zábavu a kreativitu. Jsme otevření všem umělcům a kreativcům."
+	/>
 </svelte:head>
 
 <div class="my-5">

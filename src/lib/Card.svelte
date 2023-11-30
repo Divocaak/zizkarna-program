@@ -28,8 +28,9 @@
 			class="img-fluid border border-dark border-3"
 			class:disabled
 			src="./dynamic/events/{event.id}.jpg"
-			alt={event.eventLabel}
+			alt="plakát k akci {event.eventLabel}"
 			onerror="this.src='placeholder.jpg';"
+			loading="lazy"
 		/>
 	</div>
 	<div class="col-12 col-md-6">

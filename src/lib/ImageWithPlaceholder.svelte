@@ -28,7 +28,7 @@
 </script>
 
 {#if loaded}
-	<img src={path} {alt} class="img-fluid d-inline-block" />
+	<img src={path} {alt} class="img-fluid d-inline-block" loading="lazy"/>
 {:else if failed}
 	<p>error při načítání obrázku</p>
 {:else if loading}

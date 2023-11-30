@@ -22,10 +22,6 @@
 
 	<meta charset="windows-1250" />
 	<meta
-		name="description"
-		content="Aktuální program v Žižkárně na měsíce dopředu s historií uplynulých akcí. S pravidelným navštěvováním programu Ti už nikdy akce/koncert/trh/workshop/divadlo neuteče! Jsme nový kulturně-kreativní prostor v Českých Budějovických pro všechny generace. Snažíme se oživit areál bývalých Žižkových kasáren a nabídnout občanům Českých Budějovic místo pro setkávání, zábavu a kreativitu. Jsme otevření všem umělcům a kreativcům."
-	/>
-	<meta
 		name="keywords"
 		content="hudba, kultura, akce, budějce, české, budějovice, žižkárna, koncerty, trhy, kapely, farmářské, program, workshop, divadlo, party, dj"
 	/>
@@ -47,6 +43,7 @@
 			class="d-inline-block align-top me-3"
 			alt="žižkárna logo"
 			style="filter:invert(100%);"
+			loading="lazy"
 		/>
 		Žižkárna program
 	</a>
