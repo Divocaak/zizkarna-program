@@ -19,7 +19,11 @@
 </script>
 
 <svelte:head>
-	<title>Program v Žižkárně: {event.eventLabel}</title>
+	<title>{event.eventLabel}</title>
+	<meta
+		name="description"
+		content="Zajímá tě detail akce {event.eventLabel}? Na této stránce najdeš odkazy na jedtlové kapely, představující text a spoustu dalšího"
+	/>
 </svelte:head>
 
 <div
@@ -72,7 +76,7 @@
 		<div class="row justify-content-center my-4 pb-5">
 			{#each band.imgs as path}
 				<div class="col-12 col-md-4 mb-1 mb-md-0 mt-2">
-					<ImageWithPlaceholder path="/dynamic/bands/{band.id}/{path}" alt="fotka {band.label}" />
+					<ImageWithPlaceholder path="/dynamic/bands/{band.id}/{path}" alt="fotka {band.label} číslo {path}" />
 				</div>
 			{/each}
 		</div>
