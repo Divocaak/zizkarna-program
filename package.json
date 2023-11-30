@@ -9,8 +9,7 @@
 		"preview": "vite preview",
 		"test": "playwright test",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write .",
-		"postbuild": "npx svelte-sitemap --domain https://program.zizkarna.cz -i '**/admin/**' -i '**/api/**'"
+		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
