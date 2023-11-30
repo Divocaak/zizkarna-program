@@ -2,6 +2,7 @@ import { pool } from "$lib/db/mysql.js";
 
 export async function GET() {
 
+    /* TODO use event is_visible */
     var older = "SELECT e.id, e.label AS eventLabel, e.date, e.doors, e.cash, e.presalePrice, e.fbEvent, e.tickets, t.label AS tagLabel, t.bgColor, t.textColor FROM tag_in_event te INNER JOIN event e ON e.id=te.id_event INNER JOIN tag t ON t.id=te.id_tag WHERE e.date < CURRENT_DATE() ORDER BY e.date DESC";
     var closest = "SELECT e.id, e.label AS eventLabel, e.date, e.doors, e.cash, e.presalePrice, e.fbEvent, e.tickets, t.label AS tagLabel, t.bgColor, t.textColor FROM tag_in_event te INNER JOIN event e ON e.id=te.id_event INNER JOIN tag t ON t.id=te.id_tag WHERE e.date >= CURRENT_DATE() ORDER BY e.date ASC";
 

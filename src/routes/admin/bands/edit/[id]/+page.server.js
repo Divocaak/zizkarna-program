@@ -1,7 +1,60 @@
 import { ADMIN_PASSWORD } from "$env/static/private";
 import fs from "fs";
 
+/** @type {import('./$types').Actions} */
+export const actions = {
+  default: async (event) => {
+    const formData = Object.fromEntries(await event.request.formData());
+    if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
+
+    let newTagIds = [];
+    Object.keys(formData).filter(function (key) {
+      if (key.indexOf("new-tag_") == 0) {
+        newTagIds.push(parseInt(key.replace("new-tag_", "")));
+        delete formData[key];
+      }
+    });
+
+    if (newTagIds.length > 0) {
+      const tagsResponse = await event.fetch('/api/admin/tagInBand/createMultiple', {
+        method: 'post',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: formData.id, tags: newTagIds })
+      });
+      const tagsResult = await tagsResponse.json();
+      if (tagsResult.status != 200) return tagsResult.message;
+    }
+
+    if (formData.removedTagsIds != undefined) {
+      const oldTagsResponse = await event.fetch('/api/admin/tagInBand/delete', {
+        method: 'post',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ ids: formData.removedTagsIds })
+      });
+      const oldTagsResult = await oldTagsResponse.json();
+      if (oldTagsResult.status != 200) return oldTagsResult.message;
+    }
+
+    const response = await event.fetch('/api/admin/bands/update', {
+      method: 'post',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    const result = await response.json();
+    return result.message;
+  }
+};
+
 export const load = async ({ params, fetch }) => {
+  const result = await fetch("/api/admin/bands/get?id=" + params.id);
+  const data = await result.json();
+
+  const resultSelectedTags = await fetch("/api/admin/tagInBand/get?id=" + params.id);
+  const dataSelectedTags = await resultSelectedTags.json();
+
+  const resultTagsAll = await fetch("/api/admin/tags/list?eventTagsOnly=0");
+  const dataTagsAll = await resultTagsAll.json();
+
   let band = { links: [], imgs: [] };
   const path = "/dynamic/bands/" + params.id;
   const jsonPath = path + "/band.json";
@@ -15,23 +68,6 @@ export const load = async ({ params, fetch }) => {
       return { "error": err };
     }
   });
-  return { id: params.id, json: band };
-}
 
-/** @type {import('./$types').Actions} */
-export const actions = {
-  default: async (event) => {
-    const formData = Object.fromEntries(await event.request.formData());
-    if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
-    const jsonPath = "./dynamic/bands/" + formData.id + "/band.json";
-    try {
-      if (!fs.existsSync(jsonPath)) {
-        fs.mkdirSync(jsonPath, { recursive: true });
-      }
-      fs.writeFileSync(jsonPath, formData.json);
-    } catch (err) {
-      return "error při zápisu"
-    }
-    return "upraveno";
-  }
-};
+  return { id: params.id, json: band, label: data.label, description: data.description, tags: dataTagsAll, selectedTags: dataSelectedTags };
+}

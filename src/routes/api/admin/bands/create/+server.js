@@ -1,9 +1,21 @@
 import { pool } from "$lib/db/mysql.js";
+import fs from "fs";
 
 export async function POST({ request }) {
 
     const data = await request.json();
+    const [sql, _] = await pool.promise().query("INSERT INTO band (label, description) VALUES (?, ?);", [data.label, data.description]);
 
-    await pool.promise().query("INSERT INTO band (label, description) VALUES (?, ?);", [data.label, data.description]);
-    return new Response(JSON.stringify({ message: "přidáno do db"}, { status: 200 }));
+    // json creation
+    const path = "./dynamic/bands/" + sql.insertId;
+    const jsonPath = path + "/band.json";
+    let jsonError = null;
+    try {
+        fs.mkdirSync(path, { recursive: true });
+        fs.writeFileSync(jsonPath, data.json);
+    } catch (err) {
+        jsonError = err;
+    }
+
+    return new Response(JSON.stringify({ status: jsonError != null ? 500 : 200, message: jsonError?.message ?? sql.insertId }));
 }
