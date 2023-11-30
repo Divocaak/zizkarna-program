@@ -1,6 +1,11 @@
 <script>
     import SvelteMarkdown from 'svelte-markdown';
-    const source = `# 15.11.23
+    const source = `
+# 30.11.23
+## upraveno
+- seo
+- lazy load obrázků
+# 15.11.23
 ## přidáno
 - changelog
 - do copy eventu přidáno eventDesc
