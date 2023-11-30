@@ -47,6 +47,7 @@
 			class="d-inline-block align-top me-3"
 			alt="žižkárna logo"
 			style="filter:invert(100%);"
+			loading="lazy"
 		/>
 		Žižkárna program
 	</a>

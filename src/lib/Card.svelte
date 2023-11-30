@@ -30,6 +30,7 @@
 			src="./dynamic/events/{event.id}.jpg"
 			alt={event.eventLabel}
 			onerror="this.src='placeholder.jpg';"
+			loading="lazy"
 		/>
 	</div>
 	<div class="col-12 col-md-6">
