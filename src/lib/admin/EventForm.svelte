@@ -7,6 +7,9 @@
 	export let selectedTags = null;
 	export let bands;
 	export let selectedBands = null;
+	const selectedBandsKeys = Object.keys(selectedBands);
+
+	console.log(selectedBands);
 
 	let dateStr = null;
 	if (data != null && data.date != null) {
@@ -16,16 +19,14 @@
 		dateStr = date[2] + '-' + date[1] + '-' + date[0];
 	}
 
-	// TODO rewrite: no primary key from composite (event id, band id)
-	// TODO insert on duplicate key update
-	// TODO delete
+	// URGENT edit form
 
 	function tagIdResolver(id) {
 		return selectedTags != null && selectedTags.includes(id) ? 'old-tag-' + id : 'tag-' + id;
 	}
 
 	function bandIdResolver(id) {
-		return selectedTags != null && selectedTags.includes(id) ? 'old-band-' + id : 'band-' + id;
+		return selectedBands != null && selectedBandsKeys.includes(id) ? 'old-band-' + id : 'band-' + id;
 	}
 </script>
 
@@ -140,7 +141,7 @@
 	<input type="submit" value="uložit" /><br /><br />
 	<div style="float:left;">
 		{#if selectedBands != null}
-			<p>zatím přiřazeno <b>{selectedBands.length}</b>/{bands.length} kapel</p>
+			<p>zatím přiřazeno <b>{selectedBandsKeys.length}</b>/{bands.length} kapel</p>
 		{/if}
 		{#each bands as band}
 			<label for={bandIdResolver(band.id)}>
@@ -148,7 +149,7 @@
 					type="checkbox"
 					id={bandIdResolver(band.id)}
 					name={bandIdResolver(band.id)}
-					checked={selectedBands != null ? selectedBands.includes(band.id.toString()) : null}
+					checked={selectedBands != null ? selectedBandsKeys.includes(band.id.toString()) : null}
 				/>
 				<input
 					type="time"

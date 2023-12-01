@@ -6,7 +6,7 @@ export const actions = {
     const formData = Object.fromEntries(await event.request.formData());
     if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
 
-    /* const response = await event.fetch('/api/admin/events/create', {
+    const response = await event.fetch('/api/admin/events/create', {
       method: 'post',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
@@ -22,9 +22,7 @@ export const actions = {
     });
     const result = await response.json();
 
-    if (result.status != 200) return result.message; */
-
-    console.log(formData);
+    if (result.status != 200) return result.message;
 
     let newBandPairs = [];
     let newTagIds = [];
@@ -38,25 +36,36 @@ export const actions = {
         if(key.indexOf("band-t") == 0) return;
         const id = key.replace("band-", "");
         const timeKey = "band-t" + id;
-        newBandPairs.push([parseInt(id), formData[timeKey]])
+        const time = formData[timeKey] == "" ? null : formData[timeKey];
+        newBandPairs.push([parseInt(id), time])
         delete formData[key];
         delete formData[timeKey];
       }
     });
 
-    console.log(newTagIds);
     console.log(newBandPairs);
 
-    /* if (newTagIds.length > 0) {
+    if (newTagIds.length > 0) {
       const tagsResponse = await event.fetch('/api/admin/tagInEvent/createMultiple', {
         method: 'post',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id: result.message, tags: newTagIds })
       });
       var tagsResult = await tagsResponse.json();
+      if (tagsResult.status != 200) return tagsResult.message;
     }
+    
 
-    return tagsResult.message; */
+    if (newBandPairs.length > 0) {
+      const bandsResponse = await event.fetch('/api/admin/bandInEvent/insertUpdateMultiple', {
+        method: 'post',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: result.message, bands: newBandPairs })
+      });
+      var bandsResult = await bandsResponse.json();
+      return bandsResult.message;
+    }
+    return result.message;
   }
 };
 

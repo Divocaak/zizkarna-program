@@ -68,5 +68,8 @@ export const load = async ({ params, fetch }) => {
   const resultBands = await fetch("/api/admin/bands/list");
   const dataBands = await resultBands.json();
 
-  return { event: data, bands: dataBands, tags: dataTags, selectedTags: dataSelectedTags };
+  const resultSelectedBands = await fetch("/api/admin/bandInEvent/get?id=" + params.id);
+  const dataSelectedBands = await resultSelectedBands.json();
+
+  return { event: data, bands: dataBands, tags: dataTags, selectedTags: dataSelectedTags, selectedBands: dataSelectedBands };
 }
