@@ -3,8 +3,7 @@ import { pool } from "$lib/db/mysql.js";
 export async function POST({ request }) {
 
     const data = await request.json();
-
-    await pool.promise().query("INSERT INTO event (label, date, doors, cash, fbEvent, tickets, description, is_visible) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", [
+    const [sql, _] = await pool.promise().query("INSERT INTO event (label, date, doors, cash, fbEvent, tickets, description, is_visible) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", [
         data.label,
         data.date,
         data.doors,
@@ -15,5 +14,5 @@ export async function POST({ request }) {
         data.is_visible
     ]);
 
-    return new Response(JSON.stringify({ message: "přidáno do db" }, { status: 200 }));
+    return new Response(JSON.stringify({ status: 200, message: sql.insertId }, { status: 200 }));
 }

@@ -29,10 +29,10 @@ export const actions = {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id: result.message, tags: newTagIds })
       });
-      const tagsResult = await tagsResponse.json();
+      var tagsResult = await tagsResponse.json();
     }
 
-    return result.message;
+    return tagsResult.message;
   }
 };
 

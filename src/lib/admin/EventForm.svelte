@@ -3,30 +3,10 @@
 	import { enhance } from '$app/forms';
 	import Tag from '$lib/Tag.svelte';
 	export let data = null;
-
-	// TODO rewrite: no primary key from composite (event id, tag id)
 	export let tags;
 	export let selectedTags = null;
-	let selectedTagsKeys = selectedTags != null ? Object.keys(selectedTags) : null;
-	function getTagName(id) {
-		if (selectedTagsKeys == null) return 'new-tag_' + id;
-		return selectedTagsKeys.includes(id.toString())
-		? 'old-tag_' + selectedTags[id]
-		: 'new-tag_' + id;
-	}
-	
-	// TODO rewrite: no primary key from composite (event id, band id)
-	// TODO insert on duplicate key update
-	// TODO delete
 	export let bands;
 	export let selectedBands = null;
-	let selectedBandsKeys = selectedBands != null ? Object.keys(selectedBands) : null;
-	function getBandName(id) {
-		if (selectedBandsKeys == null) return 'new-band_' + id;
-		return selectedBandsKeys.includes(id.toString())
-			? 'old-band_' + selectedBands[id]
-			: 'new-band_' + id;
-	}
 
 	let dateStr = null;
 	if (data != null && data.date != null) {
@@ -35,9 +15,37 @@
 		if (date[1].length < 2) date[1] = '0' + date[1];
 		dateStr = date[2] + '-' + date[1] + '-' + date[0];
 	}
+
+	// TODO rewrite: no primary key from composite (event id, band id)
+	// TODO insert on duplicate key update
+	// TODO delete
+
+	function tagIdResolver(id) {
+		return selectedTags != null && selectedTags.includes(id) ? 'old-tag-' + id : 'tag-' + id;
+	}
+
+	function bandIdResolver(id) {
+		return selectedTags != null && selectedTags.includes(id) ? 'old-band-' + id : 'band-' + id;
+	}
 </script>
 
-<form method="POST">
+<form
+	method="POST"
+	use:enhance={({ formElement, formData, action, cancel }) => {
+		const elements = document.querySelectorAll(`[id^="old-tag-"]`);
+		let removedTagsIds = [];
+		elements.forEach((element) => {
+			if (!element.checked) removedTagsIds.push(parseInt(element.id.replace('old-tag-', '')));
+		});
+
+		if (removedTagsIds.length > 0) formData.set('removedTagsIds', removedTagsIds);
+
+		return async ({ result, update }) => {
+			alert(result.data);
+			await invalidateAll();
+		};
+	}}
+>
 	{#if data != null && data.id != null}
 		<label for="id">
 			* id (readonly)
@@ -131,35 +139,37 @@
 	</label><br />
 	<input type="submit" value="uložit" /><br /><br />
 	<div style="float:left;">
-		{#if selectedTagsKeys != null}
-			<p>zatím přiřazeno <b>{selectedBandsKeys.length}</b>/{bands.length} kapel</p>
+		{#if selectedBands != null}
+			<p>zatím přiřazeno <b>{selectedBands.length}</b>/{bands.length} kapel</p>
 		{/if}
 		{#each bands as band}
-			<label for={getBandName(band.id)}>
+			<label for={bandIdResolver(band.id)}>
 				<input
 					type="checkbox"
-					id={getBandName(band.id)}
-					name={getBandName(band.id)}
-					checked={selectedBandsKeys != null
-						? selectedBandsKeys.includes(band.id.toString())
-						: null}
+					id={bandIdResolver(band.id)}
+					name={bandIdResolver(band.id)}
+					checked={selectedBands != null ? selectedBands.includes(band.id.toString()) : null}
 				/>
-				<input type="time" id={getBandName(band.id)} name={getBandName(band.id)} />
+				<input
+					type="time"
+					id={bandIdResolver('t' + band.id)}
+					name={bandIdResolver('t' + band.id)}
+				/>
 				{band.label}
 			</label><br />
 		{/each}
 	</div>
 	<div>
-		{#if selectedTagsKeys != null}
-			<p>zatím přiřazeno <b>{selectedTagsKeys.length}</b>/{tags.length} tagů</p>
+		{#if selectedTags != null}
+			<p>zatím přiřazeno <b>{selectedTags.length}</b>/{tags.length} tagů</p>
 		{/if}
 		{#each tags as tag}
-			<label for={getTagName(tag.id)}>
+			<label for={tagIdResolver(tag.id)}>
 				<input
 					type="checkbox"
-					id={getTagName(tag.id)}
-					name={getTagName(tag.id)}
-					checked={selectedTagsKeys != null ? selectedTagsKeys.includes(tag.id.toString()) : null}
+					id={tagIdResolver(tag.id)}
+					name={tagIdResolver(tag.id)}
+					checked={selectedTags != null ? selectedTags.includes(tag.id) : null}
 				/>
 				<Tag {tag} />
 			</label><br />

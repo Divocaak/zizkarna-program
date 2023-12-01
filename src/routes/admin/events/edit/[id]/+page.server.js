@@ -6,9 +6,33 @@ export const actions = {
     const formData = Object.fromEntries(await event.request.formData());
     if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
 
-    // TODO EVENT predelat na na novej vyklikavaci system asi??
-    /* let bandsData = formData.bands != "" ? formData.bands.split(".").map(Number) : [];
-    let tagsData = formData.tags != "" ? formData.tags.split(".").map(Number) : []; */
+    let newTagIds = [];
+    Object.keys(formData).filter(function (key) {
+      if (key.indexOf("tag-") == 0) {
+        newTagIds.push(parseInt(key.replace("tag-", "")));
+        delete formData[key];
+      }
+    });
+
+    if (newTagIds.length > 0) {
+      const tagsResponse = await event.fetch('/api/admin/tagInEvent/createMultiple', {
+        method: 'post',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: formData.id, tags: newTagIds })
+      });
+      const tagsResult = await tagsResponse.json();
+      if (tagsResult.status != 200) return tagsResult.message;
+    }
+
+    if (formData.removedTagsIds != undefined) {
+      const oldTagsResponse = await event.fetch('/api/admin/tagInEvent/delete', {
+        method: 'post',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: formData.id, tags: formData.removedTagsIds })
+      });
+      const oldTagsResult = await oldTagsResponse.json();
+      if (oldTagsResult.status != 200) return oldTagsResult.message;
+    }
 
     const response = await event.fetch('/api/admin/events/update', {
       method: 'post',
@@ -32,14 +56,17 @@ export const actions = {
 
 export const load = async ({ params, fetch }) => {
 
+  const result = await fetch("/api/admin/events/get?id=" + params.id);
+  const data = await result.json();
+
   const resultTags = await fetch("/api/admin/tags/list?eventTagsOnly=1");
   const dataTags = await resultTags.json();
+
+  const resultSelectedTags = await fetch("/api/admin/tagInEvent/get?id=" + params.id)
+  const dataSelectedTags = await resultSelectedTags.json();
 
   const resultBands = await fetch("/api/admin/bands/list");
   const dataBands = await resultBands.json();
 
-  const eventResult = await fetch("/api/admin/events/get?id=" + params.id);
-  const eventData = await eventResult.json();
-
-  return { event: eventData, bands: bandsData, tags: tagsData };
+  return { event: data, bands: dataBands, tags: dataTags, selectedTags: dataSelectedTags };
 }

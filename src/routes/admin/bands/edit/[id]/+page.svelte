@@ -1,6 +1,5 @@
 <script>
 	import BandForm from '$lib/admin/BandForm.svelte';
-
 	export let data;
 	export let form;
 
