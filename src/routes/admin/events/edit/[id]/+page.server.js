@@ -24,13 +24,8 @@ export const actions = {
         delete formData[timeKey];
       }
 
-      // TODO refactor if correct
-      // BUG delete not working when using this code
-      // URGENT continue here!
       if(key.indexOf("old-band-") == 0){
         if(key.indexOf("old-band-t") == 0) return;
-        console.log(key);
-        console.log(formData[key]);
         if(formData[key] != 'on') return;
         const id = key.replace("old-band-", "");
         const timeKey = "old-band-t" + id;
@@ -40,8 +35,7 @@ export const actions = {
         delete formData[timeKey];
       }
     });
-    console.log(formData.removedBandsIds);
-
+    
     if (newTagIds.length > 0) {
       const tagsResponse = await event.fetch('/api/admin/tagInEvent/createMultiple', {
         method: 'post',
@@ -51,7 +45,7 @@ export const actions = {
       const tagsResult = await tagsResponse.json();
       if (tagsResult.status != 200) return tagsResult.message;
     }
-
+    
     if (formData.removedTagsIds != undefined) {
       const oldTagsResponse = await event.fetch('/api/admin/tagInEvent/delete', {
         method: 'post',
@@ -61,17 +55,17 @@ export const actions = {
       const oldTagsResult = await oldTagsResponse.json();
       if (oldTagsResult.status != 200) return oldTagsResult.message;
     }
-
+    
     if (newBandPairs.length > 0) {
       const bandsResponse = await event.fetch('/api/admin/bandInEvent/insertUpdateMultiple', {
         method: 'post',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id: formData.id, bands: newBandPairs })
       });
-      var bandsResult = await bandsResponse.json();
-      return bandsResult.message;
+      const bandsResult = await bandsResponse.json();
+      if(bandsResult.status != 200) return bandsResult.message;
     }
-
+    
     if (formData.removedBandsIds != undefined) {
       const oldBandsResponse = await event.fetch('/api/admin/bandInEvent/delete', {
         method: 'post',

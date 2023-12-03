@@ -8,6 +8,8 @@
 - event visibility switch
 - band json lze vypsat už při vytváření bandu
 - band tagy lze přidávat a odebírat v band formuláři během editu/vytváření
+- kapely a tagy lze přidávat a odebírat během editu/vytváření eventu
+- stagetime u kapel (při přidávání k eventu)
 
 ## upraveno
 - tagy lze přidat ke kapelám (automatické přidání tagu kapely k eventu :o)

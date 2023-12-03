@@ -17,8 +17,6 @@
 		dateStr = date[2] + '-' + date[1] + '-' + date[0];
 	}
 
-	// URGENT edit form
-
 	function tagIdResolver(id) {
 		return selectedTags != null && selectedTags.includes(id) ? 'old-tag-' + id : 'tag-' + id;
 	}
@@ -190,6 +188,3 @@
 		{/each}
 	</div>
 </form>
-
-<!-- TODO EVENT připsat do changelogu -->
-<!-- TODO EVENT band a tag přidávání -->

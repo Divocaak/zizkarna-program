@@ -66,6 +66,8 @@
 		</p>
 	{/if}
 	{#each bands as band}
+	<!-- TODO band tags -->
+	<!-- TODO stagetime -->
 		<h2 class="display-2 text-center neue mt-0 mt-md-5 pt-0 pt-md-5">{band.label}</h2>
 		<p class="neue">{band.description}</p>
 		<div class="text-center">

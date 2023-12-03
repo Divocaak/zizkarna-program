@@ -58,6 +58,7 @@
 <p>Vstup na místě: {event.cash} Kč</p>
 <p>
 	// Harmonogram<br />
+	<!-- TODO stagetimes -->
 	🚪 {doorsFormatted} otevření Žižkárny
 </p>
 <hr />

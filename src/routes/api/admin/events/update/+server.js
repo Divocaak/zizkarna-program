@@ -17,15 +17,5 @@ export async function POST({ request }) {
         data.id
     ]);
 
-    // TODO EVENT rewrite new band/tag sys mby??
-    /* let bandInserts = [];
-    data.bands.forEach(bandId => {
-        if (isNaN(bandId)) return;
-        bandInserts.push([data.id, bandId]);
-    });
-    if (bandInserts.length > 0)
-        await pool.promise().query("INSERT INTO band_in_event (id_event, id_band) VALUES ?;", [bandInserts]);
-     */
-
     return new Response(JSON.stringify({ message: "upraveno v db" }, { status: 200 }));
 }
