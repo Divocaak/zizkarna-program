@@ -43,8 +43,6 @@ export const actions = {
       }
     });
 
-    console.log(newBandPairs);
-
     if (newTagIds.length > 0) {
       const tagsResponse = await event.fetch('/api/admin/tagInEvent/createMultiple', {
         method: 'post',
@@ -55,7 +53,6 @@ export const actions = {
       if (tagsResult.status != 200) return tagsResult.message;
     }
     
-
     if (newBandPairs.length > 0) {
       const bandsResponse = await event.fetch('/api/admin/bandInEvent/insertUpdateMultiple', {
         method: 'post',

@@ -9,8 +9,6 @@
 	export let selectedBands = null;
 	const selectedBandsKeys = Object.keys(selectedBands);
 
-	console.log(selectedBands);
-
 	let dateStr = null;
 	if (data != null && data.date != null) {
 		const date = new Date(data.date).toLocaleDateString('cs-CZ', {}).split('. ');
@@ -25,21 +23,35 @@
 		return selectedTags != null && selectedTags.includes(id) ? 'old-tag-' + id : 'tag-' + id;
 	}
 
-	function bandIdResolver(id) {
-		return selectedBands != null && selectedBandsKeys.includes(id) ? 'old-band-' + id : 'band-' + id;
+	function bandIdResolver(id, isTime = false) {
+		return selectedBands != null && selectedBandsKeys.includes(id.toString())
+			? 'old-band-' + (isTime ? 't' : '') + id
+			: 'band-' + (isTime ? 't' : '') + id;
+	}
+
+	function resolveSetTime(id) {
+		if (!(selectedBands != null && selectedBandsKeys.includes(id.toString()))) return null;
+		return selectedBands[id.toString()];
 	}
 </script>
 
 <form
 	method="POST"
 	use:enhance={({ formElement, formData, action, cancel }) => {
-		const elements = document.querySelectorAll(`[id^="old-tag-"]`);
+		const oldTags = document.querySelectorAll(`[id^="old-tag-"]`);
 		let removedTagsIds = [];
-		elements.forEach((element) => {
+		oldTags.forEach((element) => {
 			if (!element.checked) removedTagsIds.push(parseInt(element.id.replace('old-tag-', '')));
 		});
-
 		if (removedTagsIds.length > 0) formData.set('removedTagsIds', removedTagsIds);
+		
+		const oldBands = document.querySelectorAll(`[id^="old-band-"]`);
+		let removedBandsIds = [];
+		oldBands.forEach((element) => {
+			if(element.id.indexOf("old-band-t") == 0) return;
+			if (!element.checked) removedBandsIds.push(parseInt(element.id.replace('old-band-', '')));
+		});
+		if (removedBandsIds.length > 0) formData.set('removedBandsIds', removedBandsIds);
 
 		return async ({ result, update }) => {
 			alert(result.data);
@@ -153,8 +165,9 @@
 				/>
 				<input
 					type="time"
-					id={bandIdResolver('t' + band.id)}
-					name={bandIdResolver('t' + band.id)}
+					id={bandIdResolver(band.id, true)}
+					name={bandIdResolver(band.id, true)}
+					value={resolveSetTime(band.id)}
 				/>
 				{band.label}
 			</label><br />
