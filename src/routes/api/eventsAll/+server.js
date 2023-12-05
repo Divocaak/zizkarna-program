@@ -2,51 +2,21 @@ import { pool } from "$lib/db/mysql.js";
 
 export async function GET() {
 
-    /* TODO use event is_visible */
-    var older = "SELECT e.id, e.label AS eventLabel, e.date, e.doors, e.cash, e.presalePrice, e.fbEvent, e.tickets, t.label AS tagLabel, t.bgColor, t.textColor FROM tag_in_event te INNER JOIN event e ON e.id=te.id_event INNER JOIN tag t ON t.id=te.id_tag WHERE e.date < CURRENT_DATE() ORDER BY e.date DESC";
-    var closest = "SELECT e.id, e.label AS eventLabel, e.date, e.doors, e.cash, e.presalePrice, e.fbEvent, e.tickets, t.label AS tagLabel, t.bgColor, t.textColor FROM tag_in_event te INNER JOIN event e ON e.id=te.id_event INNER JOIN tag t ON t.id=te.id_tag WHERE e.date >= CURRENT_DATE() ORDER BY e.date ASC";
+    let result = [];
+    // TODO limit
+    await pool.promise()
+        .query("SELECT id, label, date, doors, cash, presalePrice, fbEvent, tickets FROM event WHERE is_visible IS TRUE ORDER BY date ASC LIMIT 2")
+        .then(([rows, fields]) => rows.forEach(async row => result.push(await getTags(row)))
+        );
 
-    let results = { "older": {}, "closest": {} };
-    await pool.promise().query(older).then(([rows, fields]) => rows.forEach(row => jsonEvent(row, results, "older")));
-    await pool.promise().query(closest).then(([rows, fields]) => rows.forEach(row => jsonEvent(row, results, "closest")));
-
-    var toRet = { "older": [], "closest": [] };
-    for (var event in results.older) {
-        toRet.older.push(results.older[event]);
-    }
-    for (var event in results.closest) {
-        toRet.closest.push(results.closest[event]);
-    }
-
-    return new Response(JSON.stringify(toRet));
+    return new Response(JSON.stringify(result));
 }
 
-function jsonEvent(row, results, jsonKey) {
-    let idKey = "x" + row["id"];
-    if (results[jsonKey][idKey] !== undefined) {
-        results[jsonKey][idKey]["tags"].push({
-            "label": row["tagLabel"],
-            "bgColor": row["bgColor"],
-            "textColor": row["textColor"]
-        });
-        return;
-    }
-
-    results[jsonKey][idKey] = {
-        "id": row["id"],
-        "eventLabel": row["eventLabel"],
-        "date": row["date"],
-        "doors": row["doors"],
-        "cash": row["cash"],
-        "presale": row["presalePrice"],
-        "fbEvent": row["fbEvent"],
-        "tickets": row["tickets"],
-        "tags": [
-            {
-                "label": row["tagLabel"],
-                "bgColor": row["bgColor"],
-                "textColor": row["textColor"]
-            }
-        ]
-    };
+async function getTags(event) {
+    event["tags"] = [];
+    await pool.promise().query("SELECT t.label, t.bgColor, t.textColor FROM tag_in_event tib INNER JOIN tag t ON tib.id_tag=t.id WHERE tib.id_event = ?;", event["id"])
+        .then(([rows, fields]) => rows.forEach(row => event["tags"].push(row)));
+    await pool.promise().query("SELECT t.label, t.bgColor, t.textColor FROM band_in_event bie INNER JOIN tag_in_band tie ON bie.id_band=tie.id_band INNER JOIN tag t ON tie.id_tag=t.id WHERE bie.id_event = ?;", event["id"])
+        .then(([rows, fields]) => rows.forEach(row => event["tags"].push(row)));
+    return event;
 }

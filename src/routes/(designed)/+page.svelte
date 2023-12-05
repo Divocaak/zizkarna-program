@@ -2,15 +2,15 @@
 	export let data;
 	import Card from '$lib/Card.svelte';
 
-	var closest,
-		future,
+	var closest = null,
+		future = null,
 		older = null;
 
-	if (data.events.older != []) older = data.events.older;
+	/* if (data.events.older != []) older = data.events.older;
 	if (data.events.closest != []) {
 		closest = data.events.closest.slice(0, 3);
 		future = data.events.closest.slice(3, data.events.closest.length);
-	}
+	} */
 </script>
 
 <svelte:head>
