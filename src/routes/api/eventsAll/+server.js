@@ -1,10 +1,10 @@
 import { pool } from "$lib/db/mysql.js";
 
 export async function GET() {
-    const [rows, fields] = await pool.promise().query("SELECT id, label, date, doors, cash, presalePrice, fbEvent, tickets FROM event WHERE is_visible IS TRUE ORDER BY date DESC");
-    
+    const [rows, fields] = await pool.promise().query("SELECT id, label, date, doors, cash, presalePrice, fbEvent, tickets FROM event WHERE is_visible IS TRUE;");
+
     const result = await Promise.all(rows.map(row => getTags(row)));
-    result.sort((a, b) => new Date(b.date) - new Date(a.date));
+    result.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     return new Response(JSON.stringify(result));
 }

@@ -3,40 +3,38 @@ export const load = async ({ params, fetch }) => {
     const result = await fetch("/api/eventsAll");
     const data = await result.json();
 
-    //const today = new Date("2023-12-01T18:03:00Z").toISOString();
-    const today = new Date("2023-07-07").toISOString();
-    let past = data;
-    let future = [];
-    let close = [];
-    past.forEach(event => {
-        if (event.date < today){
-            console.log("past: " + event.label);
-            return;
-        }
-        
-        past.splice(past.indexOf(event), 1);
+    const today = new Date();
 
-        if (close.length < 3) {
-            console.log("close: " + event.label);
-            close.push(event);
-            return;
-        }
-        
-        console.log("future: " + event.label);
-        future.push(event);
-    });
+    const { past, close, future } = data.reduce(
+        (result, event) => {
+            const eventDate = new Date(event.date);
+
+            if (eventDate < today) {
+                console.log("past: " + event.label);
+                result.past.unshift(event);
+            } else if (result.close.length < 3) {
+                console.log("close: " + event.label);
+                result.close.push(event);
+            } else {
+                console.log("future: " + event.label);
+                result.future.push(event);
+            }
+
+            return result;
+        },
+        { past: [], close: [], future: [] }
+    );
 
     console.log("---");
-    console.log("all");
-    console.log(data.length);
-    console.log("future");
-    console.log(future.length);
-    console.log("past");
-    console.log(past.length);
-    console.log("close");
-    console.log(close.length);
+    console.log("all: " + data.length);
+    console.log("future: " + future.length);
+    console.log("past: " + past.length);
+    console.log("close: " + close.length);
+    console.log("---");
 
     return {
-        events: []
+        closest: close,
+        future: future,
+        older: past
     }
 }
