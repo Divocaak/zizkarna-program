@@ -18,6 +18,7 @@
   - zobrazují se u každé kapely v detailu eventu
   - zobrazují se u každé kapely v copy
 - časový harmonogram v deailu akce a v copy
+- ŽŽTV podstránka
 
 ## upraveno
 - tagy lze přidat ke kapelám (automatické přidání tagu kapely k eventu :o)
@@ -26,6 +27,7 @@
 - zlepšení fb buttonu (existuje/chybí) v admin event table
 - algoritmus pro získávání eventů z databáze
 - api route system
+- tag outline
 
 ## opraveno
 - text "zatím žádné akce" se zobrazuje v případě prázdného pole

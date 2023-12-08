@@ -64,6 +64,8 @@
 			<a class="nav-item nav-link neue" href="/#future">Na co se můžete těšit</a>
 			<a class="nav-item nav-link neue" href="/#older">Uplynulé akce</a>
 			<div class="d-none d-md-block border-start border-1 mx-1" />
+			<a class="nav-item nav-link neue" href="/zztv">žžTV</a>
+			<div class="d-none d-md-block border-start border-1 mx-1" />
 			<a class="nav-item nav-link neue" href="/info">Dramaturgie</a>
 		</div>
 	</div>
