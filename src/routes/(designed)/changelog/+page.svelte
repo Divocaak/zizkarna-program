@@ -34,6 +34,7 @@
 
 ## opraveno
 - text "zatím žádné akce" se zobrazuje v případě prázdného pole
+- nové tlačítko přidate do kalendáře, jen jedno, rychlejší načítání, funkčnější
 
 
 # 30.11.23
