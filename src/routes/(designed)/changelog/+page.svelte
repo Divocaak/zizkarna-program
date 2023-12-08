@@ -30,6 +30,7 @@
 - algoritmus pro získávání eventů z databáze
 - api route system
 - tag outline
+- "vstup 0,-" upraveno na "bez vstupného"
 
 ## opraveno
 - text "zatím žádné akce" se zobrazuje v případě prázdného pole
