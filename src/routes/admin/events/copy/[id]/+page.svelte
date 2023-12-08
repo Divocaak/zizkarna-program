@@ -1,12 +1,13 @@
 <script>
 	export let data;
-	let event = data.event;
-	let bands = [];
-	if (data.bands !== undefined) {
-		bands = data.bands;
+	console.log(data);
+	const event = data.event;
+	const bands = data.bands ?? [];
+
+	function timeFormat(time) {
+		return time.substring(0, time.length - 3);
 	}
 
-	const doorsFormatted = event.doors.substring(0, event.doors.length - 3);
 	const dateFormatted = new Date(event.date)
 		.toLocaleDateString('cs-CZ', {
 			day: '2-digit',
@@ -14,6 +15,7 @@
 			year: 'numeric'
 		})
 		.replaceAll(' ', '');
+
 	const urlToEvent = event.fbEvent != null ? event.fbEvent : 'www.program.zizkarna.cz/' + event.id;
 
 	function removeLastSlashes(tag) {
@@ -26,7 +28,7 @@
 </script>
 
 <a href="/admin/events">zpět</a>
-<p>{dateFormatted} - {event.eventLabel} // Žižkárna</p>
+<p>{dateFormatted} - {event.label} // Žižkárna</p>
 <p>
 	<b
 		>od čáry dolů zkopírovat celé do popisu události, kopírovací srandy pro <a
@@ -36,16 +38,24 @@
 </p>
 <hr />
 <p>
-	{#each event.tags as tag}
+	{#each data.eventTags as tag}
 		{removeLastSlashes(tag.label)}
 	{/each}
 	//
 </p>
-<p>{event.description}</p>
+{#if event.description != null}
+	<p>{event.description}</p>
+{/if}
 <p>👉 více informací na https://program.zizkarna.cz/{event.id}</p>
 {#each bands as band}
 	<p>
 		// {band.label}<br />
+		{#if band.tags.length != 0}
+			{#each band.tags as tag}
+				{removeLastSlashes(tag.label)}
+			{/each}
+			<br />
+		{/if}
 		{#if band.description != '' && band.description != ' ' && band.description != null}
 			{band.description}<br />
 		{/if}
@@ -58,13 +68,16 @@
 <p>Vstup na místě: {event.cash} Kč</p>
 <p>
 	// Harmonogram<br />
-	🚪 {doorsFormatted} otevření Žižkárny
+	🚪 {timeFormat(event.doors)} otevření Žižkárny<br />
+	{#each bands as band}
+		{timeFormat(band.stageTime)} {band.label}<br />
+	{/each}
 </p>
 <hr />
 <a href="https://www.inbudejovice.cz/pridat-akci">přidávací formulář</a><br><br>
 <b>Název</b>
 <p>
-	{event.eventLabel}
+	{event.label}
 	<button on:click={() => copyToClipboard(event.eventLabel)}>kopírovat</button>
 </p>
 
@@ -85,8 +98,8 @@
 
 <b>Čas</b>
 <p>
-	{doorsFormatted}
-	<button on:click={() => copyToClipboard(doorsFormatted)}>kopírovat</button>
+	{timeFormat(event.doors)}
+	<button on:click={() => copyToClipboard(timeFormat(event.doors))}>kopírovat</button>
 </p>
 
 <b>Popis</b>

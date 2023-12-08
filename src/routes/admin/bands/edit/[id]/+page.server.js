@@ -16,7 +16,7 @@ export const actions = {
     });
 
     if (newTagIds.length > 0) {
-      const tagsResponse = await event.fetch('/api/admin/tagInBand/createMultiple', {
+      const tagsResponse = await event.fetch('/api/tagInBand/createMultiple', {
         method: 'post',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id: formData.id, tags: newTagIds })
@@ -26,7 +26,7 @@ export const actions = {
     }
 
     if (formData.removedTagsIds != undefined) {
-      const oldTagsResponse = await event.fetch('/api/admin/tagInBand/delete', {
+      const oldTagsResponse = await event.fetch('/api/tagInBand/delete', {
         method: 'post',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id: formData.id, tags: formData.removedTagsIds })
@@ -35,7 +35,7 @@ export const actions = {
       if (oldTagsResult.status != 200) return oldTagsResult.message;
     }
 
-    const response = await event.fetch('/api/admin/bands/update', {
+    const response = await event.fetch('/api/bands/update', {
       method: 'post',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(formData)
@@ -46,13 +46,13 @@ export const actions = {
 };
 
 export const load = async ({ params, fetch }) => {
-  const result = await fetch("/api/admin/bands/get?id=" + params.id);
+  const result = await fetch("/api/bands/get?id=" + params.id);
   const data = await result.json();
 
-  const resultSelectedTags = await fetch("/api/admin/tagInBand/get?id=" + params.id);
+  const resultSelectedTags = await fetch("/api/tagInBand/getIds?id=" + params.id);
   const dataSelectedTags = await resultSelectedTags.json();
 
-  const resultTagsAll = await fetch("/api/admin/tags/list?eventTagsOnly=0");
+  const resultTagsAll = await fetch("/api/tags/list?eventTagsOnly=0");
   const dataTagsAll = await resultTagsAll.json();
 
   let band = { links: [], imgs: [] };

@@ -1,6 +1,6 @@
 export const load = async ({ params, fetch }) => {
 
-    const result = await fetch("/api/eventsAll");
+    const result = await fetch("/api/events/list");
     const data = await result.json();
 
     const today = new Date();
@@ -10,13 +10,10 @@ export const load = async ({ params, fetch }) => {
             const eventDate = new Date(event.date);
 
             if (eventDate < today) {
-                console.log("past: " + event.label);
                 result.past.unshift(event);
             } else if (result.close.length < 3) {
-                console.log("close: " + event.label);
                 result.close.push(event);
             } else {
-                console.log("future: " + event.label);
                 result.future.push(event);
             }
 
@@ -24,13 +21,6 @@ export const load = async ({ params, fetch }) => {
         },
         { past: [], close: [], future: [] }
     );
-
-    console.log("---");
-    console.log("all: " + data.length);
-    console.log("future: " + future.length);
-    console.log("past: " + past.length);
-    console.log("close: " + close.length);
-    console.log("---");
 
     return {
         closest: close,

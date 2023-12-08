@@ -6,7 +6,7 @@ export const actions = {
     let formData = Object.fromEntries(await event.request.formData());
     if (formData.password !== ADMIN_PASSWORD) return "špatné heslo";
 
-    const response = await event.fetch('/api/admin/bands/create', {
+    const response = await event.fetch('/api/bands/create', {
       method: 'post',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(formData)
@@ -24,7 +24,7 @@ export const actions = {
     });
 
     if (newTagIds.length > 0) {
-      const tagsResponse = await event.fetch('/api/admin/tagInBand/createMultiple', {
+      const tagsResponse = await event.fetch('/api/tagInBand/createMultiple', {
         method: 'post',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id: result.message, tags: newTagIds })
@@ -37,7 +37,7 @@ export const actions = {
 };
 
 export const load = async ({ params, fetch }) => {
-  const result = await fetch("/api/admin/tags/list?eventTagsOnly=0");
+  const result = await fetch("/api/tags/list?eventTagsOnly=0");
   const data = await result.json();
 
   return { tags: data };

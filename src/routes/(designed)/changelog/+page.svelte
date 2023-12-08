@@ -10,13 +10,14 @@
 - kapely a tagy lze přidávat a odebírat během editu/vytváření eventu
 - stagetime u kapel
   - lze měnit/přidávat v editu/vytváření eventu
-  - TODO zobrazují se u každé kapely v detailu eventu
-  - TODO zobrazují se u každé kapely v copy
+  - zobrazují se u každé kapely v detailu eventu
+  - zobrazují se u každé kapely v copy
 - kapelní tagy
   - lze přidávat a odebírat v band formuláři během editu/vytváření
   - zobrazují se spolu s event tagy na kartě eventu a v hlavičce eventu v detailu
-  - TODO zobrazují se u každé kapely v detailu eventu
-  - TODO zobrazují se u každé kapely v copy
+  - zobrazují se u každé kapely v detailu eventu
+  - zobrazují se u každé kapely v copy
+- časový harmonogram v deailu akce a v copy
 
 ## upraveno
 - tagy lze přidat ke kapelám (automatické přidání tagu kapely k eventu :o)
@@ -24,6 +25,7 @@
 - tagy rozděleny na event a band kategorie
 - zlepšení fb buttonu (existuje/chybí) v admin event table
 - algoritmus pro získávání eventů z databáze
+- api route system
 
 ## opraveno
 - text "zatím žádné akce" se zobrazuje v případě prázdného pole
