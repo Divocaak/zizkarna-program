@@ -1,4 +1,5 @@
 <script>
+	import { onMount } from 'svelte';
 	import AddToCalButtons from '$lib/AddToCalButtons.svelte';
 	import CashText from '$lib/CashText.svelte';
 	import DateText from '$lib/DateText.svelte';
@@ -17,6 +18,68 @@
 	function timeFormat(time) {
 		return time.substring(0, time.length - 3);
 	}
+
+	import eventSeo from '$lib/seo/event.json';
+	import bandSeo from '$lib/seo/band.json';
+
+	eventSeo.name = event.label;
+	eventSeo.startDate = event.date;
+	eventSeo.description = event.description;
+	eventSeo.url = 'https://program.zizkarna.cz/' + event.id;
+	eventSeo.doorTime = event.doors;
+	eventSeo.image = 'https://program.zizkarna.cz/dynamic/events/' + event.id + '.jpg';
+	eventSeo.isAccessibleForFree = event.cash == 0;
+
+	eventSeo.keywords = [];
+	data.eventTags.forEach((tag) => {
+		eventSeo.keywords.push(getTagName(tag.label).toLowerCase());
+	});
+
+	eventSeo.performer = [];
+	bands.forEach((band) => {
+		let currBandSeo = { ...bandSeo };
+		currBandSeo.name = band.label;
+		currBandSeo.description = band.description;
+		currBandSeo.performTime = band.stageTime;
+
+		currBandSeo.genre = [];
+		band.tags.forEach((tag) => {
+			currBandSeo.genre.push(getTagName(tag.label).toLowerCase());
+			eventSeo.keywords.push(getTagName(tag.label).toLowerCase());
+		});
+
+		currBandSeo.sameAs = band.links;
+		eventSeo.performer.push(currBandSeo);
+	});
+
+	eventSeo.offers = [
+		{
+			'@type': 'Offer',
+			price: event.cash.toString(),
+			priceCurrency: 'CZK'
+		}
+	];
+
+	if (event.tickets != "" && event.presalePrice != null) {
+		eventSeo.offers.push({
+			'@type': 'Offer',
+			price: event.presalePrice.toString(),
+			priceCurrency: 'CZK',
+			url: event.tickets
+		});
+	}
+
+	onMount(() => {
+		const script = document.createElement('script');
+		script.type = 'application/ld+json';
+		script.innerHTML = JSON.stringify(eventSeo, null, 2);
+		document.head.appendChild(script);
+	});
+
+	function getTagName(tag) {
+		const match = tag.match(/^\/\/ (.+?) \/\/$/);
+		return match ? match[1] : '';
+	}
 </script>
 
 <svelte:head>
@@ -33,6 +96,7 @@
 />
 <div class="content bg-light py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5">
 	<div class="back-arrow">
+		<!-- TODO this and all other warnings -->
 		<a href="/" class="btn btn-close" />
 	</div>
 	<h1 class="display-1 neue-bold">{event.label}</h1>

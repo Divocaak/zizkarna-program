@@ -19,6 +19,8 @@
   - zobrazují se u každé kapely v copy
 - časový harmonogram v deailu akce a v copy
 - ŽŽTV podstránka
+- dynamické SEO pro event detaily podle schema.org
+- dynamické SEO pro main page schema.org
 
 ## upraveno
 - tagy lze přidat ke kapelám (automatické přidání tagu kapely k eventu :o)
