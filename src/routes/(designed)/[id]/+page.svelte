@@ -8,18 +8,23 @@
 	import TicketsButton from '$lib/TicketsButton.svelte';
 	import BandLinkButton from '$lib/BandLinkButton.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
-	import ImageWithPlaceholder from '../../../lib/ImageWithPlaceholder.svelte';
+	import ImageWithPlaceholder from '$lib/ImageWithPlaceholder.svelte';
 
 	export let data;
-	let event = data.event;
-	let bands = [];
-	if (data.bands !== undefined) {
-		bands = data.bands;
+	const event = data.event;
+	const bands = data.bands ?? [];
+
+	function timeFormat(time) {
+		return time.substring(0, time.length - 3);
 	}
 </script>
 
 <svelte:head>
-	<title>Program v Žižkárně: {event.eventLabel}</title>
+	<title>{event.label}</title>
+	<meta
+		name="description"
+		content="Zajímá tě detail akce {event.label}? Na této stránce najdeš odkazy na jedtlové kapely, představující text a spoustu dalšího"
+	/>
 </svelte:head>
 
 <div
@@ -28,12 +33,11 @@
 />
 <div class="content bg-light py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5">
 	<div class="back-arrow">
-		<!-- svelte-ignore a11y-missing-content -->
 		<a href="/" class="btn btn-close" />
 	</div>
-	<h1 class="display-1 neue-bold">{event.eventLabel}</h1>
+	<h1 class="display-1 neue-bold">{event.label}</h1>
 	<div class="text-center" style="font-size:1.3rem">
-		<TagsBuilder tags={event.tags} />
+		<TagsBuilder tags={data.eventTags} />
 	</div>
 	<div class="row my-5 text-center" style="font-size:1.2rem">
 		<div class="col-12 col-md-4">
@@ -50,10 +54,10 @@
 		<div class="col-12 col-md-6">
 			<FacebookEventButton fbEvent={event.fbEvent} />
 			<TicketsButton tickets={event.tickets} />
-			<ShareButton label={event.eventLabel} />
+			<ShareButton label={event.label} />
 		</div>
 		<div class="mt-3 mt-md-0 col-12 col-md-6">
-			<AddToCalButtons label={event.eventLabel} date={event.date} doors={event.doors} />
+			<AddToCalButtons label={event.label} date={event.date} doors={event.doors} />
 		</div>
 	</div>
 	{#if event.description != null}
@@ -63,7 +67,9 @@
 	{/if}
 	{#each bands as band}
 		<h2 class="display-2 text-center neue mt-0 mt-md-5 pt-0 pt-md-5">{band.label}</h2>
+		<div class="text-center" style="font-size:1.1rem"><TagsBuilder tags={band.tags} /></div>
 		<p class="neue">{band.description}</p>
+		<p class="text-center neue">Stage time: <b>{timeFormat(band.stageTime)}</b></p>
 		<div class="text-center">
 			{#each band.links as link}
 				<BandLinkButton {link} />
@@ -72,14 +78,34 @@
 		<div class="row justify-content-center my-4 pb-5">
 			{#each band.imgs as path}
 				<div class="col-12 col-md-4 mb-1 mb-md-0 mt-2">
-					<ImageWithPlaceholder path="/dynamic/bands/{band.id}/{path}" alt="fotka {band.label}" />
+					<ImageWithPlaceholder
+						path="/dynamic/bands/{band.id}/{path}"
+						alt="fotka {band.label} číslo {path}"
+					/>
 				</div>
 			{/each}
 		</div>
 	{/each}
+	<h2 class="display-4 text-center neue mt-0 mt-md-5 pt-0 pt-md-5">Časový harmonogram</h2>
+	<div class="neue">
+		<div class="mx-auto centered-div my-5" style="font-size: 1.2rem;">
+			<p><b>{timeFormat(event.doors)}</b><i class="bi bi-door-open px-2" />Otevření Žižkárny</p>
+			{#each bands as band}
+				<p><b>{timeFormat(band.stageTime)}</b> {band.label}</p>
+			{/each}
+		</div>
+		<p class="text-center">
+			Dovolujeme si upozornit, že časy jsou pouze orientační a mohou se změnit
+		</p>
+	</div>
 </div>
 
 <style>
+	.centered-div {
+		width: fit-content;
+		margin: 0 auto;
+	}
+
 	.back-arrow {
 		position: absolute;
 		top: 10px;

@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>Dramaturgie</title>
+</svelte:head>
+
 <div class="text-center my-5">
 	<h1 class="neue-bold">Dramaturgie a produkce Žižkárny</h1>
 	<p class="lead neue">

@@ -28,14 +28,15 @@
 			class="img-fluid border border-dark border-3"
 			class:disabled
 			src="./dynamic/events/{event.id}.jpg"
-			alt={event.eventLabel}
+			alt="plakát k akci {event.label}"
 			onerror="this.src='placeholder.jpg';"
+			loading="lazy"
 		/>
 	</div>
 	<div class="col-12 col-md-6">
 		<a style="text-decoration:none; color:var(--bs-heading-color);" href="/{event.id}">
 			<h1 class="mt-3 mt-md-0 neue-bold">
-				{event.eventLabel}
+				{event.label}
 			</h1>
 		</a>
 		<TagsBuilder tags={event.tags} />
@@ -49,8 +50,8 @@
 		</a>
 		<FacebookEventButton fbEvent={event.fbEvent} />
 		<TicketsButton tickets={event.tickets} />
-		<ShareButton urlSuffix={event.id} label={event.eventLabel} />
-		<AddToCalButtons label={event.eventLabel} date={event.date} doors={event.doors} />
+		<ShareButton urlSuffix={event.id} label={event.label} />
+		<AddToCalButtons label={event.label} date={event.date} doors={event.doors} />
 	</div>
 </div>
 
