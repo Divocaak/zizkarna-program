@@ -5,7 +5,12 @@
 
 <svelte:head>
 	<title>žžTV</title>
+	<meta
+		name="description"
+		content="Informace o projektu žžTV"
+	/>
 </svelte:head>
+
 
 <div class="neue p-5">
 	<h1 class="display-1 text-center">žžTV</h1>

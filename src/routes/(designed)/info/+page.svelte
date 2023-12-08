@@ -1,5 +1,9 @@
 <svelte:head>
 	<title>Dramaturgie</title>
+	<meta
+		name="description"
+		content="Kontakt na dramaturgii"
+	/>
 </svelte:head>
 
 <div class="text-center my-5">

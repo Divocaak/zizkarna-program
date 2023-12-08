@@ -113,7 +113,11 @@
   </script>
 
 <svelte:head>
-	<title>Changelog</title>
+  <title>Changelog</title>
+	<meta
+		name="description"
+		content="Nejnovější aktualizace programu na jednom místě. Aby Tě žádná změna nepřekvapila"
+	/>
 </svelte:head>
   
   <SvelteMarkdown {source} />
