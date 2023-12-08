@@ -18,7 +18,7 @@
   - zobrazují se u každé kapely v detailu eventu
   - zobrazují se u každé kapely v copy
 - časový harmonogram v deailu akce a v copy
-- ŽŽTV podstránka
+- žžTV podstránka
 - dynamické SEO pro event detaily podle schema.org
 - dynamické SEO pro main page schema.org
 
@@ -31,6 +31,7 @@
 - api route system
 - tag outline
 - "vstup 0,-" upraveno na "bez vstupného"
+- meta desc tagy podstránek
 
 ## opraveno
 - text "zatím žádné akce" se zobrazuje v případě prázdného pole
