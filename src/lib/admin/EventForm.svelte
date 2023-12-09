@@ -7,7 +7,7 @@
 	export let selectedTags = null;
 	export let bands;
 	export let selectedBands = null;
-	const selectedBandsKeys = Object.keys(selectedBands);
+	const selectedBandsKeys = selectedBands != null ? Object.keys(selectedBands) : null;
 
 	let dateStr = null;
 	if (data != null && data.date != null) {
@@ -42,11 +42,11 @@
 			if (!element.checked) removedTagsIds.push(parseInt(element.id.replace('old-tag-', '')));
 		});
 		if (removedTagsIds.length > 0) formData.set('removedTagsIds', removedTagsIds);
-		
+
 		const oldBands = document.querySelectorAll(`[id^="old-band-"]`);
 		let removedBandsIds = [];
 		oldBands.forEach((element) => {
-			if(element.id.indexOf("old-band-t") == 0) return;
+			if (element.id.indexOf('old-band-t') == 0) return;
 			if (!element.checked) removedBandsIds.push(parseInt(element.id.replace('old-band-', '')));
 		});
 		if (removedBandsIds.length > 0) formData.set('removedBandsIds', removedBandsIds);
