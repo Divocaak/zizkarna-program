@@ -1,6 +1,8 @@
 <script>
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
+# 9.12.23
+
 ## přidáno
 - tag edit skrz admin
 - band edit skrz admin
@@ -18,6 +20,9 @@
   - zobrazují se u každé kapely v detailu eventu
   - zobrazují se u každé kapely v copy
 - časový harmonogram v deailu akce a v copy
+- žžTV podstránka
+- dynamické SEO pro event detaily podle schema.org
+- dynamické SEO pro main page schema.org
 
 ## upraveno
 - tagy lze přidat ke kapelám (automatické přidání tagu kapely k eventu :o)
@@ -26,9 +31,13 @@
 - zlepšení fb buttonu (existuje/chybí) v admin event table
 - algoritmus pro získávání eventů z databáze
 - api route system
+- tag outline
+- "vstup 0,-" upraveno na "bez vstupného"
+- meta desc tagy podstránek
 
 ## opraveno
 - text "zatím žádné akce" se zobrazuje v případě prázdného pole
+- nové tlačítko přidate do kalendáře, jen jedno, rychlejší načítání, funkčnější
 
 
 # 30.11.23
@@ -107,7 +116,11 @@
   </script>
 
 <svelte:head>
-	<title>Changelog</title>
+  <title>Changelog</title>
+	<meta
+		name="description"
+		content="Nejnovější aktualizace programu na jednom místě. Aby Tě žádná změna nepřekvapila"
+	/>
 </svelte:head>
   
   <SvelteMarkdown {source} />

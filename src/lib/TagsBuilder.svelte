@@ -4,5 +4,5 @@
 </script>
 
 {#each tags as tag}
-	<Tag {tag}></Tag>
+	<Tag {tag} />
 {/each}

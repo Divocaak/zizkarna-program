@@ -1,4 +1,4 @@
-export async function getEventDetailed({params, fetch}) {
+export async function getEventDetailed({ params, fetch }) {
 
     const result = await fetch("/api/events/get?id=" + params.id);
     const data = await result.json();

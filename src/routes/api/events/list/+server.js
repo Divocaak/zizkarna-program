@@ -14,11 +14,20 @@ async function getTags(event) {
 
     const tagQuery = "SELECT t.label, t.bgColor, t.textColor FROM tag_in_event tib INNER JOIN tag t ON tib.id_tag=t.id WHERE tib.id_event = ?;";
     const [tagRows, tagFields] = await pool.promise().query(tagQuery, event["id"]);
-    event["tags"] = event["tags"].concat(tagRows);
-
-    const bandQuery = "SELECT t.label, t.bgColor, t.textColor FROM band_in_event bie INNER JOIN tag_in_band tie ON bie.id_band=tie.id_band INNER JOIN tag t ON tie.id_tag=t.id WHERE bie.id_event = ?;";
+    
+    const bandQuery = "SELECT t.id, t.label, t.bgColor, t.textColor FROM band_in_event bie INNER JOIN tag_in_band tie ON bie.id_band=tie.id_band INNER JOIN tag t ON tie.id_tag=t.id WHERE bie.id_event = ?;";
     const [bandRows, bandFields] = await pool.promise().query(bandQuery, event["id"]);
-    event["tags"] = event["tags"].concat(bandRows);
+    const uniqueBandIds = new Set();
+    const uniqueBandRows = bandRows.filter((row) => {
+        const tagId = row.id;
+        if (!uniqueBandIds.has(tagId)) {
+            uniqueBandIds.add(tagId);
+            return true;
+        }
+        return false;
+    });
+
+    event["tags"] = Array.from(new Set([...tagRows, ...uniqueBandRows]))
 
     return event;
 }

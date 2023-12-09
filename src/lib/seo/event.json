@@ -1,0 +1,48 @@
+{
+    "@context": "http://schema.org",
+    "@type": "MusicEvent",
+    "name": "",
+    "startDate": "",
+    "description": "",
+    "url": "",
+    "doorTime": "",
+    "image": "",
+    "keywords": [],
+    "isAccessibleForFree": false,
+    "organizer": {
+        "@type": "Organization",
+        "name": "Žižkárna",
+        "url": "https://zizkarna.cz",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "info@zizkarna.cz",
+            "telephone": "+420722680481"
+        }
+    },
+    "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "vojtech@zizkarna.cz",
+        "telephone": "+420722680481"
+    },
+    "location": {
+        "@type": "MusicVenue",
+        "name": "Žižkárna",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Žižkova tř. 171/28",
+            "addressLocality": "České Budějovice 6",
+            "addressRegion": "České Budějovice",
+            "postalCode": "37004",
+            "addressCountry": "Czech Republic"
+        },
+        "sameAs": [
+            "https://zizkarna.cz/",
+            "https://program.zizkarna.cz/",
+            "https://www.instagram.com/zizkarna",
+            "https://www.facebook.com/zizkarnacb/",
+            "https://www.youtube.com/@Zizkarna"
+        ]
+    },
+    "offers": [],
+    "performer": []
+}

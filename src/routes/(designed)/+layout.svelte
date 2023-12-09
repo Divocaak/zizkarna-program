@@ -23,7 +23,7 @@
 	<meta charset="windows-1250" />
 	<meta
 		name="keywords"
-		content="hudba, kultura, akce, budějce, české, budějovice, žižkárna, koncerty, trhy, kapely, farmářské, program, workshop, divadlo, party, dj, koncerty, dhogh, muzika, ehmk, brownfield, eventy, industrial, hipster, populární, music, zizkarna, events, actual, popular"
+		content="hudba, kultura, akce, budějce, české, budějovice, žižkárna, koncerty, trhy, kapely, farmářské, program, workshop, divadlo, party, dj, koncerty, dhogh, muzika, ehmk, brownfield, eventy, industrial, hipster, populární, music, zizkarna, events, actual, popular, live, show, bar, drink, beer, pivo, shots, culture"
 	/>
 	<meta name="author" content="Vojtěch Divoký" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -63,6 +63,8 @@
 			<a class="nav-item nav-link neue" href="/#closest">Nejbližší akce</a>
 			<a class="nav-item nav-link neue" href="/#future">Na co se můžete těšit</a>
 			<a class="nav-item nav-link neue" href="/#older">Uplynulé akce</a>
+			<div class="d-none d-md-block border-start border-1 mx-1" />
+			<a class="nav-item nav-link neue" href="/zztv">žžTV</a>
 			<div class="d-none d-md-block border-start border-1 mx-1" />
 			<a class="nav-item nav-link neue" href="/info">Dramaturgie</a>
 		</div>
