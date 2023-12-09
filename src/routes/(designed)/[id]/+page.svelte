@@ -96,7 +96,7 @@
 />
 <div class="content bg-light py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5">
 	<div class="back-arrow">
-		<!-- TODO this and all other warnings -->
+		<!-- svelte-ignore a11y-missing-content -->
 		<a href="/" class="btn btn-close" />
 	</div>
 	<h1 class="display-1 neue-bold">{event.label}</h1>
