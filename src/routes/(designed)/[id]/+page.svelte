@@ -131,7 +131,7 @@
 	{/if}
 	{#each bands as band}
 		<h2 class="display-2 text-center neue mt-0 mt-md-5 pt-0 pt-md-5">{band.label}</h2>
-		<div class="text-center" style="font-size:1.1rem"><TagsBuilder tags={band.tags} /></div>
+		<div class="text-center mb-3" style="font-size:1.1rem"><TagsBuilder tags={band.tags} /></div>
 		<p class="neue">{band.description}</p>
 		<p class="text-center neue">Stage time: <b>{timeFormat(band.stageTime)}</b></p>
 		<div class="text-center">

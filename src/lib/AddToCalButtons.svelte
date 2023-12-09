@@ -18,8 +18,8 @@
 	const dateToUse = day + '/' + month + '/' + year;
 </script>
 
-<div title="Přidat do mého kalendáře" class="addeventatc">
-	Přidat do mého kalendáře
+<div title="Přidat do mého kalendáře" class="addeventatc m-1">
+	<p class="neue">Přidat do mého kalendáře</p>
 	<span class="start">{dateToUse + doors}</span>
 	<span class="end">{dateToUse}</span>
 	<span class="date_format">DD/MM/YYYY</span>
@@ -29,3 +29,28 @@
 		Žižkárna, Žižkova tř. 171/28, České Budějovice 6, 370 04 České Budějovice, Česko
 	</span>
 </div>
+
+<style>
+	.addeventatc{
+		z-index: 1;
+		box-shadow: none !important;
+		outline: 1px solid darkseagreen;
+		padding: .6rem 1.2rem;
+	}
+
+	.addeventatc p{
+		padding: 0;
+		margin: 0;
+		padding-left: 1.25rem;
+		padding-top: .25rem;
+		color: darkseagreen;
+	}
+
+	.addeventatc:hover{
+		background-color: darkseagreen;
+		transition: all ease-in-out .15s;
+	}
+	.addeventatc:hover p{
+		color:whitesmoke;
+	}
+</style>
