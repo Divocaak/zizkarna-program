@@ -108,7 +108,7 @@
 			<DateText date={event.date} />
 		</div>
 		<div class="col-12 col-md-4">
-			<CashText cash={event.cash} presale={event.presale} />
+			<CashText cash={event.cash} presale={event.presalePrice} />
 		</div>
 		<div class="col-12 col-md-4">
 			<DoorsText doors={event.doors} />

@@ -64,7 +64,7 @@
 		{/each}
 	</p>
 {/each}
-{#if event.tickets != null}<p>Předprodej za {event.presale} Kč: {event.tickets}</p>{/if}
+{#if event.tickets != null}<p>Předprodej za {event.presalePrice} Kč: {event.tickets}</p>{/if}
 <p>Vstup na místě: {event.cash} Kč</p>
 <p>
 	// Harmonogram<br />
