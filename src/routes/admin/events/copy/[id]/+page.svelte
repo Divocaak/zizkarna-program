@@ -1,6 +1,5 @@
 <script>
 	export let data;
-	console.log(data);
 	const event = data.event;
 	const bands = data.bands ?? [];
 
@@ -72,9 +71,10 @@
 	{#each bands as band}
 		{timeFormat(band.stageTime)} {band.label}<br />
 	{/each}
+	Dovolujeme si upozornit, že časy jsou pouze orientační a mohou se změnit
 </p>
 <hr />
-<a href="https://www.inbudejovice.cz/pridat-akci">přidávací formulář</a><br><br>
+<a href="https://www.inbudejovice.cz/pridat-akci">přidávací formulář</a><br /><br />
 <b>Název</b>
 <p>
 	{event.label}
@@ -104,19 +104,20 @@
 
 <b>Popis</b>
 <div style="background-color:lightgrey">
-<p>{event.description}</p>
-{#each bands as band}
-	<p>
-		// {band.label}<br />
-		{#if band.description != '' && band.description != ' ' && band.description != null}{band.description}<br
-			/>{/if}
-		{#each band.links as link}{link}<br />{/each}
-	</p>
-{/each}
+	<p>{event.description}</p>
+	{#each bands as band}
+		<p>
+			// {band.label}<br />
+			{#if band.description != '' && band.description != ' ' && band.description != null}{band.description}<br
+				/>{/if}
+			{#each band.links as link}{link}<br />{/each}
+		</p>
+	{/each}
 </div>
 
 <b>Plakát nebo obrázek k akci</b>
-<a href="/dynamic/events/{data.id}.jpg" target="_blank" download="{data.id}.jpg">stáhnout grafiku</a><br /><br>
+<a href="/dynamic/events/{data.id}.jpg" target="_blank" download="{data.id}.jpg">stáhnout grafiku</a
+><br /><br />
 
 <b>Kategorie</b>
 <p>(nelze generalizovat)</p>

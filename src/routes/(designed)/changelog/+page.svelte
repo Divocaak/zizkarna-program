@@ -4,6 +4,13 @@
 
 # TODO datum
 
+# přidáno
+- změna-časů-možná-text přidáno do copy
+
+## upraveno
+- image loading
+- blurred placeholder při načítání
+
 ## opraveno
 - předprodej cena se nezobrazovala u karty a v detailu
 - předprodej cena nešla upravovat a přidávat přes admin rozhraní
