@@ -1,6 +1,13 @@
 <script>
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
+
+# TODO datum
+
+## opraveno
+- předprodej cena se nezobrazovala u karty a v detailu
+- předprodej cena nešla upravovat a přidávat přes admin rozhraní
+
 # 9.12.23
 
 ## přidáno

@@ -9,7 +9,7 @@
 	import TicketsButton from '$lib/TicketsButton.svelte';
 	import BandLinkButton from '$lib/BandLinkButton.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
-	import ImageWithPlaceholder from '$lib/ImageWithPlaceholder.svelte';
+	import LazyImage from '$lib/LazyImage.svelte';
 
 	export let data;
 	const event = data.event;
@@ -60,7 +60,7 @@
 		}
 	];
 
-	if (event.tickets != "" && event.presalePrice != null) {
+	if (event.tickets != '' && event.presalePrice != null) {
 		eventSeo.offers.push({
 			'@type': 'Offer',
 			price: event.presalePrice.toString(),
@@ -142,9 +142,10 @@
 		<div class="row justify-content-center my-4 pb-5">
 			{#each band.imgs as path}
 				<div class="col-12 col-md-4 mb-1 mb-md-0 mt-2">
-					<ImageWithPlaceholder
-						path="/dynamic/bands/{band.id}/{path}"
+					<LazyImage
+						path={`/dynamic/bands/${band.id}/${path}`}
 						alt="fotka {band.label} číslo {path}"
+						additionalClasses="img-fluid d-inline-block "
 					/>
 				</div>
 			{/each}

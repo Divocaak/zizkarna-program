@@ -2,6 +2,7 @@
 	export var event;
 	export var disabled = false;
 
+	import { onMount } from 'svelte';
 	import ShareButton from '$lib/ShareButton.svelte';
 	import AddToCalButtons from '$lib/AddToCalButtons.svelte';
 	import TicketsButton from '$lib/TicketsButton.svelte';
@@ -10,10 +11,21 @@
 	import CashText from '$lib/CashText.svelte';
 	import DateText from '$lib/DateText.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
+	import LazyImage from '$lib/LazyImage.svelte';
 
 	function showDetail() {
 		window.location = '/' + event.id;
 	}
+
+	const imagePath = `/dynamic/events/${event.id}.jpg`;
+	let imageExists = false;
+
+	const checkImageExists = async () => {
+		const response = await fetch(imagePath, { method: 'HEAD' });
+		imageExists = response.ok;
+	};
+
+	onMount(checkImageExists);
 </script>
 
 <div class="row d-flex justify-content-center mx-0 mx-md-5 px-3 px-md-5">
@@ -24,14 +36,21 @@
 		tabindex="0"
 		role="button"
 	>
-		<img
-			class="img-fluid border border-dark border-3"
-			class:disabled
-			src="./dynamic/events/{event.id}.jpg"
-			alt="plakát k akci {event.label}"
-			onerror="this.src='placeholder.jpg';"
-			loading="lazy"
-		/>
+		{#if imageExists}
+			<LazyImage
+				path={imagePath}
+				alt="plakát k akci {event.label}"
+				additionalClasses="img-fluid border border-dark border-3"
+				{disabled}
+			/>
+		{:else}
+			<LazyImage
+				path="placeholder.jpg"
+				alt="plakát k akci {event.label}"
+				additionalClasses="img-fluid border border-dark border-3"
+				{disabled}
+			/>
+		{/if}
 	</div>
 	<div class="col-12 col-md-6">
 		<a style="text-decoration:none; color:var(--bs-heading-color);" href="/{event.id}">
@@ -51,23 +70,6 @@
 		<FacebookEventButton fbEvent={event.fbEvent} />
 		<TicketsButton tickets={event.tickets} />
 		<ShareButton urlSuffix={event.id} label={event.label} />
-		<AddToCalButtons label={event.label} date={event.date} doors={event.doors}/>
+		<AddToCalButtons label={event.label} date={event.date} doors={event.doors} />
 	</div>
 </div>
-
-<style>
-	@keyframes -global-from-left {
-		0% {
-			transform: rotateX(50deg) translateX(-150vw) skewX(-50deg);
-			opacity: 1;
-		}
-		100% {
-			transform: rotateX(0deg) translateX(0) skewX(0deg);
-			opacity: 1;
-		}
-	}
-
-	.disabled {
-		filter: saturate(0%);
-	}
-</style>
