@@ -2,7 +2,7 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
-# TODO datum
+# 14.12.23
 
 # přidáno
 - změna-časů-možná-text přidáno do copy
