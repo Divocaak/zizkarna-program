@@ -14,6 +14,7 @@
 ## opraveno
 - předprodej cena se nezobrazovala u karty a v detailu
 - předprodej cena nešla upravovat a přidávat přes admin rozhraní
+- výpis kapel v detailu/copy a čas harmonogram s akcema, kde lineup přesahuje půlnoc
 
 # 9.12.23
 

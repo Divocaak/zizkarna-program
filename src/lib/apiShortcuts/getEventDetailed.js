@@ -9,19 +9,36 @@ export async function getEventDetailed({ params, fetch }) {
     const resultBands = await fetch("/api/bandInEvent/get?id=" + params.id);
     const dataBands = await resultBands.json();
 
-    for (let i = 0; i < dataBands.length; i++) {
-        await fetch("/dynamic/bands/" + dataBands[i].id + "/band.json").then((res) => (!res.ok) ? { imgs: [], links: [] } : res.json()).then(function (data) {
-            dataBands[i]["imgs"] = (data !== null) ? data.imgs : [];
-            dataBands[i]["links"] = (data !== null) ? data.links : [];
-        });
+    await Promise.all(dataBands.map(async (band) => {
+        const res = await fetch("/dynamic/bands/" + band.id + "/band.json");
+        const data = res.ok ? await res.json() : { imgs: [], links: [] };
+        band.imgs = data.imgs || [];
+        band.links = data.links || [];
 
-        const resultBandTags = await fetch("/api/tagInBand/get?id=" + dataBands[i].id);
-        dataBands[i]["tags"] = await resultBandTags.json();
-    }
+        const resultBandTags = await fetch("/api/tagInBand/get?id=" + band.id);
+        band.tags = await resultBandTags.json();
+    }));
+
+    const sortedBands = dataBands.sort((a, b) => {
+        const aBandHour = parseInt(a.stageTime.split(":")[0]);
+        const bBandHour = parseInt(b.stageTime.split(":")[0]);
+        const eventStartHour = parseInt(data.doors.split(":")[0]);
+
+
+        const aRelativeTime = aBandHour - eventStartHour;
+        const bRelativeTime = bBandHour - eventStartHour;
+
+        if (aRelativeTime < 0 && bRelativeTime < 0)
+            return (bRelativeTime - aRelativeTime) * -1;
+        else if (aRelativeTime > 0 && bRelativeTime < 0)
+            return (bRelativeTime - aRelativeTime);
+        else
+            return aRelativeTime - bRelativeTime;
+    });
 
     return {
         event: data,
         eventTags: dataEventTags,
-        bands: dataBands
+        bands: sortedBands
     }
 }
