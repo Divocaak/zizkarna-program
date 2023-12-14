@@ -14,6 +14,7 @@ export const actions = {
         date: formData.date,
         doors: formData.doors,
         cash: formData.cash,
+        presale: formData.presale,
         fbEvent: formData.fbEvent != "" ? formData.fbEvent : null,
         tickets: formData.tickets != "" ? formData.tickets : null,
         description: formData.description != null ? formData.description : null,
