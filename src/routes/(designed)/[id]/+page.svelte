@@ -189,7 +189,7 @@
 
 	.content {
 		position: relative;
-		top: 100vh;
+		top: 70vh;
 		min-height: 100vh;
 	}
 </style>
