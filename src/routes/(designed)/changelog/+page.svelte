@@ -2,6 +2,11 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# TODO datum
+
+# upraveno
+- pozice panelu v detailu výš - nutí scrollovat
+
 # 14.12.23
 
 # přidáno
