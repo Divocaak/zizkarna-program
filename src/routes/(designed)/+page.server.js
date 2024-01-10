@@ -8,6 +8,7 @@ export const load = async ({ params, fetch }) => {
     const { past, close, future } = data.reduce(
         (result, event) => {
             const eventDate = new Date(event.date);
+            eventDate.setDate(new Date(event.date).getDate() + 1);
 
             if (eventDate < today) {
                 result.past.unshift(event);
@@ -16,6 +17,7 @@ export const load = async ({ params, fetch }) => {
             } else {
                 result.future.push(event);
             }
+
 
             return result;
         },

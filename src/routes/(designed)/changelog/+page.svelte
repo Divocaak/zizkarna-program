@@ -4,8 +4,12 @@
 
 # TODO datum
 
-# upraveno
+## upraveno
 - pozice panelu v detailu výš - nutí scrollovat
+
+## opraveno
+- formálář pro přidávání/úpravy eventu (bez předprodejní ceny házelo error)
+- v den akce byla zapsanáa akce už jako uplynulá
 
 # 14.12.23
 
