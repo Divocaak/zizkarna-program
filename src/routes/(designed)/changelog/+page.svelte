@@ -2,10 +2,11 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
-# TODO datum
+# 10.1.24
 
 ## upraveno
 - pozice panelu v detailu výš - nutí scrollovat
+- připsaný den k datumům
 
 ## opraveno
 - formálář pro přidávání/úpravy eventu (bez předprodejní ceny házelo error)
