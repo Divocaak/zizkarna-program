@@ -1,6 +1,8 @@
 <script>
 	export let label;
 	let text = 'Přijď do Žižkárny na ' + label;
+
+	export let past = false;
 	
 	import { page } from '$app/stores';
 	export let urlSuffix = "";
@@ -29,6 +31,6 @@
 	{#if complete}
 		<slot name="complete">Odkaz zkopírován</slot>
 	{:else}
-		<slot>Pozvat přátele</slot>
+		<slot>{!past ? "Pozvat přátele" : "Ukázat přátelům"}</slot>
 	{/if}
 </button>

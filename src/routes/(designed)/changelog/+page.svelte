@@ -4,8 +4,13 @@
 
 # TODO datum
 
-# opraveno
+## opraveno
 - lomena na konci band tagů v copy
+- sjednocen margin u tlačítek (konečně)
+
+## upraveno
+- tlačítko přidat do kalendáře se nezobrazuje u uběhlých akcí
+- u uběhlých akcí pozměněn text tlačítka pro sdílení
 
 # 10.1.24
 
