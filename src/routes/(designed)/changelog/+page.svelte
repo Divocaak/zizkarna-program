@@ -2,6 +2,11 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# TODO datum
+
+# opraveno
+- lomena na konci band tagů v copy
+
 # 10.1.24
 
 ## upraveno
