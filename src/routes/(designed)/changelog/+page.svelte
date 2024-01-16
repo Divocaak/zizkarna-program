@@ -22,6 +22,12 @@
 - formálář pro přidávání/úpravy eventu (bez předprodejní ceny házelo error)
 - v den akce byla zapsanáa akce už jako uplynulá
 
+## odebráno
+- podpora "sptfy.com/..." odkazů, protože služba trpí na výpadky
+
+## přidáno
+- podpora pro odkazy typu "open.spotify.com/..." (není nutno konvertovat na formát "sptfy.com/...")
+
 # 14.12.23
 
 # přidáno

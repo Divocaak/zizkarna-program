@@ -15,12 +15,10 @@
 	let tmp = link.substring(8, link.length);
 	switch (tmp.substring(0, tmp.indexOf('/'))) {
 		case 'youtu.be':
-			type = Types.YouTube;
-			break;
 		case 'youtube.com':
 			type = Types.YouTube;
 			break;
-		case 'sptfy.com':
+		case 'open.spotify.com':
 			type = Types.Spotify;
 			break;
 		case 'music.apple.com':
