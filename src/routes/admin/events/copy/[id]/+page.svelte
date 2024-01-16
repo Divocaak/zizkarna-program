@@ -52,7 +52,7 @@
 		{#if band.tags.length != 0}
 			{#each band.tags as tag}
 				{removeLastSlashes(tag.label)}
-			{/each}
+			{/each} //
 			<br />
 		{/if}
 		{#if band.description != '' && band.description != ' ' && band.description != null}
