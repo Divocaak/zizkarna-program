@@ -125,15 +125,15 @@
 		</div>
 	</div>
 	{#if event.description != null}
-		<p class="neue">
+		<p class="karla">
 			{event.description}
 		</p>
 	{/if}
 	{#each bands as band}
 		<h2 class="display-2 text-center neue mt-0 mt-md-5 pt-0 pt-md-5">{band.label}</h2>
 		<div class="text-center mb-3" style="font-size:1.1rem"><TagsBuilder tags={band.tags} /></div>
-		<p class="neue">{band.description}</p>
-		<p class="text-center neue">Stage time: <b>{timeFormat(band.stageTime)}</b></p>
+		<p class="karla">{band.description}</p>
+		<p class="text-center karla">Stage time: <b>{timeFormat(band.stageTime)}</b></p>
 		<div class="text-center">
 			{#each band.links as link}
 				<BandLinkButton {link} />
@@ -151,8 +151,8 @@
 			{/each}
 		</div>
 	{/each}
-	<h2 class="display-4 text-center neue mt-0 mt-md-5 pt-0 pt-md-5">Časový harmonogram</h2>
-	<div class="neue">
+	<h2 class="display-3 text-center neue mt-0 mt-md-5 pt-0 pt-md-5">Časový harmonogram</h2>
+	<div class="karla">
 		<div class="mx-auto centered-div my-5" style="font-size: 1.2rem;">
 			<p><b>{timeFormat(event.doors)}</b><i class="bi bi-door-open px-2" />Otevření Žižkárny</p>
 			{#each bands as band}

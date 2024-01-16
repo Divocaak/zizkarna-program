@@ -64,7 +64,7 @@
 		<CashText cash={event.cash} presale={event.presalePrice} />
 		<DoorsText doors={event.doors} />
 		<hr class="border-2" />
-		<a href="/{event.id}" class="btn btn-outline-info neue mt-1">
+		<a href="/{event.id}" class="btn btn-outline-info karla mt-1">
 			<i class="bi bi-info-circle-fill pe-2" />Detaily akce
 		</a>
 		<FacebookEventButton fbEvent={event.fbEvent} />

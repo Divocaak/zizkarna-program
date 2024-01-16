@@ -11,6 +11,8 @@
 ## upraveno
 - tlačítko přidat do kalendáře se nezobrazuje u uběhlých akcí
 - u uběhlých akcí pozměněn text tlačítka pro sdílení
+- přidán druhý font (konečně!) na info texty, talčítka, popisy eventů a bia kapel, čas. harmonogram a textové stránky
+- sjednocen design tlačítek
 
 # 10.1.24
 

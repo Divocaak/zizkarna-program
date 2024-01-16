@@ -84,6 +84,11 @@
 		font-weight: bold;
 	}
 
+	@font-face{
+		font-family: "Karla";
+		src: url("/Karla-VariableFont_wght.ttf");
+	}
+
 	:global(html) {
 		scroll-behavior: smooth;
 		overflow-x: hidden;
@@ -96,5 +101,9 @@
 	:global(.neue-bold) {
 		font-family: 'NeueMachina', 'Courier New', monospace;
 		font-weight: bold;
+	}
+
+	:global(.karla){
+		font-family: "Karla", sans-serif;
 	}
 </style>

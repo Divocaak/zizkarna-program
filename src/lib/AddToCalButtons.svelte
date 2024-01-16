@@ -18,8 +18,8 @@
 	const dateToUse = day + '/' + month + '/' + year;
 </script>
 
-<div title="Přidat do mého kalendáře" class="addeventatc m-1">
-	<p class="neue">Přidat do mého kalendáře</p>
+<div title="Přidat do mého kalendáře" class="btn addeventatc mt-1">
+	<p class="karla">Přidat do mého kalendáře</p>
 	<span class="start">{dateToUse + doors}</span>
 	<span class="end">{dateToUse}</span>
 	<span class="date_format">DD/MM/YYYY</span>

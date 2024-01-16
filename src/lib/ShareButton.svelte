@@ -26,7 +26,7 @@
 	}
 </script>
 
-<button on:click={handleClick} class="btn btn-outline-secondary mt-1">
+<button on:click={handleClick} class="btn btn-outline-secondary mt-1 karla">
 	<i class="bi bi-share-fill pe-2" />
 	{#if complete}
 		<slot name="complete">Odkaz zkopírován</slot>
