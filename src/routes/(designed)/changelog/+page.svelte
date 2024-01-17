@@ -2,7 +2,7 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
-# TODO datum
+# 17.1.24
 
 ## opraveno
 - lomena na konci band tagů v copy
@@ -14,6 +14,12 @@
 - přidán druhý font (konečně!) na info texty, talčítka, popisy eventů a bia kapel, čas. harmonogram a textové stránky
 - sjednocen design tlačítek
 
+## odebráno
+- podpora "sptfy.com/..." odkazů, protože služba trpí na výpadky
+
+## přidáno
+- podpora pro odkazy typu "open.spotify.com/..." (není nutno konvertovat na formát "sptfy.com/...")
+
 # 10.1.24
 
 ## upraveno
@@ -23,12 +29,6 @@
 ## opraveno
 - formálář pro přidávání/úpravy eventu (bez předprodejní ceny házelo error)
 - v den akce byla zapsanáa akce už jako uplynulá
-
-## odebráno
-- podpora "sptfy.com/..." odkazů, protože služba trpí na výpadky
-
-## přidáno
-- podpora pro odkazy typu "open.spotify.com/..." (není nutno konvertovat na formát "sptfy.com/...")
 
 # 14.12.23
 
