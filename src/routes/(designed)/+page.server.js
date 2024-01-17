@@ -18,7 +18,6 @@ export const load = async ({ params, fetch }) => {
                 result.future.push(event);
             }
 
-
             return result;
         },
         { past: [], close: [], future: [] }

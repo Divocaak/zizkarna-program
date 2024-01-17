@@ -15,12 +15,10 @@
 	let tmp = link.substring(8, link.length);
 	switch (tmp.substring(0, tmp.indexOf('/'))) {
 		case 'youtu.be':
-			type = Types.YouTube;
-			break;
 		case 'youtube.com':
 			type = Types.YouTube;
 			break;
-		case 'sptfy.com':
+		case 'open.spotify.com':
 			type = Types.Spotify;
 			break;
 		case 'music.apple.com':
@@ -42,31 +40,31 @@
 </script>
 
 {#if type == Types.YouTube}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 yt" target="_blank"
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 yt karla" target="_blank"
 		><i class="bi bi-youtube pe-2" />{type}</a
 	>
 {:else if type == Types.Spotify}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 spotify" target="_blank"
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 spotify karla" target="_blank"
 		><i class="bi bi-spotify pe-2" />{type}</a
 	>
 {:else if type == Types.AppleMusic}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 applemusic" target="_blank">
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 applemusic karla" target="_blank">
 		<i class="bi bi-music-note-beamed pe-2" />{type}
 	</a>
 {:else if type == Types.Facebook}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 facebook" target="_blank">
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 facebook karla" target="_blank">
 		<i class="bi bi-facebook pe-2" />{type}
 	</a>
 {:else if type == Types.Instagram}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 instagram" target="_blank">
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 instagram karla" target="_blank">
 		<i class="bi bi-instagram pe-2" />{type}
 	</a>
 {:else if type == Types.SoundCloud}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 soundcloud" target="_blank">
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 soundcloud karla" target="_blank">
 		<i class="bi bi-cloud-fill pe-2" />{type}
 	</a>
 {:else}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1" target="_blank">
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 karla" target="_blank">
 		<i class="bi bi-link-45deg pe-2" />{type} ({tmp})
 	</a>
 {/if}

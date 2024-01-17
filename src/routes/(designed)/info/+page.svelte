@@ -8,7 +8,7 @@
 
 <div class="text-center my-5">
 	<h1 class="neue-bold">Dramaturgie a produkce Žižkárny</h1>
-	<p class="lead neue">
+	<p class="lead karla">
 		Vojtěch Divoký<br />
 		<a class="link-secondary" href="mailto:vojtech@zizkarna.cz">
 			<i class="bi bi-envelope pe-2" />vojtech@zizkarna.cz
@@ -17,7 +17,7 @@
 			<i class="bi bi-telephone pe-2" />722&nbsp;680&nbsp;481
 		</a>
 	</p>
-	<a class="text-muted" href="/changelog">
+	<a class="text-muted karla" href="/changelog">
 		changelog
 	</a>
 </div>

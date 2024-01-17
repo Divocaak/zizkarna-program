@@ -12,9 +12,9 @@
 </svelte:head>
 
 
-<div class="neue p-5">
-	<h1 class="display-1 text-center">žžTV</h1>
-	<p>
+<div class="p-5">
+	<h1 class="display-1 text-center neue-bold">žžTV</h1>
+	<p class="karla">
 		Chybí Ti nezapomenutelná atmosféra z nějakého koncertu, který se u nás odehrál? Nebo si chceš
 		jenom poslechnout tu kapelu, která Tě tak strašně moc bavila, ale bohužel nemá žádné nahrávky?
 		Tak odebírej Žižkárnu na YouTube, kde si můžeš téměř každý koncert užít znovu!

@@ -91,7 +91,7 @@
 <ul>
 	<li>youtu.be</li>
 	<li>youtube.com</li>
-	<li>sptfy.com</li>
+	<li>open.spotify.com</li>
 	<li>music.apple.com</li>
 	<li>facebook.com</li>
 	<li>instagram.com</li>
@@ -100,7 +100,7 @@
 <p>odkazy musí obsahovat ssl sertifikát (https://)</p>
 <pre>
 	{JSON.stringify({
-		links: ['https://youtu.be/iOPEZaVtzcw', 'https://sptfy.com/MIt1'],
+		links: ['https://youtu.be/iOPEZaVtzcw', 'https://bandband.com/'],
 		imgs: ['0.jpg', '1.jpg']
 	})}
 </pre>

@@ -2,6 +2,24 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# 17.1.24
+
+## opraveno
+- lomena na konci band tagů v copy
+- sjednocen margin u tlačítek (konečně)
+
+## upraveno
+- tlačítko přidat do kalendáře se nezobrazuje u uběhlých akcí
+- u uběhlých akcí pozměněn text tlačítka pro sdílení
+- přidán druhý font (konečně!) na info texty, talčítka, popisy eventů a bia kapel, čas. harmonogram a textové stránky
+- sjednocen design tlačítek
+
+## odebráno
+- podpora "sptfy.com/..." odkazů, protože služba trpí na výpadky
+
+## přidáno
+- podpora pro odkazy typu "open.spotify.com/..." (není nutno konvertovat na formát "sptfy.com/...")
+
 # 10.1.24
 
 ## upraveno

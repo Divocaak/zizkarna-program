@@ -64,12 +64,14 @@
 		<CashText cash={event.cash} presale={event.presalePrice} />
 		<DoorsText doors={event.doors} />
 		<hr class="border-2" />
-		<a href="/{event.id}" class="btn btn-outline-info neue">
+		<a href="/{event.id}" class="btn btn-outline-info karla mt-1">
 			<i class="bi bi-info-circle-fill pe-2" />Detaily akce
 		</a>
 		<FacebookEventButton fbEvent={event.fbEvent} />
 		<TicketsButton tickets={event.tickets} />
-		<ShareButton urlSuffix={event.id} label={event.label} />
-		<AddToCalButtons label={event.label} date={event.date} doors={event.doors} />
+		<ShareButton urlSuffix={event.id} label={event.label} past={disabled}/>
+		{#if !disabled}
+			<AddToCalButtons label={event.label} date={event.date} doors={event.doors} />
+		{/if}
 	</div>
 </div>

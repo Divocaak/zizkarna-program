@@ -7,4 +7,4 @@
 	});
 </script>
 
-<p class="neue"><i class="bi bi-calendar-event pe-2" />{dateFormatted}</p>
+<p class="karla"><i class="bi bi-calendar-event pe-2" />{dateFormatted}</p>
