@@ -4,8 +4,11 @@
 
 # TODO 18.1.24
 
-# upraveno
+## upraveno
 - tag // POŘADATEL // se nezobrazuje na kartě na homepage
+
+## přidáno
+- tag preview v tag form (edit a add)
 
 # 17.1.24
 
