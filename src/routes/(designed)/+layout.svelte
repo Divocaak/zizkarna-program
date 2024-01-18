@@ -1,6 +1,5 @@
 <script>
-	/* import Analytics from '$lib/Analytics.svelte';
-	var adsBlockerNotPresent = true; */
+	import Analytics from '$lib/Analytics.svelte';
 </script>
 
 <svelte:head>
@@ -29,11 +28,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </svelte:head>
 
-<!-- {#if adsBlockerNotPresent === undefined}
-	<p>ad block detected</p>
-{:else}
-	<Analytics />
-{/if} -->
 <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
 	<a class="navbar-brand ps-5 neue-bold d-flex align-items-center" href="/">
 		<img
@@ -71,6 +65,7 @@
 	</div>
 </nav>
 <slot />
+<Analytics />
 
 <style lang="scss">
 	@font-face {
@@ -84,9 +79,9 @@
 		font-weight: bold;
 	}
 
-	@font-face{
-		font-family: "Karla";
-		src: url("/Karla-VariableFont_wght.ttf");
+	@font-face {
+		font-family: 'Karla';
+		src: url('/Karla-VariableFont_wght.ttf');
 	}
 
 	:global(html) {
@@ -103,7 +98,7 @@
 		font-weight: bold;
 	}
 
-	:global(.karla){
-		font-family: "Karla", sans-serif;
+	:global(.karla) {
+		font-family: 'Karla', sans-serif;
 	}
 </style>

@@ -58,7 +58,7 @@
 				{event.label}
 			</h1>
 		</a>
-		<TagsBuilder tags={event.tags} />
+		<TagsBuilder tags={event.tags} isHomepageCard={true}/>
 		<hr class="border-2" />
 		<DateText date={event.date} />
 		<CashText cash={event.cash} presale={event.presalePrice} />

@@ -1,16 +1,22 @@
 <script>
 	import PlaylistEmbed from '$lib/PlaylistEmbed.svelte';
 	import BandLinkButton from '$lib/BandLinkButton.svelte';
+
+	import { analyticsStore } from '$lib/stores/analyticsStore.js';
+
+	const new_event = {
+		id: 'any-random-id',
+		data: {},
+		event: 'zztv-page-opened',
+		type: 'event'
+	};
+	analyticsStore.update((existing_events) => [...existing_events, new_event]);
 </script>
 
 <svelte:head>
 	<title>žžTV</title>
-	<meta
-		name="description"
-		content="Informace o projektu žžTV"
-	/>
+	<meta name="description" content="Informace o projektu žžTV" />
 </svelte:head>
-
 
 <div class="p-5">
 	<h1 class="display-1 text-center neue-bold">žžTV</h1>
