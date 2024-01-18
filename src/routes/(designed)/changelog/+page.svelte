@@ -2,6 +2,11 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# TODO 18.1.24
+
+# upraveno
+- tag // POŘADATEL // se nezobrazuje na kartě na homepage
+
 # 17.1.24
 
 ## opraveno
