@@ -4,9 +4,9 @@
 	let txtValField;
 	let txtVal = '// TEST TAG //';
 	let bgField;
-	let bgColor = '000000';
+	let bgColor = '#000000';
 	let txtField;
-	let txtColor = 'FFFFFF';
+	let txtColor = '#FFFFFF';
 
 	const refreshTxtVal = () => (txtVal = txtValField.value);
 	const refreshBgColor = () => (bgColor = bgField.value);

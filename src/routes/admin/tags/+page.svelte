@@ -1,5 +1,5 @@
 <script>
-	import selected from '$lib/admin/Store.js';
+	import selected from '$lib/stores/tagStore.js';
 	import Tag from '$lib/Tag.svelte';
 	export let data;
 </script>

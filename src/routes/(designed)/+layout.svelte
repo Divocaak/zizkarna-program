@@ -28,6 +28,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </svelte:head>
 
+<!-- import { analyticsStore } from '$lib/stores/analyticsStore.js';
+
+const new_event = {
+	id: 'any-random-id',
+	data: {},
+	event: 'zztv-page-opened',
+	type: 'event'
+};
+analyticsStore.update((existing_events) => [...existing_events, new_event]); -->
+
 <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
 	<a class="navbar-brand ps-5 neue-bold d-flex align-items-center" href="/">
 		<img
