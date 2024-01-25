@@ -1,6 +1,6 @@
 <script>
 	import PlaylistEmbed from '$lib/PlaylistEmbed.svelte';
-	import BandLinkButton from '$lib/BandLinkButton.svelte';
+	import BandLinkButton from '$lib/buttons/BandLinkButton.svelte';
 </script>
 
 <svelte:head>

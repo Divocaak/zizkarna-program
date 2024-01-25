@@ -1,13 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
-	import AddToCalButtons from '$lib/AddToCalButtons.svelte';
+	import AddToCalButtons from '$lib/buttons/AddToCalButtons.svelte';
 	import CashText from '$lib/CashText.svelte';
 	import DateText from '$lib/DateText.svelte';
 	import DoorsText from '$lib/DoorsText.svelte';
-	import FacebookEventButton from '$lib/FacebookEventButton.svelte';
-	import ShareButton from '$lib/ShareButton.svelte';
-	import TicketsButton from '$lib/TicketsButton.svelte';
-	import BandLinkButton from '$lib/BandLinkButton.svelte';
+	import FacebookEventButton from '$lib/buttons/FacebookEventButton.svelte';
+	import ShareButton from '$lib/buttons/ShareButton.svelte';
+	import TicketsButton from '$lib/buttons/TicketsButton.svelte';
+	import BandLinkButton from '$lib/buttons/BandLinkButton.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 	import LazyImage from '$lib/LazyImage.svelte';
 

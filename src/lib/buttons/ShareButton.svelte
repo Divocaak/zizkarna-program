@@ -3,9 +3,10 @@
 	let text = 'Přijď do Žižkárny na ' + label;
 
 	export let past = false;
-	
+
 	import { page } from '$app/stores';
-	export let urlSuffix = "";
+	import AnalyticsButtonWrapper from '$lib/buttons/AnalyticsButtonWrapper.svelte';
+	export let urlSuffix = '';
 	let url = $page.url.href + urlSuffix;
 
 	export let title = url.split('/').splice(-1)[0];
@@ -26,11 +27,13 @@
 	}
 </script>
 
-<button on:click={handleClick} class="btn btn-outline-secondary mt-1 karla">
-	<i class="bi bi-share-fill pe-2" />
-	{#if complete}
-		<slot name="complete">Odkaz zkopírován</slot>
-	{:else}
-		<slot>{!past ? "Pozvat přátele" : "Ukázat přátelům"}</slot>
-	{/if}
-</button>
+<AnalyticsButtonWrapper>
+	<button on:click={handleClick} class="btn btn-outline-secondary mt-1 karla">
+		<i class="bi bi-share-fill pe-2" />
+		{#if complete}
+			<slot name="complete">Odkaz zkopírován</slot>
+		{:else}
+			<slot>{!past ? 'Pozvat přátele' : 'Ukázat přátelům'}</slot>
+		{/if}
+	</button>
+</AnalyticsButtonWrapper>

@@ -3,10 +3,10 @@
 	export var disabled = false;
 
 	import { onMount } from 'svelte';
-	import ShareButton from '$lib/ShareButton.svelte';
-	import AddToCalButtons from '$lib/AddToCalButtons.svelte';
-	import TicketsButton from '$lib/TicketsButton.svelte';
-	import FacebookEventButton from '$lib/FacebookEventButton.svelte';
+	import ShareButton from '$lib/buttons/ShareButton.svelte';
+	import AddToCalButtons from '$lib/buttons/AddToCalButtons.svelte';
+	import TicketsButton from '$lib/buttons/TicketsButton.svelte';
+	import FacebookEventButton from '$lib/buttons/FacebookEventButton.svelte';
 	import DoorsText from '$lib/DoorsText.svelte';
 	import CashText from '$lib/CashText.svelte';
 	import DateText from '$lib/DateText.svelte';
