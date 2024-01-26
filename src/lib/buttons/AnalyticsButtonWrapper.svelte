@@ -1,17 +1,30 @@
 <script>
 	import { analyticsStore } from '$lib/stores/analyticsStore.js';
 
+    export let event;
+    export let data;
+    export let fromCard = false;
+
+    const eventName = `zzBtn${fromCard ? "-card" : ""}-${event}`;
+
 	const new_event = {
 		id: 'any-random-id',
-		data: {},
-		event: 'zztv-page-opened',
+		data: data,
+		event: eventName,
 		type: 'event'
 	};
-	analyticsStore.update((existing_events) => [...existing_events, new_event]);
 
-	const addEventToAnalytics = () => console.log('plsplspsl');
+	const addEventToAnalytics = () => analyticsStore.update((existing_events) => [...existing_events, new_event]);;
 </script>
 
-<div on:click={addEventToAnalytics}>
+<button on:click={addEventToAnalytics}>
 	<slot />
-</div>
+</button>
+
+<style>
+    button{
+        background: none;
+        border: none;
+        padding: 0
+    }
+</style>

@@ -3,6 +3,7 @@
 	let text = 'Přijď do Žižkárny na ' + label;
 
 	export let past = false;
+	export let card = false;
 
 	import { page } from '$app/stores';
 	import AnalyticsButtonWrapper from '$lib/buttons/AnalyticsButtonWrapper.svelte';
@@ -27,7 +28,7 @@
 	}
 </script>
 
-<AnalyticsButtonWrapper>
+<AnalyticsButtonWrapper event="share" data={{ eventLabel: label, eventPast: past }} fromCard={card}>
 	<button on:click={handleClick} class="btn btn-outline-secondary mt-1 karla">
 		<i class="bi bi-share-fill pe-2" />
 		{#if complete}

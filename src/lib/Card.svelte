@@ -14,6 +14,7 @@
 	import LazyImage from '$lib/LazyImage.svelte';
 
 	function showDetail() {
+		// TODO
 		window.location = '/' + event.id;
 	}
 
@@ -58,7 +59,7 @@
 				{event.label}
 			</h1>
 		</a>
-		<TagsBuilder tags={event.tags} isHomepageCard={true}/>
+		<TagsBuilder tags={event.tags} isHomepageCard={true} />
 		<hr class="border-2" />
 		<DateText date={event.date} />
 		<CashText cash={event.cash} presale={event.presalePrice} />
@@ -67,11 +68,11 @@
 		<a href="/{event.id}" class="btn btn-outline-info karla mt-1">
 			<i class="bi bi-info-circle-fill pe-2" />Detaily akce
 		</a>
-		<FacebookEventButton fbEvent={event.fbEvent} />
-		<TicketsButton tickets={event.tickets} />
-		<ShareButton urlSuffix={event.id} label={event.label} past={disabled}/>
+		<FacebookEventButton fbEvent={event.fbEvent} label={event.label} card={true} />
+		<TicketsButton tickets={event.tickets} label={event.label} card={true} />
+		<ShareButton urlSuffix={event.id} label={event.label} past={disabled} card={true} />
 		{#if !disabled}
-			<AddToCalButtons label={event.label} date={event.date} doors={event.doors} />
+			<AddToCalButtons label={event.label} date={event.date} doors={event.doors} card={true} />
 		{/if}
 	</div>
 </div>

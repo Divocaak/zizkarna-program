@@ -116,8 +116,8 @@
 	</div>
 	<div class="row my-5 text-center" style="font-size:1.2rem">
 		<div class="col-12 col-md-6">
-			<FacebookEventButton fbEvent={event.fbEvent} />
-			<TicketsButton tickets={event.tickets} />
+			<FacebookEventButton fbEvent={event.fbEvent} label={event.label}/>
+			<TicketsButton tickets={event.tickets} label={event.label}/>
 			<ShareButton label={event.label} />
 		</div>
 		<div class="mt-3 mt-md-0 col-12 col-md-6">
@@ -136,7 +136,7 @@
 		<p class="text-center karla">Stage time: <b>{timeFormat(band.stageTime)}</b></p>
 		<div class="text-center">
 			{#each band.links as link}
-				<BandLinkButton {link} />
+				<BandLinkButton {link} eventLabel={event.label} bandName={band.label}/>
 			{/each}
 		</div>
 		<div class="row justify-content-center my-4 pb-5">
