@@ -9,7 +9,7 @@
 	import TicketsButton from '$lib/buttons/TicketsButton.svelte';
 	import BandLinkButton from '$lib/buttons/BandLinkButton.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
-	import LazyImage from '$lib/LazyImage.svelte';
+	import BandImageBuilder from '$lib/BandImageBuilder.svelte';
 
 	export let data;
 	const event = data.event;
@@ -116,8 +116,8 @@
 	</div>
 	<div class="row my-5 text-center" style="font-size:1.2rem">
 		<div class="col-12 col-md-6">
-			<FacebookEventButton fbEvent={event.fbEvent} label={event.label}/>
-			<TicketsButton tickets={event.tickets} label={event.label}/>
+			<FacebookEventButton fbEvent={event.fbEvent} label={event.label} />
+			<TicketsButton tickets={event.tickets} label={event.label} />
 			<ShareButton label={event.label} />
 		</div>
 		<div class="mt-3 mt-md-0 col-12 col-md-6">
@@ -136,20 +136,10 @@
 		<p class="text-center karla">Stage time: <b>{timeFormat(band.stageTime)}</b></p>
 		<div class="text-center">
 			{#each band.links as link}
-				<BandLinkButton {link} eventLabel={event.label} bandName={band.label}/>
+				<BandLinkButton {link} eventLabel={event.label} bandName={band.label} />
 			{/each}
 		</div>
-		<div class="row justify-content-center my-4 pb-5">
-			{#each band.imgs as path}
-				<div class="col-12 col-md-4 mb-1 mb-md-0 mt-2">
-					<LazyImage
-						path={`/dynamic/bands/${band.id}/${path}`}
-						alt="fotka {band.label} číslo {path}"
-						additionalClasses="img-fluid d-inline-block "
-					/>
-				</div>
-			{/each}
-		</div>
+		<BandImageBuilder imgs={band.imgs} id={band.id} bandName={band.label} />
 	{/each}
 	<h2 class="display-3 text-center neue mt-0 mt-md-5 pt-0 pt-md-5">Časový harmonogram</h2>
 	<div class="karla">

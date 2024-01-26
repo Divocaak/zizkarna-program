@@ -22,6 +22,7 @@
 
 ## upraveno
 - barevné rozlišení eventů v admin listu podle dne konání (snažší orientace při administraci)
+- zobrazování fotek kapel
 
 # 18.1.24
 
