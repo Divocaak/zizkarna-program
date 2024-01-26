@@ -20,6 +20,9 @@
     - přehrání playlistu
     - klik na youtube btn
 
+## upraveno
+- barevné rozlišení eventů v admin listu podle dne konání (snažší orientace při administraci)
+
 # 18.1.24
 
 ## upraveno
