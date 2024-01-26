@@ -12,11 +12,9 @@
 	import DateText from '$lib/DateText.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 	import LazyImage from '$lib/LazyImage.svelte';
+	import AnalyticsButtonWrapper from './buttons/AnalyticsButtonWrapper.svelte';
 
-	function showDetail() {
-		// TODO
-		window.location = '/' + event.id;
-	}
+	const showDetail = () => (window.location = '/' + event.id);
 
 	const imagePath = `/dynamic/events/${event.id}.jpg`;
 	let imageExists = false;
@@ -30,12 +28,11 @@
 </script>
 
 <div class="row d-flex justify-content-center mx-0 mx-md-5 px-3 px-md-5">
-	<div
-		class="col-12 col-md-6"
+	<AnalyticsButtonWrapper
+		classes={'col-12 col-md-6'}
 		on:click={showDetail}
-		on:keyup={showDetail}
-		tabindex="0"
-		role="button"
+		event="detail-from-image"
+		data={{ eventLabel: event.label }}
 	>
 		{#if imageExists}
 			<LazyImage
@@ -52,7 +49,7 @@
 				{disabled}
 			/>
 		{/if}
-	</div>
+	</AnalyticsButtonWrapper>
 	<div class="col-12 col-md-6">
 		<a style="text-decoration:none; color:var(--bs-heading-color);" href="/{event.id}">
 			<h1 class="mt-3 mt-md-0 neue-bold">
@@ -65,9 +62,11 @@
 		<CashText cash={event.cash} presale={event.presalePrice} />
 		<DoorsText doors={event.doors} />
 		<hr class="border-2" />
-		<a href="/{event.id}" class="btn btn-outline-info karla mt-1">
-			<i class="bi bi-info-circle-fill pe-2" />Detaily akce
-		</a>
+		<AnalyticsButtonWrapper event="detail-from-button" data={{ eventLabel: event.label }}>
+			<a href="/{event.id}" class="btn btn-outline-info karla mt-1">
+				<i class="bi bi-info-circle-fill pe-2" />Detaily akce
+			</a>
+		</AnalyticsButtonWrapper>
 		<FacebookEventButton fbEvent={event.fbEvent} label={event.label} card={true} />
 		<TicketsButton tickets={event.tickets} label={event.label} card={true} />
 		<ShareButton urlSuffix={event.id} label={event.label} past={disabled} card={true} />

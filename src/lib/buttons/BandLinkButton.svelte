@@ -12,11 +12,13 @@
 	};
 
 	export let link;
-	export let eventLabel;
-	export let bandName;
+	export let eventLabel = '';
+	export let bandName = '';
+
+	export let isZizkarnaTV = false;
 
 	let type;
-	let tmp = link.substring(8, link.length);
+	const tmp = link.substring(8, link.length);
 	switch (tmp.substring(0, tmp.indexOf('/'))) {
 		case 'youtu.be':
 		case 'youtube.com':
@@ -52,9 +54,14 @@
 	};
 
 	const typeInfo = typeData[type] || { icon: 'bi-link-45deg', class: '' };
+
+	const analyticsEvent = isZizkarnaTV ? 'zztv-youtube-button' : 'band-link';
+	const analyticsData = isZizkarnaTV
+		? {}
+		: { eventLabel: eventLabel, bandName: bandName, linkType: type, link: link };
 </script>
 
-<AnalyticsButtonWrapper event="band-link" data={{eventLabel: eventLabel, bandName: bandName, linkType: type, link: link}}>
+<AnalyticsButtonWrapper event={analyticsEvent} data={analyticsData}>
 	<a href={link} class="btn btn-outline-secondary mt-1 me-1 {typeInfo.class} karla" target="_blank">
 		<i class="bi {typeInfo.icon} pe-2" />{type === Types.Other ? tmp : type}
 	</a>

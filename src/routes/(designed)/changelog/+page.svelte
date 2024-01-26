@@ -4,8 +4,21 @@
 
 # TODO
 
-## opraven
+## opraveno
 - tag form preview defaultní barvy
+
+## přidáno
+- google analytics rozšíření
+  - karty
+    - všechna tlačítka odesílají info o kliknutí s požadovanými daty
+    - detail rozličen na obrázek a tlačítko
+  - talčítka v detailu
+    - stejná data jako tlačítka na kartě
+    - s rozlišením, že je stiksnuto v detailu, ne na kartě
+    - trackování kliků na odkazy kapel
+  - zzTV
+    - přehrání playlistu
+    - klik na youtube btn
 
 # 18.1.24
 

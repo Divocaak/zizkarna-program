@@ -19,7 +19,7 @@
 		odebírat :)
 	</p>
 	<div class="text-center">
-		<BandLinkButton link="https://youtube.com/@Zizkarna" />
+		<BandLinkButton link="https://youtube.com/@Zizkarna" isZizkarnaTV={true}/>
 	</div>
 </div>
 
