@@ -1,3 +1,4 @@
 User-agent: googlebot
 Disallow: /admin/
 Disallow: /api/
+Disallow: /dynamic/bands/*/band.json
