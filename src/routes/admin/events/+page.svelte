@@ -1,5 +1,13 @@
 <script>
 	export let data;
+
+	const today = new Date();
+
+	function dateColor(date) {
+		const eventDate = new Date(date);
+		eventDate.setDate(new Date(date).getDate() + 1);
+		return eventDate < today ? 'indianred' : 'palegreen';
+	}
 </script>
 
 <h1>seznam událostí</h1>
@@ -11,7 +19,7 @@
 			<td>
 				<b>{event.id}</b>
 			</td>
-			<td>
+			<td style="background: {dateColor(event.date)}">
 				{new Date(event.date).toLocaleDateString('cs-CZ', {})}
 			</td>
 			<td>

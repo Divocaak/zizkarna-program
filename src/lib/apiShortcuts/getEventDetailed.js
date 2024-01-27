@@ -24,7 +24,6 @@ export async function getEventDetailed({ params, fetch }) {
         const bBandHour = parseInt(b.stageTime.split(":")[0]);
         const eventStartHour = parseInt(data.doors.split(":")[0]);
 
-
         const aRelativeTime = aBandHour - eventStartHour;
         const bRelativeTime = bBandHour - eventStartHour;
 
@@ -36,8 +35,13 @@ export async function getEventDetailed({ params, fetch }) {
             return aRelativeTime - bRelativeTime;
     });
 
+    const eventDate = new Date(data.date);
+    eventDate.setDate(new Date(data.date).getDate() + 1);
+    const isPast = eventDate < (new Date());
+
     return {
         event: data,
+        isPast: isPast,
         eventTags: dataEventTags,
         bands: sortedBands
     }

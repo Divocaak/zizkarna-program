@@ -48,7 +48,7 @@
 
 <svelte:head>
 	<!-- Google tag (gtag.js) -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=MEASUREMENT_ID"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-G9WJ0ZDCX9"></script>
 	<script>
 		try {
 			if (typeof window !== 'undefined' && window) {
@@ -57,7 +57,7 @@
 					dataLayer.push(arguments);
 				}
 				gtag('js', new Date());
-				gtag('config', MEASUREMENT_ID);
+				gtag('config', 'G-G9WJ0ZDCX9');
 			}
 			console.log('Google analytics setup successfull');
 		} catch (err) {

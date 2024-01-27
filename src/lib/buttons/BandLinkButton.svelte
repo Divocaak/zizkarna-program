@@ -1,18 +1,24 @@
 <script>
+	import AnalyticsButtonWrapper from '$lib/buttons/AnalyticsButtonWrapper.svelte';
+
 	const Types = {
 		YouTube: 'YouTube',
 		Spotify: 'Spotify',
 		AppleMusic: 'Apple Music',
-		Facebook: "Facebook",
-		Instagram: "Instagram",
-		SoundCloud: "SoundCloud",
+		Facebook: 'Facebook',
+		Instagram: 'Instagram',
+		SoundCloud: 'SoundCloud',
 		Other: 'Jiný odkaz'
 	};
 
 	export let link;
-	
+	export let eventLabel = '';
+	export let bandName = '';
+
+	export let isZizkarnaTV = false;
+
 	let type;
-	let tmp = link.substring(8, link.length);
+	const tmp = link.substring(8, link.length);
 	switch (tmp.substring(0, tmp.indexOf('/'))) {
 		case 'youtu.be':
 		case 'youtube.com':
@@ -37,37 +43,29 @@
 			type = Types.Other;
 			break;
 	}
+
+	const typeData = {
+		[Types.YouTube]: { icon: 'bi-youtube', class: 'yt' },
+		[Types.Spotify]: { icon: 'bi-spotify', class: 'spotify' },
+		[Types.AppleMusic]: { icon: 'bi-music-note-beamed', class: 'applemusic' },
+		[Types.Facebook]: { icon: 'bi-facebook', class: 'facebook' },
+		[Types.Instagram]: { icon: 'bi-instagram', class: 'instagram' },
+		[Types.SoundCloud]: { icon: 'bi-cloud-fill', class: 'soundcloud' }
+	};
+
+	const typeInfo = typeData[type] || { icon: 'bi-link-45deg', class: '' };
+
+	const analyticsEvent = isZizkarnaTV ? 'zztv-youtube-button' : 'band-link';
+	const analyticsData = isZizkarnaTV
+		? {}
+		: { eventLabel: eventLabel, bandName: bandName, linkType: type, link: link };
 </script>
 
-{#if type == Types.YouTube}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 yt karla" target="_blank"
-		><i class="bi bi-youtube pe-2" />{type}</a
-	>
-{:else if type == Types.Spotify}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 spotify karla" target="_blank"
-		><i class="bi bi-spotify pe-2" />{type}</a
-	>
-{:else if type == Types.AppleMusic}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 applemusic karla" target="_blank">
-		<i class="bi bi-music-note-beamed pe-2" />{type}
+<AnalyticsButtonWrapper event={analyticsEvent} data={analyticsData}>
+	<a href={link} class="btn btn-outline-secondary mt-1 me-1 {typeInfo.class} karla" target="_blank">
+		<i class="bi {typeInfo.icon} pe-2" />{type === Types.Other ? tmp : type}
 	</a>
-{:else if type == Types.Facebook}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 facebook karla" target="_blank">
-		<i class="bi bi-facebook pe-2" />{type}
-	</a>
-{:else if type == Types.Instagram}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 instagram karla" target="_blank">
-		<i class="bi bi-instagram pe-2" />{type}
-	</a>
-{:else if type == Types.SoundCloud}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 soundcloud karla" target="_blank">
-		<i class="bi bi-cloud-fill pe-2" />{type}
-	</a>
-{:else}
-	<a href={link} class="btn btn-outline-secondary mt-1 me-1 karla" target="_blank">
-		<i class="bi bi-link-45deg pe-2" />{type} ({tmp})
-	</a>
-{/if}
+</AnalyticsButtonWrapper>
 
 <style>
 	.yt,

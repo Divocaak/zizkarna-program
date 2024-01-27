@@ -2,6 +2,34 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# 27.1.24
+
+## opraveno
+- tag form preview defaultní barvy
+- reaktivní tlačítka v detailu stejně jako na kartě (reakce na před/po konání akce)
+
+## přidáno
+- google analytics rozšíření
+  - karty
+    - všechna tlačítka odesílají info o kliknutí s požadovanými daty
+    - detail rozličen na obrázek a tlačítko
+  - talčítka v detailu
+    - stejná data jako tlačítka na kartě
+    - s rozlišením, že je stiksnuto v detailu, ne na kartě
+    - trackování kliků na odkazy kapel
+  - zzTV
+    - přehrání playlistu
+    - klik na youtube btn
+- tagy kapel a eventu přidáno do meta keywords
+
+## upraveno
+- barevné rozlišení eventů v admin listu podle dne konání (snažší orientace při administraci)
+- zobrazování fotek kapel
+- noindex band.json soubory
+- generování SEO rozděleno do funkcí
+  - zmenšení redundance
+- přidány doplněny SEO parametry podle GoogleSearchConsoleTestResults
+
 # 18.1.24
 
 ## upraveno
