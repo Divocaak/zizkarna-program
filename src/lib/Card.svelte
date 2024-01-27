@@ -14,7 +14,7 @@
 	import LazyImage from '$lib/LazyImage.svelte';
 	import AnalyticsButtonWrapper from './buttons/AnalyticsButtonWrapper.svelte';
 
-	const showDetail = () => (window.location = '/' + event.id);
+	function showDetail () {window.location = '/' + event.id};
 
 	const imagePath = `/dynamic/events/${event.id}.jpg`;
 	let imageExists = false;
@@ -30,7 +30,7 @@
 <div class="row d-flex justify-content-center mx-0 mx-md-5 px-3 px-md-5">
 	<AnalyticsButtonWrapper
 		classes={'col-12 col-md-6'}
-		on:click={showDetail}
+		callback={showDetail}
 		event="detail-from-image"
 		data={{ eventLabel: event.label }}
 	>

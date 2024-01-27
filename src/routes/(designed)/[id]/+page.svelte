@@ -30,9 +30,12 @@
 	eventSeo.image = 'https://program.zizkarna.cz/dynamic/events/' + event.id + '.jpg';
 	eventSeo.isAccessibleForFree = event.cash == 0;
 
+	let keywordsToDesc = "";
 	eventSeo.keywords = [];
 	data.eventTags.forEach((tag) => {
-		eventSeo.keywords.push(getTagName(tag.label).toLowerCase());
+		const tagName = getTagName(tag.label).toLowerCase();
+		eventSeo.keywords.push(tagName);
+		keywordsToDesc += (tagName + ", ");
 	});
 
 	eventSeo.performer = [];
@@ -86,7 +89,11 @@
 	<title>{event.label}</title>
 	<meta
 		name="description"
-		content="Zajímá tě detail akce {event.label}? Na této stránce najdeš odkazy na jedtlové kapely, představující text a spoustu dalšího"
+		content="Zajímá tě detail akce {event.label}? Na této stránce najdeš odkazy na jedtliové kapely, představující text a spoustu dalšího"
+	/>
+	<meta
+		name="keywords"
+		content="{keywordsToDesc.slice(0,-2)}"
 	/>
 </svelte:head>
 

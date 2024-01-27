@@ -9,6 +9,8 @@
 	export let fromCard = false;
 	export let youtubePlaylist = false;
 
+	export let callback = null;
+
 	const eventName = `zzBtn${fromCard ? '-card' : ''}-${event}`;
 
 	const new_event = {
@@ -18,8 +20,10 @@
 		type: 'event'
 	};
 
-	const addEventToAnalytics = () =>
+	const addEventToAnalytics = function () {
 		analyticsStore.update((existing_events) => [...existing_events, new_event]);
+		if (callback != null) callback();
+	};
 </script>
 
 <div
@@ -43,7 +47,7 @@
 		display: inline-block;
 	}
 
-	.youtube-playlist{
+	.youtube-playlist {
 		height: 40vh;
 	}
 </style>
