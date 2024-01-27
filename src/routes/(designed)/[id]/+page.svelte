@@ -14,63 +14,15 @@
 	export let data;
 	const event = data.event;
 	const bands = data.bands ?? [];
+	const isPast = data.isPast;
 
 	function timeFormat(time) {
 		return time.substring(0, time.length - 3);
 	}
 
-	import eventSeo from '$lib/seo/event.json';
-	import bandSeo from '$lib/seo/band.json';
-
-	eventSeo.name = event.label;
-	eventSeo.startDate = event.date;
-	eventSeo.description = event.description;
-	eventSeo.url = 'https://program.zizkarna.cz/' + event.id;
-	eventSeo.doorTime = event.doors;
-	eventSeo.image = 'https://program.zizkarna.cz/dynamic/events/' + event.id + '.jpg';
-	eventSeo.isAccessibleForFree = event.cash == 0;
-
-	let keywordsToDesc = "";
-	eventSeo.keywords = [];
-	data.eventTags.forEach((tag) => {
-		const tagName = getTagName(tag.label).toLowerCase();
-		eventSeo.keywords.push(tagName);
-		keywordsToDesc += (tagName + ", ");
-	});
-
-	eventSeo.performer = [];
-	bands.forEach((band) => {
-		let currBandSeo = { ...bandSeo };
-		currBandSeo.name = band.label;
-		currBandSeo.description = band.description;
-		currBandSeo.performTime = band.stageTime;
-
-		currBandSeo.genre = [];
-		band.tags.forEach((tag) => {
-			currBandSeo.genre.push(getTagName(tag.label).toLowerCase());
-			eventSeo.keywords.push(getTagName(tag.label).toLowerCase());
-		});
-
-		currBandSeo.sameAs = band.links;
-		eventSeo.performer.push(currBandSeo);
-	});
-
-	eventSeo.offers = [
-		{
-			'@type': 'Offer',
-			price: event.cash.toString(),
-			priceCurrency: 'CZK'
-		}
-	];
-
-	if (event.tickets != '' && event.presalePrice != null) {
-		eventSeo.offers.push({
-			'@type': 'Offer',
-			price: event.presalePrice.toString(),
-			priceCurrency: 'CZK',
-			url: event.tickets
-		});
-	}
+	import { getEventSeo } from '$lib/seo/eventSeoBuilder.js';
+	const eventSeo = getEventSeo(event, { tags: data.eventTags, bands: bands, past: isPast });
+	console.log(eventSeo);
 
 	onMount(() => {
 		const script = document.createElement('script');
@@ -78,11 +30,6 @@
 		script.innerHTML = JSON.stringify(eventSeo, null, 2);
 		document.head.appendChild(script);
 	});
-
-	function getTagName(tag) {
-		const match = tag.match(/^\/\/ (.+?) \/\/$/);
-		return match ? match[1] : '';
-	}
 </script>
 
 <svelte:head>
@@ -91,10 +38,7 @@
 		name="description"
 		content="Zajímá tě detail akce {event.label}? Na této stránce najdeš odkazy na jedtliové kapely, představující text a spoustu dalšího"
 	/>
-	<meta
-		name="keywords"
-		content="{keywordsToDesc.slice(0,-2)}"
-	/>
+	<meta name="keywords" content={eventSeo.keywords.join(', ')} />
 </svelte:head>
 
 <div
@@ -125,11 +69,13 @@
 		<div class="col-12 col-md-6">
 			<FacebookEventButton fbEvent={event.fbEvent} label={event.label} />
 			<TicketsButton tickets={event.tickets} label={event.label} />
-			<ShareButton label={event.label} />
+			<ShareButton label={event.label} past={isPast} />
 		</div>
-		<div class="mt-3 mt-md-0 col-12 col-md-6">
-			<AddToCalButtons label={event.label} date={event.date} doors={event.doors} />
-		</div>
+		{#if !isPast}
+			<div class="mt-3 mt-md-0 col-12 col-md-6">
+				<AddToCalButtons label={event.label} date={event.date} doors={event.doors} />
+			</div>
+		{/if}
 	</div>
 	{#if event.description != null}
 		<p class="karla">

@@ -1,6 +1,6 @@
 <script>
 	export var event;
-	export var disabled = false;
+	export var isPast = false;
 
 	import { onMount } from 'svelte';
 	import ShareButton from '$lib/buttons/ShareButton.svelte';
@@ -39,14 +39,14 @@
 				path={imagePath}
 				alt="plakát k akci {event.label}"
 				additionalClasses="img-fluid border border-dark border-3"
-				{disabled}
+				disabled={isPast}
 			/>
 		{:else}
 			<LazyImage
 				path="placeholder.jpg"
 				alt="plakát k akci {event.label}"
 				additionalClasses="img-fluid border border-dark border-3"
-				{disabled}
+				disabled={isPast}
 			/>
 		{/if}
 	</AnalyticsButtonWrapper>
@@ -69,8 +69,8 @@
 		</AnalyticsButtonWrapper>
 		<FacebookEventButton fbEvent={event.fbEvent} label={event.label} card={true} />
 		<TicketsButton tickets={event.tickets} label={event.label} card={true} />
-		<ShareButton urlSuffix={event.id} label={event.label} past={disabled} card={true} />
-		{#if !disabled}
+		<ShareButton urlSuffix={event.id} label={event.label} past={isPast} card={true} />
+		{#if !isPast}
 			<AddToCalButtons label={event.label} date={event.date} doors={event.doors} card={true} />
 		{/if}
 	</div>

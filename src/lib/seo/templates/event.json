@@ -1,14 +1,18 @@
 {
     "@context": "http://schema.org",
     "@type": "MusicEvent",
+    "position": 1,
     "name": "",
     "startDate": "",
+    "endDate": "",
     "description": "",
     "url": "",
     "doorTime": "",
     "image": "",
     "keywords": [],
     "isAccessibleForFree": false,
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "eventStatus": "",
     "organizer": {
         "@type": "Organization",
         "name": "Žižkárna",
