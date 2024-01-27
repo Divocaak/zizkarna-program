@@ -9,7 +9,5 @@ export function getHomepageSeo(closest, future, older) {
         older.map((event, index) => getEventSeo(event, { tags: event.tags, position: (index + closest.length + future.length), past: true }))
     );
 
-    console.log(homepageTemplate.itemListElement);
-
     return homepageTemplate;
 }

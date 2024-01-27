@@ -22,7 +22,6 @@
 
 	import { getEventSeo } from '$lib/seo/eventSeoBuilder.js';
 	const eventSeo = getEventSeo(event, { tags: data.eventTags, bands: bands, past: isPast });
-	console.log(eventSeo);
 
 	onMount(() => {
 		const script = document.createElement('script');

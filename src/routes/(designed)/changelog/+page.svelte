@@ -2,7 +2,7 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
-# URGENT patch release date
+# 27.1.24
 
 ## opraveno
 - tag form preview defaultní barvy
