@@ -2,7 +2,10 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
-# TODO 5.2.24
+# 5.2.24
+
+## přidáno
+- trackování uživatelů z qr
 
 # 27.1.24
 
