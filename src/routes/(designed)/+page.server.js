@@ -1,4 +1,17 @@
-export const load = async ({ params, fetch }) => {
+import { analyticsStore } from '$lib/stores/analyticsStore.js';
+
+export const load = async ({ url, params, fetch }) => {
+
+    const from = url.searchParams.get("from");
+    if (from != null && from == "qr") {
+        const new_event = {
+            id: 'any-random-id',
+            data: {},
+            event: "zz-page-open-from-qr",
+            type: 'event'
+        };
+        analyticsStore.update((existing_events) => [...existing_events, new_event]);
+    }
 
     const result = await fetch("/api/events/list");
     const data = await result.json();
