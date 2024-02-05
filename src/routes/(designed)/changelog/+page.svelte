@@ -2,6 +2,11 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# 5.2.24
+
+## přidáno
+- trackování uživatelů z qr
+
 # 27.1.24
 
 ## opraveno
