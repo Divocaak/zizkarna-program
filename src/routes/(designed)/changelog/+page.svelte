@@ -4,6 +4,9 @@
 
 # TODO
 
+## přidáno
+- fb pixel (snad?)
+
 ## upraveno
 - dark mode pro admin rozhraní, protože to stejně všechno dělám po nocích
 
