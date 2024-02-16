@@ -6,7 +6,7 @@
 	function dateColor(date) {
 		const eventDate = new Date(date);
 		eventDate.setDate(new Date(date).getDate() + 1);
-		return eventDate < today ? 'indianred' : 'palegreen';
+		return eventDate < today ? 'darkred' : 'darkgreen';
 	}
 </script>
 

@@ -108,7 +108,7 @@
 			value={data != null && data.fbEvent != null ? data.fbEvent : null}
 		/>
 	</label><br />
-	<div style="background:lightgrey; padding: 10px 0px">
+	<div style="background:darkgrey; padding: 10px 0px">
 		<label for="tickets">
 			odkaz na předprodej (max 128)
 			<input

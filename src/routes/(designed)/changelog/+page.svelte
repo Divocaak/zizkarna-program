@@ -2,6 +2,11 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# TODO
+
+## upraveno
+- dark mode pro admin rozhraní, protože to stejně všechno dělám po nocích
+
 # 5.2.24
 
 ## přidáno
