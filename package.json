@@ -27,6 +27,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"ffmpeg.js": "^4.2.9003",
 		"mysql2": "^3.2.0",
 		"svelte-markdown": "^0.4.0"
 	}

@@ -44,6 +44,9 @@
 			<td>
 				<a href="/admin/events/copy/{event.id}">copy</a>
 			</td>
+			<td>
+				<a href="/admin/events/video/{event.id}">video</a>
+			</td>
 		</tr>
 	{/each}
 </table>
