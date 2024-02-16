@@ -2,7 +2,7 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
-# TODO
+# 16.2.24
 
 ## přidáno
 - fb pixel (snad?)
