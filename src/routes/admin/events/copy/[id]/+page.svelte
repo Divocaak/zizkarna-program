@@ -45,7 +45,7 @@
 {#if event.description != null}
 	<p>{event.description}</p>
 {/if}
-<p>👉 více informací na https://program.zizkarna.cz/{event.id}</p>
+<p>👉 více informací na https://program.zizkarna.cz/{event.id}?from=copy</p>
 {#each bands as band}
 	<p>
 		// {band.label}<br />

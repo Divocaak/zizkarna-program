@@ -3,7 +3,7 @@ import { analyticsStore } from '$lib/stores/analyticsStore.js';
 export const load = async ({ url, params, fetch }) => {
 
     const from = url.searchParams.get("from");
-    if (from != null && from == "qr") {
+    if (from === "qr") {
         const new_event = {
             id: 'any-random-id',
             data: {},
