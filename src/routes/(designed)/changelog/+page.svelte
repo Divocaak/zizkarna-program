@@ -6,6 +6,7 @@
 
 ## přidáno
 - fb pixel (snad?)
+- trackování uživatelů z ShareButton a admin copy text
 
 ## upraveno
 - dark mode pro admin rozhraní, protože to stejně všechno dělám po nocích

@@ -19,7 +19,7 @@
 			if (navigator.canShare) {
 				await navigator.share({ text, url, title });
 			} else {
-				await navigator.clipboard.writeText(url);
+				await navigator.clipboard.writeText(url + "?from=share");
 				complete = true;
 			}
 		} catch (error) {
