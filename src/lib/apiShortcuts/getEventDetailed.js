@@ -19,21 +19,14 @@ export async function getEventDetailed({ params, fetch }) {
         band.tags = await resultBandTags.json();
     }));
 
-    const sortedBands = dataBands.sort((a, b) => {
-        const aBandHour = parseInt(a.stageTime.split(":")[0]);
-        const bBandHour = parseInt(b.stageTime.split(":")[0]);
-        const eventStartHour = parseInt(data.doors.split(":")[0]);
+    const eventStartHour = parseInt(data.doors.split(":")[0]);
+    let splitIndex = null;
+    for (let i = 0; i < dataBands.length; i++) {
+        const bandStageTime = parseInt(dataBands[i].stageTime.split(":")[0]);
+        if (bandStageTime < eventStartHour) splitIndex = i;
+    }
 
-        const aRelativeTime = aBandHour - eventStartHour;
-        const bRelativeTime = bBandHour - eventStartHour;
-
-        if (aRelativeTime < 0 && bRelativeTime < 0)
-            return (bRelativeTime - aRelativeTime) * -1;
-        else if (aRelativeTime > 0 && bRelativeTime < 0)
-            return (bRelativeTime - aRelativeTime);
-        else
-            return aRelativeTime - bRelativeTime;
-    });
+    if (splitIndex !== null) dataBands.push(...dataBands.splice(0, splitIndex + 1));
 
     const eventDate = new Date(data.date);
     eventDate.setDate(new Date(data.date).getDate() + 1);
@@ -43,6 +36,6 @@ export async function getEventDetailed({ params, fetch }) {
         event: data,
         isPast: isPast,
         eventTags: dataEventTags,
-        bands: sortedBands
+        bands: dataBands
     }
 }
