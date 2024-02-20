@@ -63,16 +63,18 @@
 		{/each}
 	</p>
 {/each}
-{#if event.tickets != null}<p>Předprodej za {event.presalePrice} Kč: {event.tickets}</p>{/if}
-<p>Vstup na místě: {event.cash} Kč</p>
+{#if event.tickets != null}<p>🎫 Předprodej za {event.presalePrice} Kč: {event.tickets}</p>{/if}
+<p>🎟️ Vstup na místě: {event.cash} Kč</p>
 <p>
 	// Harmonogram<br />
 	🚪 {timeFormat(event.doors)} otevření Žižkárny<br />
 	{#each bands as band}
 		{timeFormat(band.stageTime)} {band.label}<br />
 	{/each}
-	Dovolujeme si upozornit, že časy jsou pouze orientační a mohou se změnit
+	<br>
+	⚠️ Dovolujeme si upozornit, že časy jsou pouze orientační a mohou se změnit
 </p>
+<!-- inbudejovice form data to copy -->
 <hr />
 <a href="https://www.inbudejovice.cz/pridat-akci">přidávací formulář</a><br /><br />
 <b>Název</b>

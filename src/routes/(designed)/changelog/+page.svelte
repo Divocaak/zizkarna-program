@@ -2,6 +2,11 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# TODO
+
+## upraveno
+- víc emoji do copy textu
+
 # 19.2.24
 
 ## opraveno
