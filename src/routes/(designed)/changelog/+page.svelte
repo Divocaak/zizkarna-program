@@ -7,6 +7,12 @@
 ## upraveno
 - víc emoji do copy textu
 
+## přidáno
+- víc věcí do admin event tabulky
+  - cena lístků dveře/předprodej
+  - čas dveří
+  - link na předprodej
+
 # 19.2.24
 
 ## opraveno

@@ -20,20 +20,30 @@
 				<b>{event.id}</b>
 			</td>
 			<td style="background: {dateColor(event.date)}">
-				{new Date(event.date).toLocaleDateString('cs-CZ', {})}
+				{new Date(event.date).toLocaleDateString('cs-CZ', {})}, {event.doors}
 			</td>
 			<td>
-				<span style="color:{event.is_visible ? 'green' : 'red'}">&block;</span>
+				<span style="color:{event.is_visible ? 'green' : 'darkred'}">&block;</span>
 			</td>
 			<td>
 				{#if event.fbEvent != null}
-					<a href={event.fbEvent} style="color:green" target="_blank">FB</a>
+					<a href={event.fbEvent} style="color:green" target="_blank">Fcbk</a>
 				{:else}
-					<span style="color:red"><b>FB</b></span>
+					<span style="color:darkred"><b>Fcbk</b></span>
+				{/if}
+			</td>
+			<td>
+				{#if event.tickets != null}
+					<a href={event.tickets} style="color:green" target="_blank">Prsl</a>
+				{:else}
+					<span style="color:darkred"><b>Prsl</b></span>
 				{/if}
 			</td>
 			<td>
 				<a href="/{event.id}">prog</a>
+			</td>
+			<td>
+				{event.cash}{#if event.tickets != null}&nbsp;|&nbsp;<span style="color:cyan">{event.presalePrice}</span>{/if}
 			</td>
 			<td>
 				{event.label}
