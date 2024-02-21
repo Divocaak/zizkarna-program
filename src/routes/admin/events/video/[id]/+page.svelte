@@ -1,13 +1,14 @@
 <script>
 	export let data;
 	const event = data.event;
+	const eventTags = data.eventTags;
 	const bands = data.bands ?? [];
 
 	async function sendData(selectedBand) {
 		const response = await fetch('/api/videoGenerator', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ event: event, band: selectedBand })
+			body: JSON.stringify({ event: event, eventTags: eventTags, band: selectedBand })
 		});
 
 		if (response.ok) {
@@ -25,6 +26,7 @@
 
 <!-- svelte-ignore a11y-media-has-caption -->
 <video width="1080" height="1920" autoplay loop>
+	<!-- BUG not found -->
 	<source src="/dynamic/generator/video.mp4" type="video/mp4" />
 </video>
 

@@ -8,17 +8,18 @@ export async function POST({ request }) {
     const data = await request.json();
     const event = data.event;
     const band = data.band;
+    const eventTags = data.eventTags;
+
 
     const canvas = new Canvas(1080, 1920);
     const context = canvas.getContext('2d');
 
-    const duration = 5;
+    const duration = 12;
     const frameRate = 1;
     const frameCount = Math.floor(duration * frameRate);
 
     const outputPath = "dynamic/generator";
 
-    const poster = await loadImage(`dynamic/events/${event.id}.jpg`);
 
     ffmpeg.setFfmpegPath(ffmpegStatic);
 
@@ -28,16 +29,29 @@ export async function POST({ request }) {
         await fs.promises.mkdir(path, { recursive: true });
     }
 
+    const eventLabelWrapped = getWrappedText(event.label, 180, context, 70);
+
+    const poster = await loadImage(`dynamic/events/${event.id}.jpg`);
+    const posterDimensions = getImgDimensions(poster, "contain", 1080, 1500);
+
+    const bandLabelWrapped = getWrappedText(band.label, 190, context, 60);
+    const bandDescWrapped = getWrappedText(band.description, 250, context, 50);
+
+    const bandImage = await loadImage(`dynamic/bands/${band.id}/${band.imgs[0]}`);
+    const bandImageDimensions = getImgDimensions(bandImage, "contain", 1080, 1500);
+
+    const bandTagsWrapped = getWrappedText(getTagsString(band.tags), 300, context, 40);
+
     // Render each frame
     for (let i = 0; i < frameCount; i++) {
-
         const time = i / frameRate;
 
         // clear canvas
-        context.fillStyle = '#1f1f1f';
+        /* context.fillStyle = '#1f1f1f'; */
+        context.fillStyle = 'darkslategray';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        renderFrame(context, time, poster, event, band);
+        renderFrame(context, time, poster, posterDimensions, eventLabelWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped);
 
         // Store the image in the directory where it can be found by FFmpeg
         const output = canvas.toBuffer('image/png');
@@ -55,64 +69,98 @@ export async function POST({ request }) {
     return new Response(JSON.stringify({ message: outputPath }, { status: 200 }));
 }
 
-function renderFrame(context, time, poster, event, band) {
+function renderFrame(context, time, poster, posterDimensions, eventLabel, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags) {
 
     context.fillStyle = "#d4d4d4";
 
-    // Calculate the x position over time
-    const x = interpolateKeyframes([
-        // At time 0, we want x to be 100
-        { time: 0, value: 100 },
-        // At time 1.5, we want x to be 550 (using Cubic easing)
-        { time: 1.5, value: 550, easing: 'cubic-in-out' },
-        // At time 3, we want x to be 200 (using Cubic easing)
-        { time: 3, value: 200, easing: 'cubic-in-out' },
-    ], time);
-
+    /* TODO easing (work with greater framerate */
+    // { time: 3, value: 200, easing: 'cubic-in-out' },
     const eventLabelX = interpolateKeyframes([
-        { time: 0, value: 10 },
-        { time: 2.5, value: 10 },
-        { time: 5, value: 0 }
+        { time: 0, value: 140 },
+        { time: 2.5, value: 140 },
+        { time: 3, value: 140 },
+        { time: 5, value: -1400 }
     ], time);
     const eventLabelY = interpolateKeyframes([
-        { time: 0, value: 1920 },
-        { time: 2.5, value: 960 }
+        { time: 0, value: -200 },
+        { time: 2.5, value: 250 }
     ], time);
+    context.font = "70px serif";
+    eventLabel.forEach(function (item) {
+        context.fillText(item[0], eventLabelX, eventLabelY + item[1]);
+    });
 
-    const textToDraw = "ČBxHC vol. 3: Melted Ice, Dog Feed, Dezinfekce, Decultivate";
-    const maxWidth = 500;
-    /* getBestFitFontSize(textToDraw, maxWidth, "serif", context); */
+    const posterX = interpolateKeyframes([
+        { time: 0, value: 0 },
+        { time: 2.5, value: 0 },
+        { time: 3, value: 0 },
+        { time: 5, value: -1400 }
+    ], time);
+    const posterY = interpolateKeyframes([
+        { time: 0, value: 2000 },
+        { time: 2.5, value: 500 }
+    ], time);
+    context.drawImage(poster, posterX, posterY, posterDimensions.w, posterDimensions.h);
 
-    context.font = "50px serif";
+    const bandLabelX = interpolateKeyframes([
+        { time: 3.5, value: 1080 },
+        { time: 5, value: 140 }
+    ], time);
+    context.font = "60px serif";
+    bandLabel.forEach(function (item) {
+        context.fillText(item[0], bandLabelX, 150 + item[1]);
+    });
 
-    let wrappedText = textWrap(textToDraw, maxWidth, eventLabelX, eventLabelY, context, 140);
-    wrappedText.forEach(function (item) {
-        context.fillText(item[0], item[1], item[2]);
-    })
-    /* context.fillText(textToDraw, eventLabelX, eventLabelY); */
+    /* TODO event tags (after band tags, same logic) */
 
-    /* context.drawImage(poster, x, 100, 500, 500); */
+    const bandDescX = interpolateKeyframes([
+        { time: 4, value: 1080 },
+        { time: 5.5, value: 100 }
+    ], time);
+    /* TODO different font for description */
+    context.font = "40px serif";
+    bandDesc.forEach(function (item) {
+        context.fillText(item[0], bandDescX, 300 + item[1]);
+    });
+
+    const bandTagsX = interpolateKeyframes([
+        { time: 3.5, value: 1080 },
+        { time: 5, value: 140 }
+    ], time);
+    context.font = "30px serif";
+    bandTags.forEach(function (item) {
+        context.fillText(item[0], bandTagsX, 1000 + item[1]);
+    });
+
+    const bandImageX = interpolateKeyframes([
+        { time: 4.5, value: 1080 },
+        { time: 6, value: 0 }
+    ], time);
+    context.drawImage(bandImage, bandImageX, 1920 - bandImageDimensions.h, bandImageDimensions.w, bandImageDimensions.h);
 }
 
-/* NOTE mby not used */
-function getBestFitFontSize(text, maxWidth, fontface, context) {
-    var fontSize = 300;
-    do {
-        fontSize--;
-        context.font = fontSize + "px " + fontface;
-    } while (context.measureText(text).width > maxWidth)
+function getTagsString(tags) { return tags.map(tag => tag.label).join('').replaceAll("////", "//"); }
+
+function getImgDimensions(img, type, maxWidth, maxHeight) {
+    const imgRatio = img.height / img.width;
+    const winRatio = maxHeight / maxWidth;
+    /* landscape img */
+    if ((imgRatio < winRatio && type === 'contain') || (imgRatio > winRatio && type === 'cover')) return { w: maxWidth, h: maxWidth * imgRatio };
+    /* portrait img */
+    if ((imgRatio > winRatio && type === 'contain') || (imgRatio < winRatio && type === 'cover')) return { w: maxWidth * winRatio / imgRatio, h: maxHeight };
 }
 
-function textWrap(text, maxWidth, x, y, context, lineHeight) {
+function getWrappedText(text, maxWidth, context, lineHeight) {
     let words = text.split(' ');
     let line = '';
     let lineArray = [];
+    let y = 0;
 
     words.forEach(word => {
         let testLine = line + word + ' ';
         let testLineWidth = context.measureText(testLine).width;
         if (testLineWidth > maxWidth) {
-            lineArray.push([line.trim(), x, y]);
+            lineArray.push([line.trim(), y]);
             line = word + ' ';
             y += lineHeight;
         } else {
@@ -120,7 +168,7 @@ function textWrap(text, maxWidth, x, y, context, lineHeight) {
         }
     });
 
-    lineArray.push([line.trim(), x, y]);
+    lineArray.push([line.trim(), y]);
 
     return lineArray;
 }
