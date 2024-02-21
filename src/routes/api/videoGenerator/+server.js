@@ -6,42 +6,31 @@ import { Canvas, loadImage, registerFont } from 'canvas';
 export async function POST({ request }) {
 
     const data = await request.json();
-    /* NOTE */
-
     const event = data.event;
     const band = data.band;
-
     const outputPath = "dynamic/generator";
+    const canvas = new Canvas(1080, 1920);
+    const context = canvas.getContext('2d');
+    const duration = 3;
+    const frameRate = 1;
+    const frameCount = Math.floor(duration * frameRate);
+
+    const poster = await loadImage(`dynamic/events/${event.id}.jpg`);
 
     ffmpeg.setFfmpegPath(ffmpegStatic);
 
     // Clean up the temporary directories first
     for (const path of [outputPath]) {
-        if (fs.existsSync(path)) {
-            await fs.promises.rm(path, { recursive: true });
-        }
+        if (fs.existsSync(path)) await fs.promises.rm(path, { recursive: true });
         await fs.promises.mkdir(path, { recursive: true });
     }
-
-    const canvas = new Canvas(1080, 1920);
-    const context = canvas.getContext('2d');
-
-    // Load the image from file
-    const poster = await loadImage(`dynamic/events/${event.id}.jpg`);
-
-    const duration = 3;
-    const frameRate = 1;
-    const frameCount = Math.floor(duration * frameRate);
 
     // Render each frame
     for (let i = 0; i < frameCount; i++) {
 
         const time = i / frameRate;
 
-        console.log(`Rendering frame ${i} at ${Math.round(time * 10) / 10} seconds...`);
-
-        // Clear the canvas with a white background color. This is required as we are
-        // reusing the canvas with every frame
+        // clear canvas
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -60,7 +49,6 @@ export async function POST({ request }) {
         frameRate,
     );
 
-    /* NOTE response */
     return new Response(JSON.stringify({ message: outputPath }, { status: 200 }));
 }
 
@@ -86,25 +74,15 @@ function renderFrame(context, duration, time, poster) {
 
 function interpolateKeyframes(keyframes, time) {
 
-    if (keyframes.length < 2) {
-        throw new Error('At least two keyframes should be provided');
-    }
-
     const firstKeyframe = keyframes[0];
-    if (time < firstKeyframe.time) {
-        return firstKeyframe.value;
-    }
+    if (time < firstKeyframe.time) return firstKeyframe.value;
 
     const lastKeyframe = keyframes[keyframes.length - 1];
-    if (time >= lastKeyframe.time) {
-        return lastKeyframe.value;
-    }
+    if (time >= lastKeyframe.time) return lastKeyframe.value;
 
     let index;
     for (index = 0; index < keyframes.length - 1; index++) {
-        if (keyframes[index].time <= time && keyframes[index + 1].time >= time) {
-            break;
-        }
+        if (keyframes[index].time <= time && keyframes[index + 1].time >= time) break;
     }
 
     const keyframe1 = keyframes[index];
@@ -112,6 +90,7 @@ function interpolateKeyframes(keyframes, time) {
 
     let t = (time - keyframe1.time) / (keyframe2.time - keyframe1.time);
 
+    /* TODO diff approach */
     if (keyframe2.easing === 'expo-out') {
         t = applyExponentialOutEasing(t);
     } else if (keyframe2.easing === 'cubic-in-out') {

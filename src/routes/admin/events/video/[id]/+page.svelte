@@ -1,5 +1,4 @@
 <script>
-	/* NOTE mby delete all created stores for video generator */
 	export let data;
 	const event = data.event;
 	const bands = data.bands ?? [];
