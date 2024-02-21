@@ -8,12 +8,15 @@ export async function POST({ request }) {
     const data = await request.json();
     const event = data.event;
     const band = data.band;
-    const outputPath = "dynamic/generator";
+
     const canvas = new Canvas(1080, 1920);
     const context = canvas.getContext('2d');
-    const duration = 3;
+
+    const duration = 5;
     const frameRate = 1;
     const frameCount = Math.floor(duration * frameRate);
+
+    const outputPath = "dynamic/generator";
 
     const poster = await loadImage(`dynamic/events/${event.id}.jpg`);
 
@@ -34,7 +37,7 @@ export async function POST({ request }) {
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        renderFrame(context, duration, time, poster);
+        renderFrame(context, time, poster, event, band);
 
         // Store the image in the directory where it can be found by FFmpeg
         const output = canvas.toBuffer('image/png');
@@ -52,7 +55,9 @@ export async function POST({ request }) {
     return new Response(JSON.stringify({ message: outputPath }, { status: 200 }));
 }
 
-function renderFrame(context, duration, time, poster) {
+function renderFrame(context, time, poster, event, band) {
+
+    context.fillStyle = "#d4d4d4";
 
     // Calculate the x position over time
     const x = interpolateKeyframes([
@@ -64,12 +69,60 @@ function renderFrame(context, duration, time, poster) {
         { time: 3, value: 200, easing: 'cubic-in-out' },
     ], time);
 
-    context.font = "50px serif";
-    context.fillStyle = "red";
-    context.fillText("Hello World", 500, 500);
+    const eventLabelX = interpolateKeyframes([
+        { time: 0, value: 10 },
+        { time: 2.5, value: 10 },
+        { time: 5, value: 0 }
+    ], time);
+    const eventLabelY = interpolateKeyframes([
+        { time: 0, value: 1920 },
+        { time: 2.5, value: 960 }
+    ], time);
 
-    // Draw the image
-    context.drawImage(poster, x, 100, 500, 500);
+    const textToDraw = "ČBxHC vol. 3: Melted Ice, Dog Feed, Dezinfekce, Decultivate";
+    const maxWidth = 500;
+    /* getBestFitFontSize(textToDraw, maxWidth, "serif", context); */
+
+    context.font = "50px serif";
+
+    let wrappedText = textWrap(textToDraw, maxWidth, eventLabelX, eventLabelY, context, 140);
+    wrappedText.forEach(function (item) {
+        context.fillText(item[0], item[1], item[2]);
+    })
+    /* context.fillText(textToDraw, eventLabelX, eventLabelY); */
+
+    /* context.drawImage(poster, x, 100, 500, 500); */
+}
+
+/* NOTE mby not used */
+function getBestFitFontSize(text, maxWidth, fontface, context) {
+    var fontSize = 300;
+    do {
+        fontSize--;
+        context.font = fontSize + "px " + fontface;
+    } while (context.measureText(text).width > maxWidth)
+}
+
+function textWrap(text, maxWidth, x, y, context, lineHeight) {
+    let words = text.split(' ');
+    let line = '';
+    let lineArray = [];
+
+    words.forEach(word => {
+        let testLine = line + word + ' ';
+        let testLineWidth = context.measureText(testLine).width;
+        if (testLineWidth > maxWidth) {
+            lineArray.push([line.trim(), x, y]);
+            line = word + ' ';
+            y += lineHeight;
+        } else {
+            line = testLine;
+        }
+    });
+
+    lineArray.push([line.trim(), x, y]);
+
+    return lineArray;
 }
 
 function interpolateKeyframes(keyframes, time) {
