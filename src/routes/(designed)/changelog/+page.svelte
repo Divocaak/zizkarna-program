@@ -2,7 +2,7 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
-# TODO
+# 22.2.24
 
 ## opraveno
 - namístě typo v cashtext
