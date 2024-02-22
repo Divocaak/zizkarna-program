@@ -10,7 +10,6 @@ export async function POST({ request }) {
     const band = data.band;
     const eventTags = data.eventTags;
 
-
     const canvas = new Canvas(1080, 1920);
     const context = canvas.getContext('2d');
 
@@ -19,7 +18,6 @@ export async function POST({ request }) {
     const frameCount = Math.floor(duration * frameRate);
 
     const outputPath = "dynamic/generator";
-
 
     ffmpeg.setFfmpegPath(ffmpegStatic);
 
@@ -30,6 +28,8 @@ export async function POST({ request }) {
     }
 
     const eventLabelWrapped = getWrappedText(event.label, 180, context, 70);
+    
+    const eventTagsWrapped = getWrappedText(getTagsString(eventTags), 300, context, 40);
 
     const poster = await loadImage(`dynamic/events/${event.id}.jpg`);
     const posterDimensions = getImgDimensions(poster, "contain", 1080, 1500);
@@ -51,7 +51,7 @@ export async function POST({ request }) {
         context.fillStyle = 'darkslategray';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        renderFrame(context, time, poster, posterDimensions, eventLabelWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped);
+        renderFrame(context, time, poster, posterDimensions, eventLabelWrapped, eventTagsWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped);
 
         // Store the image in the directory where it can be found by FFmpeg
         const output = canvas.toBuffer('image/png');
@@ -69,7 +69,7 @@ export async function POST({ request }) {
     return new Response(JSON.stringify({ message: outputPath }, { status: 200 }));
 }
 
-function renderFrame(context, time, poster, posterDimensions, eventLabel, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags) {
+function renderFrame(context, time, poster, posterDimensions, eventLabel, eventTags, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags) {
 
     context.fillStyle = "#d4d4d4";
 
@@ -102,6 +102,19 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, bandLa
     ], time);
     context.drawImage(poster, posterX, posterY, posterDimensions.w, posterDimensions.h);
 
+    const eventTagsX = interpolateKeyframes([
+        { time: 3.5, value: 140 },
+        { time: 5, value: -1400 }
+    ], time);
+    const eventTagsY = interpolateKeyframes([
+        { time: 0.5, value: 2000 },
+        { time: 2.5, value: 1500 }
+    ], time);
+    context.font = "30px serif";
+    eventTags.forEach(function (item) {
+        context.fillText(item[0], eventTagsX, eventTagsY + item[1]);
+    });
+
     const bandLabelX = interpolateKeyframes([
         { time: 3.5, value: 1080 },
         { time: 5, value: 140 }
@@ -110,8 +123,6 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, bandLa
     bandLabel.forEach(function (item) {
         context.fillText(item[0], bandLabelX, 150 + item[1]);
     });
-
-    /* TODO event tags (after band tags, same logic) */
 
     const bandDescX = interpolateKeyframes([
         { time: 4, value: 1080 },
@@ -159,6 +170,7 @@ function getWrappedText(text, maxWidth, context, lineHeight) {
     words.forEach(word => {
         let testLine = line + word + ' ';
         let testLineWidth = context.measureText(testLine).width;
+        /* TODO refactor condition */
         if (testLineWidth > maxWidth) {
             lineArray.push([line.trim(), y]);
             line = word + ' ';
