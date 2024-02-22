@@ -8,7 +8,7 @@
 	{#if cash == 0}
 		bez vstupného
 	{:else}
-		{cash},-&nbsp;Kč {#if presale != null}(namístě){/if}
+		{cash},-&nbsp;Kč {#if presale != null}(na místě){/if}
 	{/if}
 </p>
 {#if presale != null}
