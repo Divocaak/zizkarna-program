@@ -9,7 +9,7 @@ const logoPath = "./vidGenAssets/logo_transparent.png";
 
 const outputPath = "dynamic/generator";
 
-const frameRate = 1;
+const frameRate = 30;
 
 const crossfadeTime = .1;
 const fadeTime = .8;
