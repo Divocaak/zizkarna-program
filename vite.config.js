@@ -7,7 +7,8 @@ export default defineConfig({
 	server: {
 		fs: {
 			allow: [
-				"dynamic/"
+				"dynamic/",
+				"vidGenAssets/"
 			]
 		}
 	}
