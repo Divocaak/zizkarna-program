@@ -3,9 +3,13 @@ import ffmpegStatic from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
 import { Canvas, loadImage, registerFont } from 'canvas';
 
+const neuePath = './vidGenAssets/NeueMachina-Regular.otf';
+const karlaPath = "./vidGenAssets/Karla-VariableFont_wght.ttf";
+const logoPath = "./vidGenAssets/logo_transparent.png";
+
 const outputPath = "dynamic/generator";
 
-const frameRate = 30;
+const frameRate = 1;
 
 const crossfadeTime = .1;
 const fadeTime = .8;
@@ -28,8 +32,8 @@ const duration = zzContent + sectionLen;
 
 export async function POST({ request }) {
 
-    registerFont('static/neueMachina/NeueMachina-Regular.otf', { family: 'Neue Machina' })
-    registerFont('static/Karla-VariableFont_wght.ttf', { family: 'Karla' })
+    registerFont(neuePath, { family: 'Neue Machina' })
+    registerFont(karlaPath, { family: 'Karla' })
 
     const data = await request.json();
     const event = data.event;
@@ -68,7 +72,7 @@ export async function POST({ request }) {
     });
     const dateWrapped = getWrappedText(dateFormatted, 500, context, 90);
     const doorsWrapped = getWrappedText(`otevřeno od ${event.doors.substring(0, event.doors.length - 3)}`, 500, context, 90);
-    const logo = await loadImage(`static/logo_transparent.png`);
+    const logo = await loadImage(logoPath);
 
     // Render each frame
     for (let i = 0; i < frameCount; i++) {
@@ -237,7 +241,7 @@ function getWrappedText(text, maxWidth, context, lineHeight) {
     words.forEach(word => {
         let testLine = line + word + ' ';
         let testLineWidth = context.measureText(testLine).width;
-        
+
         if (testLineWidth <= maxWidth) {
             line = testLine;
             return;
