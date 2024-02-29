@@ -10,6 +10,8 @@ const logoPath = "./vidGenAssets/logo_transparent.png";
 const outputPath = "dynamic/generator";
 
 const frameRate = 1;
+const w = 1080;
+const h = 1920;
 
 const crossfadeTime = .1;
 const fadeTime = .8;
@@ -41,7 +43,7 @@ export async function POST({ request }) {
     const band = data.band;
     const eventTags = data.eventTags;
 
-    const canvas = new Canvas(1080, 1920);
+    const canvas = new Canvas(w, h);
     const context = canvas.getContext('2d');
 
     const frameCount = Math.floor(duration * frameRate);
@@ -129,6 +131,7 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
         { time: eventContent, value: 250 }
     ], time);
     context.font = "70px Neue Machina";
+    context.textAlign = "left";
     eventLabel.forEach(function (item) {
         context.fillText(item[0], eventLabelX, eventLabelY + item[1]);
     });
@@ -142,7 +145,7 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
     context.drawImage(poster, posterX, 500, posterDimensions.w, posterDimensions.h);
 
     const eventTagsX = interpolateKeyframes([
-        { time: eventOut, value: 140 },
+        { time: eventOut, value: w / 2 },
         { time: eventEnd, value: -1400 }
     ], time);
     const eventTagsY = interpolateKeyframes([
@@ -150,6 +153,7 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
         { time: eventContent, value: 1500 }
     ], time);
     context.font = "40px Neue Machina";
+    context.textAlign = "center";
     eventTags.forEach(function (item) {
         context.fillText(item[0], eventTagsX, eventTagsY + item[1]);
     });
@@ -163,6 +167,7 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
         { time: bandEnd, value: -1400 },
     ], time);
     context.font = "70px Neue Machina";
+    context.textAlign = "left";
     bandLabel.forEach(function (item) {
         context.fillText(item[0], bandLabelX, 150 + item[1]);
     });
@@ -180,18 +185,19 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
 
     const bandStageTimeX = interpolateKeyframes([
         { time: bandIn + .2, value: 1080 },
-        { time: bandContent, value: 140 },
-        { time: bandOut, value: 140 },
+        { time: bandContent, value: w / 2 },
+        { time: bandOut, value: w / 2 },
         { time: bandEnd, value: -1400 },
     ], time);
+    context.textAlign = "center";
     bandStageTime.forEach(function (item) {
         context.fillText(item[0], bandStageTimeX, 950 + item[1]);
     });
 
     const bandTagsX = interpolateKeyframes([
         { time: bandIn + .3, value: 1080 },
-        { time: bandContent, value: 140 },
-        { time: bandOut, value: 140 },
+        { time: bandContent, value: w / 2 },
+        { time: bandOut, value: w / 2 },
         { time: bandEnd, value: -1400 },
     ], time);
     context.font = "40px Neue Machina";
@@ -222,7 +228,7 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
     if (date != null) {
         const dateX = interpolateKeyframes([
             { time: zzIn, value: 1080 },
-            { time: zzContent, value: 250 }
+            { time: zzContent, value: w / 2 }
         ], time);
         context.font = "60px Neue Machina";
         date.forEach(function (item) {
@@ -233,7 +239,7 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
     if (doors != null) {
         const doorsX = interpolateKeyframes([
             { time: zzIn + .1, value: 1080 },
-            { time: zzContent, value: 250 }
+            { time: zzContent, value: w / 2 }
         ], time);
         doors.forEach(function (item) {
             context.fillText(item[0], doorsX, 1500 + item[1]);
