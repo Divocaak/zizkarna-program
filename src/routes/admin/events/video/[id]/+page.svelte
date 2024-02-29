@@ -36,7 +36,10 @@
 	<!-- svelte-ignore a11y-media-has-caption -->
 	<video width="342" height="607" autoplay loop>
 		<source src="/dynamic/generator/video.mp4" type="video/mp4" />
-	</video>
+	</video><br>
+	<a href="/dynamic/generator/video.mp4" target="_blank" download="video.mp4">
+		stáhnout video
+	</a><br />
 {/if}
 
 <style>
