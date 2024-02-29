@@ -6,6 +6,10 @@
 
 ## přidáno
 - stáhnout video btn
+- video test frames (event a band sekce)
+
+## upraveno
+- u videa některé texty vycentrované
 
 # 27.2.24
 

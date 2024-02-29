@@ -9,28 +9,65 @@
 	const eventTags = data.eventTags;
 	const bands = data.bands ?? [];
 
-	let selectedBand = null;
-	const handleBandChange = (band) => (selectedBand = band);
+	const selectedBand = writable(null);
+	async function selectBand(newBand) {
+		const res = await fetch('/dynamic/bands/' + newBand.id + '/band.json');
+		const data = res.ok ? await res.json() : { imgs: [], links: [] };
+		newBand.imgs = data.imgs || [];
 
-	async function sendData(testFrame = null) {
-		if (selectedBand === null) return;
+		selectedBand.set(newBand);
+	}
 
+	const timeFormatted = (time) => time.substring(0, time.length - 3);
+
+	const getTagsString = (tags) =>
+		tags
+			.map((tag) => tag.label)
+			.join('')
+			.replaceAll('////', '//');
+
+	async function handleSubmit(event) {
+		event.preventDefault();
 		try {
+			/* BUG no data in formData, use form enhance */
+			const formData = new FormData(event.target);
+			console.log(formData);
+			console.log(event);
+			console.log(event.target);
+
 			isLoading.set(true);
 
-			const response = await fetch('/api/videoGenerator', {
+			// const formData = Object.fromEntries(await event.request.formData());
+
+			const dateFormatted = new Date(formData.date).toLocaleDateString('cs-CZ', {
+				month: 'numeric',
+				day: 'numeric',
+				weekday: 'long'
+			});
+
+			const response = await event.fetch('/api/videoGenerator', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					event: event,
-					eventTags: eventTags,
-					band: selectedBand,
-					testFrame: testFrame
+					testFrame: formData.submitType,
+					eventId: formData.eventId,
+					eventLabel: formData.eventLabel,
+					eventTags: formData.eventTags,
+					bandLabel: formData.bandLabel,
+					bandDesc: formData.bandDescription,
+					bandTags: formData.bandTags,
+					bandImage: formData.selectedImg,
+					bandStageTime: `Stage time: ${timeFormatted(formData.bandStageTime)}`,
+					doors: `otevřeno od ${timeFormatted(formData.doors)}`,
+					date: dateFormatted
 				})
 			});
 
-			const data = await response.json();
+			isLoading.set(false);
 			isImage.set(data.img ?? false);
+
+			const result = await response.json();
+			return result.message;
 		} catch (error) {
 			console.error('Error:', error);
 		} finally {
@@ -40,38 +77,131 @@
 </script>
 
 <a href="/admin/events">zpět</a><br /><br />
-<form>
+<form on:submit={handleSubmit}>
+	<label for="eventId">
+		event id (read-only)
+		<input type="text" id="eventId" name="eventId" readonly value={event.id} />
+	</label><br />
+	<label for="eventLabel">
+		event label
+		<input
+			type="text"
+			id="eventLabel"
+			name="eventLabel"
+			maxlength="128"
+			required
+			value={event.label}
+			style="width: 500px;"
+		/>
+	</label><br />
+	<label for="date">
+		date (read-only)
+		<input type="text" id="date" name="date" readonly value={event.date} />
+	</label><br />
+	<label for="doors">
+		doors (read-only)
+		<input type="text" id="doors" name="doors" readonly value={event.doors} />
+	</label><br />
+	<label for="eventTags">
+		event tags<br />
+		<textarea
+			type="text"
+			id="eventTags"
+			name="eventTags"
+			maxlength="1024"
+			cols="100"
+			rows="2"
+			required>{getTagsString(eventTags)}</textarea
+		>
+	</label><br />
+	<br />band select<br />
 	{#each bands as band}
 		<input
-			bind:group={selectedBand}
-			on:change={() => handleBandChange(band)}
+			on:change={() => selectBand(band)}
 			type="radio"
 			id={band.id}
-			name="selected_band"
+			name="selectedBand"
 			value={band}
+			required
 		/>
 		<label for={band.id}>{band.label}</label><br />
 	{/each}<br />
+	{#if $selectedBand !== null}
+		<label for="bandLabel">
+			label (read-only)
+			<input type="text" id="bandLabel" name="bandLabel" readonly value={$selectedBand.label} />
+		</label><br />
+		<label for="bandStageTime">
+			stageTime (read-only)
+			<input
+				type="text"
+				id="bandStageTime"
+				name="bandStageTime"
+				readonly
+				value={$selectedBand.stageTime}
+			/>
+		</label><br />
+		<label for="bandDescription">
+			band bio<br />
+			<textarea
+				type="text"
+				id="bandDescription"
+				name="bandDescription"
+				maxlength="1024"
+				cols="100"
+				rows="5"
+				required>{$selectedBand.description}</textarea
+			>
+		</label><br />
+		<label for="bandTags">
+			band tags<br />
+			<textarea
+				type="text"
+				id="bandTags"
+				name="bandTags"
+				maxlength="1024"
+				cols="100"
+				rows="2"
+				required>{getTagsString($selectedBand.tags)}</textarea
+			>
+		</label><br />
+		{#each $selectedBand.imgs as img}
+			<div class="img-select">
+				<input type="radio" id={img} name="selectedImg" value="{$selectedBand.id}/{img}" required />
+				<img src="/dynamic/bands/{$selectedBand.id}/{img}" alt="band img {img}" />
+			</div>
+		{/each}
+	{/if}
+	<label for="testFrameEvent">
+		<input type="radio" id="testFrameEvent" name="submitType" value="event" />
+		test frame <b>event</b> section
+	</label><br />
+	<label for="testFrameBand">
+		<input type="radio" id="testFrameBand" name="submitType" value="band" />
+		test frame <b>band</b> section
+	</label><br />
+	<label for="testFrameEvent">
+		<input type="radio" id="testFrameEvent" name="submitType" value={null} checked required />
+		<b>whole video</b>
+	</label><br />
+	<br /><button type="submit">generate</button>
 </form>
-<button on:click={() => sendData('event')}>test frame <b>event</b> section</button><br />
-<button on:click={() => sendData('band')}>test frame <b>band</b> section</button><br />
-<!-- <button on:click={() => sendData(band)}>{band.label}</button><br /> -->
 
 <br />
 {#if $isLoading}
-	generuji...
+	ʕ•ᴥ•ʔ
 {:else if $isLoading === null}
-	čekám na input
+	(ᵔᴥᵔ)
 {:else}
 	<!-- prettier-ignore -->
 	{#if $isImage}
 		<img src="/dynamic/generator/testFrame.png" alt="test frame" width="342" height="607"/>
 	{:else}
+		<a href="/dynamic/generator/video.mp4" target="_blank" download="video.mp4">stáhnout video</a><br />
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video width="342" height="607" autoplay loop>
 			<source src="/dynamic/generator/video.mp4" type="video/mp4" />
 		</video><br />
-		<a href="/dynamic/generator/video.mp4" target="_blank" download="video.mp4">stáhnout video</a><br />
 	{/if}
 {/if}
 
@@ -82,5 +212,16 @@
 
 	img {
 		border: 2px solid red;
+	}
+
+	.img-select {
+		padding: 5px 0px;
+		display: flex;
+	}
+
+	.img-select img {
+		height: 100px;
+		width: auto;
+		border: none;
 	}
 </style>

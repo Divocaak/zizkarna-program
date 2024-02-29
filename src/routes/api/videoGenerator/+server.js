@@ -38,35 +38,26 @@ export async function POST({ request }) {
     registerFont(karlaPath, { family: 'Karla' })
     ffmpeg.setFfmpegPath(ffmpegStatic);
 
-    const data = await request.json();
-    const event = data.event;
-    const band = data.band;
-    const eventTags = data.eventTags;
-
-    const canvas = new Canvas(w, h);
-    const context = canvas.getContext('2d');
-
     const frameCount = Math.floor(duration * frameRate);
+    const canvas = new Canvas(w, h);
+    const context = canvas.getContext('2d');    
+    
+    const data = await request.json();
 
-    const eventLabelWrapped = getWrappedText(event.label, 120, context, 70);
-    const eventTagsWrapped = getWrappedText(getTagsString(eventTags), 300, context, 40);
-    const poster = await loadImage(`dynamic/events/${event.id}.jpg`);
+    const eventLabelWrapped = getWrappedText(data.eventLabel, 120, context, 70);
+    const eventTagsWrapped = getWrappedText(data.eventTags, 300, context, 40);
+    const poster = await loadImage(`dynamic/events/${data.eventId}.jpg`);
     const posterDimensions = getImgDimensions(poster, "contain", 1080, 1500);
 
-    const bandLabelWrapped = getWrappedText(band.label, 160, context, 60);
-    const bandDescWrapped = getWrappedText(band.description, 220, context, 50);
-    const bandTagsWrapped = getWrappedText(getTagsString(band.tags), 300, context, 40);
-    const bandImage = await loadImage(`dynamic/bands/${band.id}/${band.imgs[0]}`);
+    const bandLabelWrapped = getWrappedText(data.bandLabel, 160, context, 60);
+    const bandDescWrapped = getWrappedText(data.bandDesc, 220, context, 50);
+    const bandTagsWrapped = getWrappedText(data.bandTags, 300, context, 40);
+    const bandStageTimeWrapped = getWrappedText(data.bandStageTime, 300, context, 40);
+    const bandImage = await loadImage(`dynamic/bands/${data.bandImage}`);
     const bandImageDimensions = getImgDimensions(bandImage, "contain", 1080, 1500);
-    const bandStageTimeWrapped = getWrappedText(`Stage time: ${band.stageTime.substring(0, band.stageTime.length - 3)}`, 300, context, 40);
-
-    let dateFormatted = new Date(event.date).toLocaleDateString('cs-CZ', {
-        month: 'numeric',
-        day: 'numeric',
-        weekday: 'long'
-    });
-    const dateWrapped = getWrappedText(dateFormatted, 500, context, 90);
-    const doorsWrapped = getWrappedText(`otevřeno od ${event.doors.substring(0, event.doors.length - 3)}`, 500, context, 90);
+    
+    const dateWrapped = getWrappedText(data.date, 500, context, 90);
+    const doorsWrapped = getWrappedText(data.doors, 500, context, 90);
     const logo = await loadImage(logoPath);
 
     // Clean up the temporary directories first
@@ -75,7 +66,7 @@ export async function POST({ request }) {
         await fs.promises.mkdir(path, { recursive: true });
     }
 
-    if (data.testFrame != null) {
+    if (data.testFrame != "") {
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -246,8 +237,6 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
         });
     }
 }
-
-function getTagsString(tags) { return tags.map(tag => tag.label).join('').replaceAll("////", "//"); }
 
 function getImgDimensions(img, type, maxWidth, maxHeight) {
     const imgRatio = img.height / img.width;
