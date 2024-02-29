@@ -34,6 +34,7 @@ export async function POST({ request }) {
 
     registerFont(neuePath, { family: 'Neue Machina' })
     registerFont(karlaPath, { family: 'Karla' })
+    ffmpeg.setFfmpegPath(ffmpegStatic);
 
     const data = await request.json();
     const event = data.event;
@@ -44,14 +45,6 @@ export async function POST({ request }) {
     const context = canvas.getContext('2d');
 
     const frameCount = Math.floor(duration * frameRate);
-
-    ffmpeg.setFfmpegPath(ffmpegStatic);
-
-    // Clean up the temporary directories first
-    for (const path of [outputPath]) {
-        if (fs.existsSync(path)) await fs.promises.rm(path, { recursive: true });
-        await fs.promises.mkdir(path, { recursive: true });
-    }
 
     const eventLabelWrapped = getWrappedText(event.label, 120, context, 70);
     const eventTagsWrapped = getWrappedText(getTagsString(eventTags), 300, context, 40);
@@ -74,6 +67,26 @@ export async function POST({ request }) {
     const doorsWrapped = getWrappedText(`otevřeno od ${event.doors.substring(0, event.doors.length - 3)}`, 500, context, 90);
     const logo = await loadImage(logoPath);
 
+    // Clean up the temporary directories first
+    for (const path of [outputPath]) {
+        if (fs.existsSync(path)) await fs.promises.rm(path, { recursive: true });
+        await fs.promises.mkdir(path, { recursive: true });
+    }
+
+    if (data.testFrame != null) {
+        context.fillStyle = '#1f1f1f';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        const testFrameTime = data.testFrame == "event" ? eventContent : bandContent;
+        renderFrame(context, testFrameTime, poster, posterDimensions, eventLabelWrapped, eventTagsWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped, bandStageTimeWrapped);
+
+        const outputFile = `${outputPath}/testFrame.png`;
+        const output = canvas.toBuffer('image/png');
+        await fs.promises.writeFile(outputFile, output);
+
+        return new Response(JSON.stringify({ path: outputFile, img: true }, { status: 200 }));
+    }
+
     // Render each frame
     for (let i = 0; i < frameCount; i++) {
         const time = i / frameRate;
@@ -90,17 +103,18 @@ export async function POST({ request }) {
         await fs.promises.writeFile(`${outputPath}/frame-${paddedNumber}.png`, output);
     }
 
+    const outputFile = `${outputPath}/video.mp4`;
     await stitchFramesToVideo(
         `${outputPath}/frame-%04d.png`,
-        `${outputPath}/video.mp4`,
+        outputFile,
         duration,
         frameRate,
     );
 
-    return new Response(JSON.stringify({ message: outputPath }, { status: 200 }));
+    return new Response(JSON.stringify({ path: outputFile }, { status: 200 }));
 }
 
-function renderFrame(context, time, poster, posterDimensions, eventLabel, eventTags, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags, bandStageTime, logo, date, doors) {
+function renderFrame(context, time, poster, posterDimensions, eventLabel, eventTags, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags, bandStageTime, logo = null, date = null, doors = null) {
 
     context.fillStyle = "#d4d4d4";
 
@@ -197,28 +211,34 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
 
     /* zz section */
 
-    const logoY = interpolateKeyframes([
-        { time: zzIn + .2, value: -1080 },
-        { time: zzContent, value: 150 }
-    ], time);
-    context.drawImage(logo, 0, logoY, 1080, 1080);
+    if (logo != null) {
+        const logoY = interpolateKeyframes([
+            { time: zzIn + .2, value: -1080 },
+            { time: zzContent, value: 150 }
+        ], time);
+        context.drawImage(logo, 0, logoY, 1080, 1080);
+    }
 
-    const dateX = interpolateKeyframes([
-        { time: zzIn, value: 1080 },
-        { time: zzContent, value: 250 }
-    ], time);
-    context.font = "60px Neue Machina";
-    date.forEach(function (item) {
-        context.fillText(item[0], dateX, 1300 + item[1]);
-    });
+    if (date != null) {
+        const dateX = interpolateKeyframes([
+            { time: zzIn, value: 1080 },
+            { time: zzContent, value: 250 }
+        ], time);
+        context.font = "60px Neue Machina";
+        date.forEach(function (item) {
+            context.fillText(item[0], dateX, 1300 + item[1]);
+        });
+    }
 
-    const doorsX = interpolateKeyframes([
-        { time: zzIn + .1, value: 1080 },
-        { time: zzContent, value: 250 }
-    ], time);
-    doors.forEach(function (item) {
-        context.fillText(item[0], doorsX, 1500 + item[1]);
-    });
+    if (doors != null) {
+        const doorsX = interpolateKeyframes([
+            { time: zzIn + .1, value: 1080 },
+            { time: zzContent, value: 250 }
+        ], time);
+        doors.forEach(function (item) {
+            context.fillText(item[0], doorsX, 1500 + item[1]);
+        });
+    }
 }
 
 function getTagsString(tags) { return tags.map(tag => tag.label).join('').replaceAll("////", "//"); }
