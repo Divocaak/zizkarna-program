@@ -104,7 +104,7 @@ export async function POST({ request }) {
         frameRate,
     );
 
-    return new Response(JSON.stringify({ path: outputFile }, { status: 200 }));
+    return new Response(JSON.stringify({ path: outputFile, img: false }, { status: 200 }));
 }
 
 function renderFrame(context, time, poster, posterDimensions, eventLabel, eventTags, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags, bandStageTime, logo = null, date = null, doors = null) {

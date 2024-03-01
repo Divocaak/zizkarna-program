@@ -5,7 +5,7 @@
 	const isLoading = writable(null);
 	const isImage = writable(false);
 
-	const event = data.event;
+	const selectedEvent = data.event;
 	const eventTags = data.eventTags;
 	const bands = data.bands ?? [];
 
@@ -28,46 +28,41 @@
 
 	async function handleSubmit(event) {
 		event.preventDefault();
-		try {
-			/* BUG no data in formData, use form enhance */
-			const formData = new FormData(event.target);
-			console.log(formData);
-			console.log(event);
-			console.log(event.target);
+		const formData = Object.fromEntries(new FormData(event.target));
 
+		try {
 			isLoading.set(true);
 
-			// const formData = Object.fromEntries(await event.request.formData());
-
-			const dateFormatted = new Date(formData.date).toLocaleDateString('cs-CZ', {
+			const dateFormatted = new Date(selectedEvent.date).toLocaleDateString('cs-CZ', {
 				month: 'numeric',
 				day: 'numeric',
 				weekday: 'long'
 			});
 
-			const response = await event.fetch('/api/videoGenerator', {
+			const response = await fetch('/api/videoGenerator/', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					testFrame: formData.submitType,
-					eventId: formData.eventId,
+					eventId: selectedEvent.id,
 					eventLabel: formData.eventLabel,
 					eventTags: formData.eventTags,
-					bandLabel: formData.bandLabel,
+					bandLabel: $selectedBand.label,
 					bandDesc: formData.bandDescription,
 					bandTags: formData.bandTags,
 					bandImage: formData.selectedImg,
-					bandStageTime: `Stage time: ${timeFormatted(formData.bandStageTime)}`,
-					doors: `otevřeno od ${timeFormatted(formData.doors)}`,
+					bandStageTime: `Stage time: ${timeFormatted($selectedBand.stageTime)}`,
+					doors: `otevřeno od ${timeFormatted(selectedEvent.doors)}`,
 					date: dateFormatted
 				})
 			});
 
-			isLoading.set(false);
-			isImage.set(data.img ?? false);
-
 			const result = await response.json();
-			return result.message;
+
+			isLoading.set(false);
+			isImage.set(result.img);
+
+			return result.path;
 		} catch (error) {
 			console.error('Error:', error);
 		} finally {
@@ -77,11 +72,7 @@
 </script>
 
 <a href="/admin/events">zpět</a><br /><br />
-<form on:submit={handleSubmit}>
-	<label for="eventId">
-		event id (read-only)
-		<input type="text" id="eventId" name="eventId" readonly value={event.id} />
-	</label><br />
+<form method="POST" on:submit={handleSubmit}>
 	<label for="eventLabel">
 		event label
 		<input
@@ -90,17 +81,9 @@
 			name="eventLabel"
 			maxlength="128"
 			required
-			value={event.label}
+			value={selectedEvent.label}
 			style="width: 500px;"
 		/>
-	</label><br />
-	<label for="date">
-		date (read-only)
-		<input type="text" id="date" name="date" readonly value={event.date} />
-	</label><br />
-	<label for="doors">
-		doors (read-only)
-		<input type="text" id="doors" name="doors" readonly value={event.doors} />
 	</label><br />
 	<label for="eventTags">
 		event tags<br />
@@ -127,20 +110,6 @@
 		<label for={band.id}>{band.label}</label><br />
 	{/each}<br />
 	{#if $selectedBand !== null}
-		<label for="bandLabel">
-			label (read-only)
-			<input type="text" id="bandLabel" name="bandLabel" readonly value={$selectedBand.label} />
-		</label><br />
-		<label for="bandStageTime">
-			stageTime (read-only)
-			<input
-				type="text"
-				id="bandStageTime"
-				name="bandStageTime"
-				readonly
-				value={$selectedBand.stageTime}
-			/>
-		</label><br />
 		<label for="bandDescription">
 			band bio<br />
 			<textarea
@@ -181,7 +150,7 @@
 		test frame <b>band</b> section
 	</label><br />
 	<label for="testFrameEvent">
-		<input type="radio" id="testFrameEvent" name="submitType" value={null} checked required />
+		<input type="radio" id="submitWholeVIdeo" name="submitType" value={null} checked required />
 		<b>whole video</b>
 	</label><br />
 	<br /><button type="submit">generate</button>
