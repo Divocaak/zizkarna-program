@@ -158,7 +158,7 @@
 
 <br />
 {#if $isLoading}
-	ʕ•ᴥ•ʔ
+	ʕ•ᴥ•ʔ (generuju, sorry, trvá mi to, vydrž pls)
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
 {:else}

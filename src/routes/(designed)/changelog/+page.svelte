@@ -7,6 +7,7 @@
 ## přidáno
 - stáhnout video btn
 - video test frames (event a band sekce)
+- možnost upravovat textace před generováním videa a vybrat obrázek kapely
 
 ## upraveno
 - u videa některé texty vycentrované

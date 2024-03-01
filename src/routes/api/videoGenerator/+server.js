@@ -9,7 +9,7 @@ const logoPath = "./vidGenAssets/logo_transparent.png";
 
 const outputPath = "dynamic/generator";
 
-const frameRate = 1;
+const frameRate = 12;
 const w = 1080;
 const h = 1920;
 
@@ -137,7 +137,7 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
 
     const eventTagsX = interpolateKeyframes([
         { time: eventOut, value: w / 2 },
-        { time: eventEnd, value: -1400 }
+        { time: eventEnd, value: 1080 * -1.5}
     ], time);
     const eventTagsY = interpolateKeyframes([
         { time: eventIn, value: 2000 },
@@ -175,10 +175,10 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
     });
 
     const bandStageTimeX = interpolateKeyframes([
-        { time: bandIn + .2, value: 1080 },
+        { time: bandIn + .2, value: 1080 * 1.5 },
         { time: bandContent, value: w / 2 },
         { time: bandOut, value: w / 2 },
-        { time: bandEnd, value: -1400 },
+        { time: bandEnd, value: 1080 * -1.5},
     ], time);
     context.textAlign = "center";
     bandStageTime.forEach(function (item) {
@@ -186,10 +186,10 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
     });
 
     const bandTagsX = interpolateKeyframes([
-        { time: bandIn + .3, value: 1080 },
+        { time: bandIn + .3, value: 1080 * 1.5 },
         { time: bandContent, value: w / 2 },
         { time: bandOut, value: w / 2 },
-        { time: bandEnd, value: -1400 },
+        { time: bandEnd, value: 1080 * -1.5 },
     ], time);
     context.font = "40px Neue Machina";
     bandTags.forEach(function (item) {
@@ -218,7 +218,7 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
 
     if (date != null) {
         const dateX = interpolateKeyframes([
-            { time: zzIn, value: 1080 },
+            { time: zzIn, value: 1080 * 1.5},
             { time: zzContent, value: w / 2 }
         ], time);
         context.font = "60px Neue Machina";
@@ -229,7 +229,7 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
 
     if (doors != null) {
         const doorsX = interpolateKeyframes([
-            { time: zzIn + .1, value: 1080 },
+            { time: zzIn + .1, value: 1080 * 1.5},
             { time: zzContent, value: w / 2 }
         ], time);
         doors.forEach(function (item) {
