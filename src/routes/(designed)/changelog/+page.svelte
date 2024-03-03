@@ -8,6 +8,7 @@
 - stáhnout video btn
 - video test frames (event a band sekce)
 - možnost upravovat textace před generováním videa a vybrat obrázek kapely
+- info o existenci předprodeje do žž sekce
 
 ## upraveno
 - u videa některé texty vycentrované

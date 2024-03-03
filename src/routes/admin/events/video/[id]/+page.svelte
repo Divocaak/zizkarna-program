@@ -53,7 +53,8 @@
 					bandImage: formData.selectedImg,
 					bandStageTime: `Stage time: ${timeFormatted($selectedBand.stageTime)}`,
 					doors: `otevřeno od ${timeFormatted(selectedEvent.doors)}`,
-					date: dateFormatted
+					date: dateFormatted,
+					tickets: formData.eventTickets ?? null
 				})
 			});
 
@@ -97,6 +98,21 @@
 			required>{getTagsString(eventTags)}</textarea
 		>
 	</label><br />
+	{#if selectedEvent.tickets}
+	<label for="eventTickets">
+		event tickets<br />
+		link: {selectedEvent.tickets}
+		<input
+			type="text"
+			id="eventTickets"
+			name="eventTickets"
+			maxlength="128"
+			required
+			value={selectedEvent.tickets != null ? "Předprodej v síti GoOut" : ""}
+			style="width: 500px;"
+		/>
+	</label><br />
+	{/if}
 	<br />band select<br />
 	{#each bands as band}
 		<input

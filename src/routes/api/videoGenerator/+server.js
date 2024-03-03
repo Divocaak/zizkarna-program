@@ -9,7 +9,8 @@ const logoPath = "./vidGenAssets/logo_transparent.png";
 
 const outputPath = "dynamic/generator";
 
-const frameRate = 12;
+// 20 ?
+const frameRate = 2;
 const w = 1080;
 const h = 1920;
 
@@ -58,6 +59,7 @@ export async function POST({ request }) {
     
     const dateWrapped = getWrappedText(data.date, 500, context, 90);
     const doorsWrapped = getWrappedText(data.doors, 500, context, 90);
+    const ticketsWrapped = data.tickets ? getWrappedText(data.tickets, 500, context, 90) : null;
     const logo = await loadImage(logoPath);
 
     // Clean up the temporary directories first
@@ -88,7 +90,7 @@ export async function POST({ request }) {
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        renderFrame(context, time, poster, posterDimensions, eventLabelWrapped, eventTagsWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped, bandStageTimeWrapped, logo, dateWrapped, doorsWrapped);
+        renderFrame(context, time, poster, posterDimensions, eventLabelWrapped, eventTagsWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped, bandStageTimeWrapped, logo, dateWrapped, doorsWrapped, ticketsWrapped);
 
         // Store the image in the directory where it can be found by FFmpeg
         const output = canvas.toBuffer('image/png');
@@ -107,7 +109,7 @@ export async function POST({ request }) {
     return new Response(JSON.stringify({ path: outputFile, img: false }, { status: 200 }));
 }
 
-function renderFrame(context, time, poster, posterDimensions, eventLabel, eventTags, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags, bandStageTime, logo = null, date = null, doors = null) {
+function renderFrame(context, time, poster, posterDimensions, eventLabel, eventTags, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags, bandStageTime, logo = null, date = null, doors = null, tickets = null) {
 
     context.fillStyle = "#d4d4d4";
 
@@ -233,7 +235,17 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
             { time: zzContent, value: w / 2 }
         ], time);
         doors.forEach(function (item) {
-            context.fillText(item[0], doorsX, 1500 + item[1]);
+            context.fillText(item[0], doorsX, 1400 + item[1]);
+        });
+    }
+
+    if (tickets != null) {
+        const ticketsX = interpolateKeyframes([
+            { time: zzIn + .2, value: 1080 * 1.5},
+            { time: zzContent, value: w / 2 }
+        ], time);
+        tickets.forEach(function (item) {
+            context.fillText(item[0], ticketsX, 1500 + item[1]);
         });
     }
 }
