@@ -12,6 +12,7 @@
 
 ## upraveno
 - u videa některé texty vycentrované
+- max width u textů ve videu
 
 # 27.2.24
 

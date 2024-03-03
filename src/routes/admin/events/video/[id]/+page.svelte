@@ -99,19 +99,19 @@
 		>
 	</label><br />
 	{#if selectedEvent.tickets}
-	<label for="eventTickets">
-		event tickets<br />
-		link: {selectedEvent.tickets}
-		<input
-			type="text"
-			id="eventTickets"
-			name="eventTickets"
-			maxlength="128"
-			required
-			value={selectedEvent.tickets != null ? "Předprodej v síti GoOut" : ""}
-			style="width: 500px;"
-		/>
-	</label><br />
+		<label for="eventTickets">
+			event tickets<br />
+			link: {selectedEvent.tickets}
+			<input
+				type="text"
+				id="eventTickets"
+				name="eventTickets"
+				maxlength="128"
+				required
+				value={selectedEvent.tickets != null ? 'Předprodej v síti GoOut' : ''}
+				style="width: 500px;"
+			/>
+		</label><br />
 	{/if}
 	<br />band select<br />
 	{#each bands as band}

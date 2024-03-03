@@ -9,8 +9,8 @@ const logoPath = "./vidGenAssets/logo_transparent.png";
 
 const outputPath = "dynamic/generator";
 
-// 20 ?
-const frameRate = 2;
+// 24 ?
+const frameRate = 24;
 const w = 1080;
 const h = 1920;
 
@@ -45,21 +45,21 @@ export async function POST({ request }) {
     
     const data = await request.json();
 
-    const eventLabelWrapped = getWrappedText(data.eventLabel, 120, context, 70);
-    const eventTagsWrapped = getWrappedText(data.eventTags, 300, context, 40);
+    const eventLabelWrapped = getWrappedText(data.eventLabel, 130, context, 80);
+    const eventTagsWrapped = getWrappedText(data.eventTags, 200, context, 50);
     const poster = await loadImage(`dynamic/events/${data.eventId}.jpg`);
     const posterDimensions = getImgDimensions(poster, "contain", 1080, 1500);
 
-    const bandLabelWrapped = getWrappedText(data.bandLabel, 160, context, 60);
-    const bandDescWrapped = getWrappedText(data.bandDesc, 220, context, 50);
-    const bandTagsWrapped = getWrappedText(data.bandTags, 300, context, 40);
+    const bandLabelWrapped = getWrappedText(data.bandLabel, 120, context, 70);
+    const bandDescWrapped = getWrappedText(data.bandDesc, 250, context, 50);
+    const bandTagsWrapped = getWrappedText(data.bandTags, 200, context, 50);
     const bandStageTimeWrapped = getWrappedText(data.bandStageTime, 300, context, 40);
     const bandImage = await loadImage(`dynamic/bands/${data.bandImage}`);
     const bandImageDimensions = getImgDimensions(bandImage, "contain", 1080, 1500);
     
     const dateWrapped = getWrappedText(data.date, 500, context, 90);
     const doorsWrapped = getWrappedText(data.doors, 500, context, 90);
-    const ticketsWrapped = data.tickets ? getWrappedText(data.tickets, 500, context, 90) : null;
+    const ticketsWrapped = data.tickets ? getWrappedText(data.tickets, 100, context, 90) : null;
     const logo = await loadImage(logoPath);
 
     // Clean up the temporary directories first
@@ -116,12 +116,12 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
     /* event section */
 
     const eventLabelX = interpolateKeyframes([
-        { time: eventOut, value: 100 },
-        { time: eventEnd, value: -1400 }
+        { time: eventOut, value: 50 },
+        { time: eventEnd, value: -1500 }
     ], time);
     const eventLabelY = interpolateKeyframes([
         { time: eventIn, value: -200 },
-        { time: eventContent, value: 250 }
+        { time: eventContent, value: 200 }
     ], time);
     context.font = "70px Neue Machina";
     context.textAlign = "left";
@@ -155,8 +155,8 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
 
     const bandLabelX = interpolateKeyframes([
         { time: bandIn, value: 1080 },
-        { time: bandContent, value: 140 },
-        { time: bandOut, value: 140 },
+        { time: bandContent, value: 50 },
+        { time: bandOut, value: 50 },
         { time: bandEnd, value: -1400 },
     ], time);
     context.font = "70px Neue Machina";
@@ -167,8 +167,8 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
 
     const bandDescX = interpolateKeyframes([
         { time: bandIn + .1, value: 1080 },
-        { time: bandContent, value: 100 },
-        { time: bandOut, value: 100 },
+        { time: bandContent, value: 60 },
+        { time: bandOut, value: 60 },
         { time: bandEnd, value: -1400 },
     ], time);
     context.font = "40px Karla";
@@ -235,7 +235,7 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
             { time: zzContent, value: w / 2 }
         ], time);
         doors.forEach(function (item) {
-            context.fillText(item[0], doorsX, 1400 + item[1]);
+            context.fillText(item[0], doorsX, 1450 + item[1]);
         });
     }
 
@@ -245,7 +245,7 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
             { time: zzContent, value: w / 2 }
         ], time);
         tickets.forEach(function (item) {
-            context.fillText(item[0], ticketsX, 1500 + item[1]);
+            context.fillText(item[0], ticketsX, 1600 + item[1]);
         });
     }
 }
