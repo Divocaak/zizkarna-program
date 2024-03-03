@@ -2,7 +2,7 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
-# TODO
+# 3. 3. 24
 
 ## přidáno
 - stáhnout video btn
@@ -13,18 +13,22 @@
 ## upraveno
 - u videa některé texty vycentrované
 - max width u textů ve videu
+- mezery za tečkama u datumů v changelogu (myslim to vážně)
 
-# 27.2.24
+
+# 27. 2. 24
 
 ## přidáno
 - insta story video generator
 
-# 22.2.24
+
+# 22. 2. 24
 
 ## opraveno
 - namístě typo v cashtext
 
-# 20.2.24
+
+# 20. 2. 24
 
 ## upraveno
 - víc emoji do copy textu
@@ -35,12 +39,14 @@
   - čas dveří
   - link na předprodej
 
-# 19.2.24
+
+# 19. 2. 24
 
 ## opraveno
 - časy po půlnoci (opět)
 
-# 16.2.24
+
+# 16. 2. 24
 
 ## přidáno
 - fb pixel (snad?)
@@ -49,12 +55,14 @@
 ## upraveno
 - dark mode pro admin rozhraní, protože to stejně všechno dělám po nocích
 
-# 5.2.24
+
+# 5. 2. 24
 
 ## přidáno
 - trackování uživatelů z qr
 
-# 27.1.24
+
+# 27. 1. 24
 
 ## opraveno
 - tag form preview defaultní barvy
@@ -82,7 +90,8 @@
   - zmenšení redundance
 - přidány doplněny SEO parametry podle GoogleSearchConsoleTestResults
 
-# 18.1.24
+
+# 18. 1. 24
 
 ## upraveno
 - tag // POŘADATEL // se nezobrazuje na kartě na homepage
@@ -90,7 +99,8 @@
 ## přidáno
 - tag preview v tag form (edit a add)
 
-# 17.1.24
+
+# 17. 1. 24
 
 ## opraveno
 - lomena na konci band tagů v copy
@@ -108,7 +118,8 @@
 ## přidáno
 - podpora pro odkazy typu "open.spotify.com/..." (není nutno konvertovat na formát "sptfy.com/...")
 
-# 10.1.24
+
+# 10. 1. 24
 
 ## upraveno
 - pozice panelu v detailu výš - nutí scrollovat
@@ -118,7 +129,8 @@
 - formálář pro přidávání/úpravy eventu (bez předprodejní ceny házelo error)
 - v den akce byla zapsanáa akce už jako uplynulá
 
-# 14.12.23
+
+# 14. 12. 23
 
 # přidáno
 - změna-časů-možná-text přidáno do copy
@@ -132,7 +144,8 @@
 - předprodej cena nešla upravovat a přidávat přes admin rozhraní
 - výpis kapel v detailu/copy a čas harmonogram s akcema, kde lineup přesahuje půlnoc
 
-# 9.12.23
+
+# 9. 12. 23
 
 ## přidáno
 - tag edit skrz admin
@@ -171,14 +184,14 @@
 - nové tlačítko přidate do kalendáře, jen jedno, rychlejší načítání, funkčnější
 
 
-# 30.11.23
+# 30. 11. 23
 
 ## upraveno
 - seo
 - lazy load obrázků
 
 
-# 15.11.23
+# 15. 11. 23
 
 ## přidáno
 - changelog
@@ -197,14 +210,14 @@
 - placeholder event imgs
 
 
-# 6.9.23
+# 6. 9. 23
 
 ## opraveno
 - detail na rozkliku
 - desc kapely limit v adminu nesedí s limitem v db
 
 
-# 4.9.23
+# 4. 9. 23
 
 ## přidáno
 - soundcloud social button
@@ -213,7 +226,7 @@
 - clickable event card => detail page
 
 
-# 4.7.23
+# 4. 7. 23
 
 ## přidáno
 - fb event copy
@@ -227,19 +240,19 @@
 - bilej pruh po stranach
 
 
-# 19.6.23
+# 19. 6. 23
 
 ## přidáno
 - downloadable presskit a fb cover
 
 
-# 14.6.23
+# 14. 6. 23
 
 ## opraveno
 - add to cal btns opravené datumy
 
 
-# 9.5.23
+# 9. 5. 23
 
 ## upraveno
 - db pool
