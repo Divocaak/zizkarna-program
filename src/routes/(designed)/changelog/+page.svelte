@@ -4,6 +4,9 @@
 
 # TODO
 
+## upraveno
+- framerate boost
+
 ## opraveno
 - video generovalo jenom testframe
 

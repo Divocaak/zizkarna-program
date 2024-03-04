@@ -9,8 +9,7 @@ const logoPath = "./vidGenAssets/logo_transparent.png";
 
 const outputPath = "dynamic/generator";
 
-// 24 ?
-const frameRate = 24;
+const frameRate = 30;
 const w = 1080;
 const h = 1920;
 
