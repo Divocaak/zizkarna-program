@@ -10,6 +10,8 @@ const logoPath = "./vidGenAssets/logo_transparent.png";
 const outputPath = "dynamic/generator";
 
 const frameRate = 30;
+const w = 1080;
+const h = 1920;
 
 const crossfadeTime = .1;
 const fadeTime = .8;
@@ -34,18 +36,30 @@ export async function POST({ request }) {
 
     registerFont(neuePath, { family: 'Neue Machina' })
     registerFont(karlaPath, { family: 'Karla' })
-
-    const data = await request.json();
-    const event = data.event;
-    const band = data.band;
-    const eventTags = data.eventTags;
-
-    const canvas = new Canvas(1080, 1920);
-    const context = canvas.getContext('2d');
+    ffmpeg.setFfmpegPath(ffmpegStatic);
 
     const frameCount = Math.floor(duration * frameRate);
+    const canvas = new Canvas(w, h);
+    const context = canvas.getContext('2d');    
+    
+    const data = await request.json();
 
-    ffmpeg.setFfmpegPath(ffmpegStatic);
+    const eventLabelWrapped = getWrappedText(data.eventLabel, 130, context, 80);
+    const eventTagsWrapped = getWrappedText(data.eventTags, 200, context, 50);
+    const poster = await loadImage(`dynamic/events/${data.eventId}.jpg`);
+    const posterDimensions = getImgDimensions(poster, "contain", 1080, 1500);
+
+    const bandLabelWrapped = getWrappedText(data.bandLabel, 120, context, 70);
+    const bandDescWrapped = getWrappedText(data.bandDesc, 250, context, 50);
+    const bandTagsWrapped = getWrappedText(data.bandTags, 200, context, 50);
+    const bandStageTimeWrapped = getWrappedText(data.bandStageTime, 300, context, 40);
+    const bandImage = await loadImage(`dynamic/bands/${data.bandImage}`);
+    const bandImageDimensions = getImgDimensions(bandImage, "contain", 1080, 1500);
+    
+    const dateWrapped = getWrappedText(data.date, 500, context, 90);
+    const doorsWrapped = getWrappedText(data.doors, 500, context, 90);
+    const ticketsWrapped = data.tickets ? getWrappedText(data.tickets, 100, context, 90) : null;
+    const logo = await loadImage(logoPath);
 
     // Clean up the temporary directories first
     for (const path of [outputPath]) {
@@ -53,26 +67,19 @@ export async function POST({ request }) {
         await fs.promises.mkdir(path, { recursive: true });
     }
 
-    const eventLabelWrapped = getWrappedText(event.label, 120, context, 70);
-    const eventTagsWrapped = getWrappedText(getTagsString(eventTags), 300, context, 40);
-    const poster = await loadImage(`dynamic/events/${event.id}.jpg`);
-    const posterDimensions = getImgDimensions(poster, "contain", 1080, 1500);
+    if (data.testFrame != null) {
+        context.fillStyle = '#1f1f1f';
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
-    const bandLabelWrapped = getWrappedText(band.label, 160, context, 60);
-    const bandDescWrapped = getWrappedText(band.description, 220, context, 50);
-    const bandTagsWrapped = getWrappedText(getTagsString(band.tags), 300, context, 40);
-    const bandImage = await loadImage(`dynamic/bands/${band.id}/${band.imgs[0]}`);
-    const bandImageDimensions = getImgDimensions(bandImage, "contain", 1080, 1500);
-    const bandStageTimeWrapped = getWrappedText(`Stage time: ${band.stageTime.substring(0, band.stageTime.length - 3)}`, 300, context, 40);
+        const testFrameTime = data.testFrame == "event" ? eventContent : bandContent;
+        renderFrame(context, testFrameTime, poster, posterDimensions, eventLabelWrapped, eventTagsWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped, bandStageTimeWrapped);
 
-    let dateFormatted = new Date(event.date).toLocaleDateString('cs-CZ', {
-        month: 'numeric',
-        day: 'numeric',
-        weekday: 'long'
-    });
-    const dateWrapped = getWrappedText(dateFormatted, 500, context, 90);
-    const doorsWrapped = getWrappedText(`otevřeno od ${event.doors.substring(0, event.doors.length - 3)}`, 500, context, 90);
-    const logo = await loadImage(logoPath);
+        const outputFile = `${outputPath}/testFrame.png`;
+        const output = canvas.toBuffer('image/png');
+        await fs.promises.writeFile(outputFile, output);
+
+        return new Response(JSON.stringify({ path: outputFile, img: true }, { status: 200 }));
+    }
 
     // Render each frame
     for (let i = 0; i < frameCount; i++) {
@@ -82,7 +89,7 @@ export async function POST({ request }) {
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        renderFrame(context, time, poster, posterDimensions, eventLabelWrapped, eventTagsWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped, bandStageTimeWrapped, logo, dateWrapped, doorsWrapped);
+        renderFrame(context, time, poster, posterDimensions, eventLabelWrapped, eventTagsWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped, bandStageTimeWrapped, logo, dateWrapped, doorsWrapped, ticketsWrapped);
 
         // Store the image in the directory where it can be found by FFmpeg
         const output = canvas.toBuffer('image/png');
@@ -90,31 +97,33 @@ export async function POST({ request }) {
         await fs.promises.writeFile(`${outputPath}/frame-${paddedNumber}.png`, output);
     }
 
+    const outputFile = `${outputPath}/video.mp4`;
     await stitchFramesToVideo(
         `${outputPath}/frame-%04d.png`,
-        `${outputPath}/video.mp4`,
+        outputFile,
         duration,
         frameRate,
     );
 
-    return new Response(JSON.stringify({ message: outputPath }, { status: 200 }));
+    return new Response(JSON.stringify({ path: outputFile, img: false }, { status: 200 }));
 }
 
-function renderFrame(context, time, poster, posterDimensions, eventLabel, eventTags, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags, bandStageTime, logo, date, doors) {
+function renderFrame(context, time, poster, posterDimensions, eventLabel, eventTags, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags, bandStageTime, logo = null, date = null, doors = null, tickets = null) {
 
     context.fillStyle = "#d4d4d4";
 
     /* event section */
 
     const eventLabelX = interpolateKeyframes([
-        { time: eventOut, value: 100 },
-        { time: eventEnd, value: -1400 }
+        { time: eventOut, value: 50 },
+        { time: eventEnd, value: -1500 }
     ], time);
     const eventLabelY = interpolateKeyframes([
         { time: eventIn, value: -200 },
-        { time: eventContent, value: 250 }
+        { time: eventContent, value: 200 }
     ], time);
     context.font = "70px Neue Machina";
+    context.textAlign = "left";
     eventLabel.forEach(function (item) {
         context.fillText(item[0], eventLabelX, eventLabelY + item[1]);
     });
@@ -128,14 +137,15 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
     context.drawImage(poster, posterX, 500, posterDimensions.w, posterDimensions.h);
 
     const eventTagsX = interpolateKeyframes([
-        { time: eventOut, value: 140 },
-        { time: eventEnd, value: -1400 }
+        { time: eventOut, value: w / 2 },
+        { time: eventEnd, value: 1080 * -1.5}
     ], time);
     const eventTagsY = interpolateKeyframes([
         { time: eventIn, value: 2000 },
         { time: eventContent, value: 1500 }
     ], time);
     context.font = "40px Neue Machina";
+    context.textAlign = "center";
     eventTags.forEach(function (item) {
         context.fillText(item[0], eventTagsX, eventTagsY + item[1]);
     });
@@ -144,19 +154,20 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
 
     const bandLabelX = interpolateKeyframes([
         { time: bandIn, value: 1080 },
-        { time: bandContent, value: 140 },
-        { time: bandOut, value: 140 },
+        { time: bandContent, value: 50 },
+        { time: bandOut, value: 50 },
         { time: bandEnd, value: -1400 },
     ], time);
     context.font = "70px Neue Machina";
+    context.textAlign = "left";
     bandLabel.forEach(function (item) {
         context.fillText(item[0], bandLabelX, 150 + item[1]);
     });
 
     const bandDescX = interpolateKeyframes([
         { time: bandIn + .1, value: 1080 },
-        { time: bandContent, value: 100 },
-        { time: bandOut, value: 100 },
+        { time: bandContent, value: 60 },
+        { time: bandOut, value: 60 },
         { time: bandEnd, value: -1400 },
     ], time);
     context.font = "40px Karla";
@@ -165,20 +176,21 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
     });
 
     const bandStageTimeX = interpolateKeyframes([
-        { time: bandIn + .2, value: 1080 },
-        { time: bandContent, value: 140 },
-        { time: bandOut, value: 140 },
-        { time: bandEnd, value: -1400 },
+        { time: bandIn + .2, value: 1080 * 1.5 },
+        { time: bandContent, value: w / 2 },
+        { time: bandOut, value: w / 2 },
+        { time: bandEnd, value: 1080 * -1.5},
     ], time);
+    context.textAlign = "center";
     bandStageTime.forEach(function (item) {
         context.fillText(item[0], bandStageTimeX, 950 + item[1]);
     });
 
     const bandTagsX = interpolateKeyframes([
-        { time: bandIn + .3, value: 1080 },
-        { time: bandContent, value: 140 },
-        { time: bandOut, value: 140 },
-        { time: bandEnd, value: -1400 },
+        { time: bandIn + .3, value: 1080 * 1.5 },
+        { time: bandContent, value: w / 2 },
+        { time: bandOut, value: w / 2 },
+        { time: bandEnd, value: 1080 * -1.5 },
     ], time);
     context.font = "40px Neue Machina";
     bandTags.forEach(function (item) {
@@ -197,31 +209,45 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
 
     /* zz section */
 
-    const logoY = interpolateKeyframes([
-        { time: zzIn + .2, value: -1080 },
-        { time: zzContent, value: 150 }
-    ], time);
-    context.drawImage(logo, 0, logoY, 1080, 1080);
+    if (logo != null) {
+        const logoY = interpolateKeyframes([
+            { time: zzIn + .2, value: -1080 },
+            { time: zzContent, value: 150 }
+        ], time);
+        context.drawImage(logo, 0, logoY, 1080, 1080);
+    }
 
-    const dateX = interpolateKeyframes([
-        { time: zzIn, value: 1080 },
-        { time: zzContent, value: 250 }
-    ], time);
-    context.font = "60px Neue Machina";
-    date.forEach(function (item) {
-        context.fillText(item[0], dateX, 1300 + item[1]);
-    });
+    if (date != null) {
+        const dateX = interpolateKeyframes([
+            { time: zzIn, value: 1080 * 1.5},
+            { time: zzContent, value: w / 2 }
+        ], time);
+        context.font = "60px Neue Machina";
+        date.forEach(function (item) {
+            context.fillText(item[0], dateX, 1300 + item[1]);
+        });
+    }
 
-    const doorsX = interpolateKeyframes([
-        { time: zzIn + .1, value: 1080 },
-        { time: zzContent, value: 250 }
-    ], time);
-    doors.forEach(function (item) {
-        context.fillText(item[0], doorsX, 1500 + item[1]);
-    });
+    if (doors != null) {
+        const doorsX = interpolateKeyframes([
+            { time: zzIn + .1, value: 1080 * 1.5},
+            { time: zzContent, value: w / 2 }
+        ], time);
+        doors.forEach(function (item) {
+            context.fillText(item[0], doorsX, 1450 + item[1]);
+        });
+    }
+
+    if (tickets != null) {
+        const ticketsX = interpolateKeyframes([
+            { time: zzIn + .2, value: 1080 * 1.5},
+            { time: zzContent, value: w / 2 }
+        ], time);
+        tickets.forEach(function (item) {
+            context.fillText(item[0], ticketsX, 1600 + item[1]);
+        });
+    }
 }
-
-function getTagsString(tags) { return tags.map(tag => tag.label).join('').replaceAll("////", "//"); }
 
 function getImgDimensions(img, type, maxWidth, maxHeight) {
     const imgRatio = img.height / img.width;
