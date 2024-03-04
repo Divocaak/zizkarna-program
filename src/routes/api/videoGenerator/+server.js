@@ -68,7 +68,7 @@ export async function POST({ request }) {
         await fs.promises.mkdir(path, { recursive: true });
     }
 
-    if (data.testFrame != "") {
+    if (data.testFrame != null) {
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
 

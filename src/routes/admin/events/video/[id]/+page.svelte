@@ -43,7 +43,7 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					testFrame: formData.submitType,
+					testFrame: formData.submitType ?? null,
 					eventId: selectedEvent.id,
 					eventLabel: formData.eventLabel,
 					eventTags: formData.eventTags,
@@ -164,10 +164,6 @@
 	<label for="testFrameBand">
 		<input type="radio" id="testFrameBand" name="submitType" value="band" />
 		test frame <b>band</b> section
-	</label><br />
-	<label for="testFrameEvent">
-		<input type="radio" id="submitWholeVIdeo" name="submitType" value={null} checked required />
-		<b>whole video</b>
 	</label><br />
 	<br /><button type="submit">generate</button>
 </form>
