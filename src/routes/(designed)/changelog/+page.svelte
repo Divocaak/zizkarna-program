@@ -2,6 +2,12 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# TODO
+
+## přidáno
+- nadpis k ig story generátoru
+
+
 # 4. 3. 24
 
 ## upraveno
@@ -141,7 +147,7 @@
 
 # 14. 12. 23
 
-# přidáno
+## přidáno
 - změna-časů-možná-text přidáno do copy
 
 ## upraveno

@@ -1,6 +1,7 @@
-<a href="/">program</a><br /><br />
+<a href="/">zpátkyna program</a><br />
+<br />
 <a href="/admin/events">eventy</a><br />
 <a href="/admin/bands">kapely</a><br />
-<a href="/admin/tags">tagy</a>
-
-<p>jediná věc, co jde zpětně smazat/upravit je json předpis kapely: odkazy a fotky. zbytek musí dělat vojtěch přes databázi, protože je línej to kódovat :))</p>
+<a href="/admin/tags">tagy</a><br />
+<br />
+<a href="/admin/overview">generátor přehledů</a><br />
