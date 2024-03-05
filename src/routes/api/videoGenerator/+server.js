@@ -31,8 +31,8 @@ const duration = zzContent + sectionLen;
 
 export async function POST({ request }) {
 
-    registerFont(path.resolve("./vidGenAssets/NeueMachina-Regular.otf"), { family: 'Neue Machina Regular' });
-    registerFont(path.resolve("./vidGenAssets/Karla-VariableFont_wght.ttf"), { family: 'Karla Regular' });
+    registerFont(path.resolve("./vidGenAssets/neue.otf"), { family: 'Neue Machina Regular' });
+    registerFont(path.resolve("./vidGenAssets/karla.ttf"), { family: 'Karla Regular' });
     ffmpeg.setFfmpegPath(ffmpegStatic);
 
     const frameCount = Math.floor(duration * frameRate);
