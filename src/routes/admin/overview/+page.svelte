@@ -8,32 +8,49 @@
 	const now = new Date();
 	const currentYear = now.getFullYear();
 	const currentMonth = ('0' + (now.getMonth() + 1)).slice(-2);
+	const currentWeek = now.getFullYear() + '-W' + getWeekNumber(now).toString().padStart(2, '0');
+
+	function getWeekNumber(d) {
+		d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+		d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+		var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+		var weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+		return weekNo;
+	}
+
 
 	async function handleSubmit(event) {
 		event.preventDefault();
 		const formData = Object.fromEntries(new FormData(event.target));
 
-        console.log(formData);
+		console.log(formData);
 
-		/* try {
+		try {
 			isLoading.set(true);
 
-			const response = await fetch('/api/videoGenerator/', {
+			const year = 2023;
+			const month = 9;
+			const week = 11;
+			const apiPath = isMonth ? `/api/events/listOverviewMonth?year=${year}&month=${month}` : `/api/events/listOverviewWeek?year=${year}&week=${week}`;
+			const events = await fetch(apiPath);
+			console.log(await events.json());
+
+			/* const response = await fetch('/api/overviewGenerator/', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({})
 			});
 
-			const result = await response.json();
+			const result = await response.json(); */
 
 			isLoading.set(false);
 
-			return result.path;
+			return "pls";//result.path;
 		} catch (error) {
 			console.error('Error:', error);
 		} finally {
 			isLoading.set(false);
-		} */
+		}
 	}
 </script>
 
@@ -62,7 +79,7 @@
 			value="monthStory"
 			required
 		/>
-		ig story <b>měsíc</b> <i>vyškrtaný</i>
+		ig story <b>měsíc</b> <i>(vyškrtaný)</i>
 	</label><br />
 	<label for="outputFormatWeek">
 		<input
@@ -90,8 +107,7 @@
 	{:else}
 		<label for="week">
 			týden
-            <!-- TODO default value -->
-			<input type="week" id="week" name="selectedData" required/>
+			<input type="week" id="week" name="selectedData" required value={currentWeek} />
 		</label><br />
 	{/if}
 	<br /><button type="submit">generate</button>
