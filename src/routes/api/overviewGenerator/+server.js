@@ -6,6 +6,7 @@ import path from 'path';
 
 const outputPath = "dynamic/generator";
 
+// 30
 const frameRate = 30;
 const w = 1080;
 const h = 1920;
@@ -41,18 +42,24 @@ export async function POST({ request }) {
 
     const data = await request.json();
 
+    const eventsTexts = data.events.map(eventData => ({
+        date: getWrappedText(eventData.date, 130, context, 80),
+        label: getWrappedText(eventData.label, 130, context, 80),
+        past: eventData.past
+    }));
+
     /* const eventLabelWrapped = getWrappedText(data.eventLabel, 130, context, 80);
     const eventTagsWrapped = getWrappedText(data.eventTags, 200, context, 50);
     const poster = await loadImage(`dynamic/events/${data.eventId}.jpg`);
     const posterDimensions = getImgDimensions(poster, "contain", 1080, 1500);
-
+    
     const bandLabelWrapped = getWrappedText(data.bandLabel, 120, context, 70);
     const bandDescWrapped = getWrappedText(data.bandDesc, 250, context, 50);
     const bandTagsWrapped = getWrappedText(data.bandTags, 200, context, 50);
     const bandStageTimeWrapped = getWrappedText(data.bandStageTime, 300, context, 40);
     const bandImage = await loadImage(`dynamic/bands/${data.bandImage}`);
     const bandImageDimensions = getImgDimensions(bandImage, "contain", 1080, 1500);
-
+    
     const dateWrapped = getWrappedText(data.date, 500, context, 90);
     const doorsWrapped = getWrappedText(data.doors, 500, context, 90);
     const ticketsWrapped = data.tickets ? getWrappedText(data.tickets, 100, context, 90) : null; */
@@ -67,33 +74,33 @@ export async function POST({ request }) {
     /* if (data.testFrame != null) {
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
-
+    
         const testFrameTime = data.testFrame == "event" ? eventContent : bandContent;
         renderFrame(context, testFrameTime, poster, posterDimensions, eventLabelWrapped, eventTagsWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped, bandStageTimeWrapped);
-
+    
         const outputFile = `${outputPath}/testFrame.png`;
         const output = canvas.toBuffer('image/png');
         await fs.promises.writeFile(outputFile, output);
-
+    
         return new Response(JSON.stringify({ path: outputFile, img: true }, { status: 200 }));
     } */
 
     // Render each frame
     /* for (let i = 0; i < frameCount; i++) {
         const time = i / frameRate;
-
+    
         // clear canvas
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
-
+    
         renderFrame(context, time, poster, posterDimensions, eventLabelWrapped, eventTagsWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped, bandStageTimeWrapped, logo, dateWrapped, doorsWrapped, ticketsWrapped);
-
+    
         // Store the image in the directory where it can be found by FFmpeg
         const output = canvas.toBuffer('image/png');
         const paddedNumber = String(i).padStart(4, '0');
         await fs.promises.writeFile(`${outputPath}/frame-${paddedNumber}.png`, output);
     }
-
+    
     const outputFile = `${outputPath}/video.mp4`;
     await stitchFramesToVideo(
         `${outputPath}/frame-%04d.png`,

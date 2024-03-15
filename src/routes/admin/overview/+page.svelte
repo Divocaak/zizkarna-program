@@ -18,34 +18,45 @@
 		return weekNo;
 	}
 
-
 	async function handleSubmit(event) {
 		event.preventDefault();
 		const formData = Object.fromEntries(new FormData(event.target));
 
-		console.log(formData);
-
 		try {
 			isLoading.set(true);
 
-			const year = 2023;
-			const month = 9;
-			const week = 11;
-			const apiPath = isMonth ? `/api/events/listOverviewMonth?year=${year}&month=${month}` : `/api/events/listOverviewWeek?year=${year}&week=${week}`;
-			const events = await fetch(apiPath);
-			console.log(await events.json());
+			const year = formData.selectedDate.substring(0, 4);
+			const monthOrWeek = formData.selectedDate.substring(
+				formData.selectedDate.length - 2,
+				formData.selectedDate.length
+			);
 
-			/* const response = await fetch('/api/overviewGenerator/', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({})
+			const apiPath = $isMonth
+				? `/api/events/listOverviewMonth?year=${year}&month=${monthOrWeek}`
+				: `/api/events/listOverviewWeek?year=${year}&week=${monthOrWeek}`;
+			const events = await fetch(apiPath);
+			let eventsData = await events.json();
+			eventsData.forEach((event) => {
+				const eventDate = new Date(event.date);
+				event.past = eventDate < now;
+				event.date = eventDate.toLocaleDateString('cs-CZ', {
+					month: 'numeric',
+					day: 'numeric',
+					weekday: 'long'
+				});
 			});
 
-			const result = await response.json(); */
+			const response = await fetch('/api/overviewGenerator/', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ events: eventsData, outputFormat: formData.outputFormat })
+			});
+
+			const result = await response.json();
 
 			isLoading.set(false);
 
-			return "pls";//result.path;
+			return 'pls'; //result.path;
 		} catch (error) {
 			console.error('Error:', error);
 		} finally {
@@ -99,7 +110,7 @@
 			<input
 				type="month"
 				id="month"
-				name="selectedData"
+				name="selectedDate"
 				required
 				value={`${currentYear}-${currentMonth}`}
 			/>
@@ -107,7 +118,7 @@
 	{:else}
 		<label for="week">
 			týden
-			<input type="week" id="week" name="selectedData" required value={currentWeek} />
+			<input type="week" id="week" name="selectedDate" required value={currentWeek} />
 		</label><br />
 	{/if}
 	<br /><button type="submit">generate</button>
@@ -119,7 +130,7 @@
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
 {:else}
-	<img src="/dynamic/generator/testFrame.png" alt="test frame" width="342" height="607" />
+	<!-- <img src="/dynamic/generator/testFrame.png" alt="test frame" width="342" height="607" /> -->
 {/if}
 
 <style>
