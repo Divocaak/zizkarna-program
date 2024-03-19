@@ -11,24 +11,9 @@ const frameRate = 1;
 const w = 1080;
 const h = 1920;
 
-const crossfadeTime = .1;
-const fadeTime = .8;
-const sectionLen = 2;
+const duration = 4;
 
-const eventIn = 0;
-const eventContent = eventIn + fadeTime;
-const eventOut = eventContent + sectionLen;
-const eventEnd = eventOut + fadeTime;
-
-const bandIn = eventOut + crossfadeTime;
-const bandContent = bandIn + fadeTime;
-const bandOut = bandContent + sectionLen;
-const bandEnd = bandOut + fadeTime;
-
-const zzIn = bandOut + crossfadeTime;
-const zzContent = zzIn + fadeTime;
-
-const duration = zzContent + sectionLen;
+const yBorder = 250;
 
 export async function POST({ request }) {
 
@@ -42,11 +27,20 @@ export async function POST({ request }) {
 
     const data = await request.json();
 
-    const eventsTexts = data.events.map(eventData => ({
-        date: getWrappedText(eventData.date, 130, context, 80),
-        label: getWrappedText(eventData.label, 130, context, 80),
-        past: eventData.past
-    }));
+    let textsHeight = 0;
+    const eventsTexts = [];
+    data.events.forEach(eventData => {
+        const { date, label, past } = eventData;
+        const dateLineHeight = 40;
+        const labelLineHeight = 60;
+        const dateWrapped = getWrappedText(date, 200, context, dateLineHeight);
+        const labelWrapped = getWrappedText(label, 170, context, labelLineHeight);
+        const height = (dateWrapped.length * dateLineHeight) + (labelWrapped.length * labelLineHeight);
+        textsHeight += height;
+
+        eventsTexts.push({ date: dateWrapped, label: labelWrapped, height, past });
+    });
+    const eventBottomPadding = (h - yBorder - textsHeight) / eventsTexts.length;
 
     /* const eventLabelWrapped = getWrappedText(data.eventLabel, 130, context, 80);
     const eventTagsWrapped = getWrappedText(data.eventTags, 200, context, 50);
@@ -63,7 +57,11 @@ export async function POST({ request }) {
     const dateWrapped = getWrappedText(data.date, 500, context, 90);
     const doorsWrapped = getWrappedText(data.doors, 500, context, 90);
     const ticketsWrapped = data.tickets ? getWrappedText(data.tickets, 100, context, 90) : null; */
-    const logo = await loadImage("./vidGenAssets/logo_transparent.png");
+    const grad0 = await loadImage("./vidGenAssets/grads/grad0.png");
+    const grad1 = await loadImage("./vidGenAssets/grads/grad1.png");
+    const grad2 = await loadImage("./vidGenAssets/grads/grad2.png");
+    const grad3 = await loadImage("./vidGenAssets/grads/grad3.png");
+    //const logo = await loadImage("./vidGenAssets/logo_transparent.png");
 
     // Clean up the temporary directories first
     for (const path of [outputPath]) {
@@ -88,20 +86,20 @@ export async function POST({ request }) {
     // Render each frame
     for (let i = 0; i < frameCount; i++) {
         const time = i / frameRate;
-    
+
         // clear canvas
-        // context.fillStyle = '#1f1f1f';
-        context.fillStyle = 'green';
+        /* context.fillStyle = '#1f1f1f'; */
+        context.fillStyle = "green";
         context.fillRect(0, 0, canvas.width, canvas.height);
-    
-        renderFrame(context, time, eventsTexts);
-    
+
+        renderFrame(context, time, eventsTexts, eventBottomPadding, grad0, grad1, grad2, grad3);
+
         // Store the image in the directory where it can be found by FFmpeg
         const output = canvas.toBuffer('image/png');
         const paddedNumber = String(i).padStart(4, '0');
         await fs.promises.writeFile(`${outputPath}/frame-${paddedNumber}.png`, output);
     }
-    
+
     const outputFile = `${outputPath}/video.mp4`;
     await stitchFramesToVideo(
         `${outputPath}/frame-%04d.png`,
@@ -113,32 +111,102 @@ export async function POST({ request }) {
     return new Response(JSON.stringify({ path: "outputFile", img: false }, { status: 200 }));
 }
 
-function renderFrame(context, time, eventsTexts) {
+function renderFrame(context, time, eventsTexts, eventBottomPadding, grad0, grad1, grad2, grad3) {
 
     context.fillStyle = "#d4d4d4";
+    context.lineWidth = 3;
+    context.strokeStyle = "#d4d4d4";
 
-    let anchorY = 100;
-    eventsTexts.forEach((eventText) =>{
-        /* const dateX = interpolateKeyframes([
-            { time: 0, value: 50 },
-            { time: eventEnd, value: -1500 }
+    const grad0X = interpolateKeyframes([
+        { time: 0, value: Math.floor(Math.random() * w)},
+        { time: duration, value: Math.floor(Math.random() * w)}
+    ], time);
+    const grad0Y = interpolateKeyframes([
+        { time: 0, value: Math.floor(Math.random() * h)},
+        { time: duration, value: Math.floor(Math.random() * h)}
+    ], time);
+    const grad1X = interpolateKeyframes([
+        { time: 0, value: Math.floor(Math.random() * w)},
+        { time: duration, value: Math.floor(Math.random() * w)}
+    ], time);
+    const grad1Y = interpolateKeyframes([
+        { time: 0, value: Math.floor(Math.random() * h)},
+        { time: duration, value: Math.floor(Math.random() * h)}
+    ], time);
+    const grad2X = interpolateKeyframes([
+        { time: 0, value: Math.floor(Math.random() * w)},
+        { time: duration, value: Math.floor(Math.random() * w)}
+    ], time);
+    const grad2Y = interpolateKeyframes([
+        { time: 0, value: Math.floor(Math.random() * h)},
+        { time: duration, value: Math.floor(Math.random() * h)}
+    ], time);
+    const grad3X = interpolateKeyframes([
+        { time: 0, value: Math.floor(Math.random() * w)},
+        { time: duration, value: Math.floor(Math.random() * w)}
+    ], time);
+    const grad3Y = interpolateKeyframes([
+        { time: 0, value: Math.floor(Math.random() * h)},
+        { time: duration, value: Math.floor(Math.random() * h)}
+    ], time);
+
+    context.drawImage(grad0, grad0X, grad0Y, 512, 384);
+    context.drawImage(grad1, grad1X, grad1Y, 512, 384);
+    context.drawImage(grad2, grad2X, grad2Y, 512, 384);
+    context.drawImage(grad3, grad3X, grad3Y, 512, 384);
+
+    let currTime = 0;
+
+    let currY = yBorder;
+    const dateToLabelSpacer = 60;
+
+    eventsTexts.forEach((eventText) => {
+        const lineY = currY - 40;
+        const lineStartX = w / 2;
+        const lineTimeStart = currTime + .35;
+        const lineTimeEnd = lineTimeStart + .4;
+
+        const xPosition = 50;
+
+        const length = currTime + 1;
+        
+        /* TODO find easing */
+        const lineLeftX = interpolateKeyframes([
+            { time: lineTimeStart, value: lineStartX },
+            { time: lineTimeEnd, value: xPosition }
         ], time);
-        const dateY = interpolateKeyframes([
-            { time: 0, value: -200 },
-            { time: eventContent, value: 200 }
-        ], time); */
+        const lineRightX = interpolateKeyframes([
+            { time: lineTimeStart, value: lineStartX },
+            { time: lineTimeEnd, value: w - xPosition }
+        ], time);
+        context.beginPath();
+        context.moveTo(lineStartX, lineY);
+        context.lineTo(lineLeftX, lineY);
+        context.moveTo(lineStartX, lineY);
+        context.lineTo(lineRightX, lineY);
+        context.stroke();
+
+        const dateX = interpolateKeyframes([
+            { time: currTime + .1, value: 1300 },
+            { time: length + .1, value: xPosition }
+        ], time, "inOutBack");
         context.font = "40px 'Karla Regular'";
         context.textAlign = "left";
         eventText.date.forEach(function (item) {
-            context.fillText(item[0], 100, anchorY + item[1]);
-        });
-        
-        context.font = "50px 'Neue Machina Regular'";
-        eventText.label.forEach(function (item) {
-            context.fillText(item[0], 100, anchorY + 50 + item[1]);
+            context.fillText(item[0], dateX, currY + item[1]);
         });
 
-        anchorY += 300;
+        const labelX = interpolateKeyframes([
+            { time: currTime, value: 1300 },
+            { time: length, value: xPosition }
+        ], time, "inOutBack");
+        context.font = "50px 'Neue Machina Regular'";
+        eventText.label.forEach(function (item) {
+            context.fillText(item[0], labelX, currY + dateToLabelSpacer + item[1]);
+        });
+
+        currY += eventBottomPadding + eventText.height;
+        currTime += .5;
     });
 
     /* if (logo != null) {
@@ -184,7 +252,7 @@ function getWrappedText(text, maxWidth, context, lineHeight) {
     return lineArray;
 }
 
-function interpolateKeyframes(keyframes, time) {
+function interpolateKeyframes(keyframes, time, easing = null) {
 
     const firstKeyframe = keyframes[0];
     if (time < firstKeyframe.time) return firstKeyframe.value;
@@ -201,14 +269,14 @@ function interpolateKeyframes(keyframes, time) {
     const keyframe2 = keyframes[index + 1];
 
     let t = (time - keyframe1.time) / (keyframe2.time - keyframe1.time);
-    t = easeInOutBack(t);
+    if (easing === "inOutBack") t = easeInOutBack(t);
 
     return keyframe1.value + (keyframe2.value - keyframe1.value) * t;
 }
 
 function easeInOutBack(x) {
-    const c1 = 1.70158;
-    const c2 = c1 * 1.525;
+    const c1 = 1.70158 * .75;
+    const c2 = c1 * 1.525 * .75;
 
     return x < 0.5
         ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2

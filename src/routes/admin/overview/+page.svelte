@@ -133,6 +133,9 @@
 	<!-- <img src="/dynamic/generator/testFrame.png" alt="test frame" width="342" height="607" /> -->
 {/if}
 
+<!-- TODO whole month testFrame -->
+<!-- TODO whole month 2 parts (in case of too much texts) -->
+
 <style>
 	img {
 		border: 2px solid red;
