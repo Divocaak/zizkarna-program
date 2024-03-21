@@ -7,13 +7,16 @@ import path from 'path';
 const outputPath = "dynamic/generator";
 
 // 30
-const frameRate = 5;
+const frameRate = 10;
 const w = 1080;
 const h = 1920;
 
 const duration = 15;
 
 const yBorder = 250;
+
+const eventStartShift = .5;
+const eventEndShift = .4;
 
 export async function POST({ request }) {
 
@@ -50,6 +53,27 @@ export async function POST({ request }) {
         ((h - yBorder - textsHeight[0]) / eventsTexts[0].length),
         data.halfSplit ? ((h - yBorder - textsHeight[1]) / eventsTexts[1].length) : null
     ];
+
+    const firstInLen = eventsTexts[0].length * eventStartShift;
+    const firstOutLen = eventsTexts[0].length * eventEndShift;
+    
+    const secondInLen = eventsTexts[1].length * eventStartShift;
+    const secondOutLen = eventsTexts[1].length * eventEndShift;
+
+    const firstHalfTimes = [
+        0,
+        (data.halfSplit ? 7.5 : 15) - firstOutLen
+    ];
+
+    const secondHalfTimes = data.halfSplit ? [
+        firstHalfTimes[1] + secondInLen,
+        15 - secondOutLen
+    ] : null;
+
+    console.log(`first (${eventsTexts[0].length}): `);
+    console.log(firstHalfTimes);
+    console.log(`second (${eventsTexts[1].length}): `);
+    console.log(secondHalfTimes);
 
     const gradients = [];
     for (let i = 0; i < 4; i++) {
@@ -140,40 +164,58 @@ function renderFrame(context, time, eventsTexts, eventBottomPadding, gradients, 
     context.fillText(label, (w / 2) + 2, 125); */
 
     renderAllTexts(context, time, dimPast, eventsTexts[0], eventBottomPadding[0], halfSplit);
-    if(halfSplit){
+    if (halfSplit) {
         renderAllTexts(context, time, dimPast, eventsTexts[1], eventBottomPadding[1], halfSplit, true);
     }
 }
 
-function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, halfSplit, secondHalf = false) {
-    let currentTextFadeInStart = 0;
-    let currentTextFadeOutStart = secondHalf ? 15 : 7.5;
+function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, halfSplit = false, secondHalf = false) {
+    const secondHalfFadeInStart = 7.5;
+    const firstHalfFadeOutStart = 7.5;
+    let currentTextFadeInStart = (!halfSplit || !secondHalf) ? 0 : secondHalfFadeInStart;
+    let currentTextFadeOutStart = (!halfSplit || !secondHalf) ? firstHalfFadeOutStart : 15;
 
     let currY = yBorder;
+
     const dateToLabelSpacer = 60;
+    const lineStartX = w / 2;
+    const xPosition = 50;
+    
+    context.lineWidth = 3;
 
     texts.forEach((eventText) => {
+        const lineY = currY - 40;
+        
+        const textFadeInStart = currentTextFadeInStart;
+        const textFadeInEnd = textFadeInStart + 1;
+        const textFadeOutStart = currentTextFadeOutStart;
+        const textFadeOutEnd = textFadeOutStart + 1;
+        
+        const lineFadeInStart = textFadeInStart + .35;
+        const lineFadeInEnd = lineFadeInStart + .4;
+        const lineFadeOutStart = textFadeOutStart;
+        const lineFadeOutEnd = lineFadeOutStart + .4;
+        
+        const dateFadeInStart = textFadeInStart + .1;
+        const dateFadeInEnd = textFadeInEnd + .1;
+        const dateFadeOutStart = textFadeOutStart + .1;
+        const dateFadeOutEnd = textFadeOutEnd + .1;
+
         context.fillStyle = (eventText.past && dimPast) ? "#7f7f7f" : "#d4d4d4";
         context.strokeStyle = (eventText.past && dimPast) ? "#7f7f7f" : "#d4d4d4";
-        context.lineWidth = 3;
-
-        const lineY = currY - 40;
-        const lineStartX = w / 2;
-        const lineFadeInStart = currentTextFadeInStart + .35;
-        const lineFadeInEnd = lineFadeInStart + .4;
-
-        const xPosition = 50;
-
-        const textFadeInEnd = currentTextFadeInStart + 1;
-
+        
         /* TODO find easing */
         const lineLeftX = interpolateKeyframes([
             { time: lineFadeInStart, value: lineStartX },
-            { time: lineFadeInEnd, value: xPosition }
+            { time: lineFadeInEnd, value: xPosition },
+            { time: lineFadeOutStart, value: xPosition },
+            { time: lineFadeOutEnd, value: lineStartX }
         ], time);
         const lineRightX = interpolateKeyframes([
             { time: lineFadeInStart, value: lineStartX },
-            { time: lineFadeInEnd, value: w - xPosition }
+            { time: lineFadeInEnd, value: w - xPosition },
+            { time: lineFadeOutStart, value: w - xPosition },
+            { time: lineFadeOutEnd, value: lineStartX }
         ], time);
         context.beginPath();
         context.moveTo(lineStartX, lineY);
@@ -183,8 +225,10 @@ function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, halfS
         context.stroke();
 
         const dateX = interpolateKeyframes([
-            { time: currentTextFadeInStart + .1, value: 1300 },
-            { time: textFadeInEnd + .1, value: xPosition }
+            { time: dateFadeInStart, value: 1300 },
+            { time: dateFadeInEnd, value: xPosition },
+            { time: dateFadeOutStart, value: xPosition },
+            { time: dateFadeOutEnd, value: -1000 }
         ], time, "inOutBack");
         context.font = "40px 'Karla Regular'";
         context.textAlign = "left";
@@ -193,8 +237,10 @@ function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, halfS
         });
 
         const labelX = interpolateKeyframes([
-            { time: currentTextFadeInStart, value: 1300 },
-            { time: textFadeInEnd, value: xPosition }
+            { time: textFadeInStart, value: 1300 },
+            { time: textFadeInEnd, value: xPosition },
+            { time: textFadeOutStart, value: xPosition },
+            { time: textFadeOutEnd, value: -1000 },
         ], time, "inOutBack");
         context.font = "50px 'Neue Machina Regular'";
         eventText.label.forEach(function (item) {
@@ -202,7 +248,8 @@ function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, halfS
         });
 
         currY += eventBottomPadding + eventText.height;
-        currentTextFadeInStart += .5;
+        currentTextFadeInStart += eventStartShift;
+        currentTextFadeOutStart += eventEndShift;
     });
 }
 
