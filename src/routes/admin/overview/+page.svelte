@@ -2,7 +2,8 @@
 	import { writable } from 'svelte/store';
 
 	const isLoading = writable(null);
-	const isMonth = writable(true);
+	const isImage = writable(false);
+	const isMonth = writable(false);
 	const changeOutput = (newVal) => isMonth.set(newVal);
 
 	const now = new Date();
@@ -31,9 +32,10 @@
 				formData.selectedDate.length
 			);
 
-			const apiPath = $isMonth
+			/* NOTE */
+			const apiPath = `/api/events/listOverviewMonth?year=2023&month=9`; /* $isMonth
 				? `/api/events/listOverviewMonth?year=${year}&month=${monthOrWeek}`
-				: `/api/events/listOverviewWeek?year=${year}&week=${monthOrWeek}`;
+				: `/api/events/listOverviewWeek?year=${year}&week=${monthOrWeek}`; */
 			const events = await fetch(apiPath);
 			let eventsData = await events.json();
 			eventsData.forEach((event) => {
@@ -46,17 +48,32 @@
 				});
 			});
 
+			const label = $isMonth
+				? new Date(2000, monthOrWeek - 1, 1)
+						.toLocaleString('cs-CZ', { month: 'long' })
+						.toUpperCase()
+				: 'TENTO TÝDEN';
+
 			const response = await fetch('/api/overviewGenerator/', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ events: eventsData, outputFormat: formData.outputFormat })
+				body: JSON.stringify({
+					events: eventsData,
+					label: label,
+					outputFormat: formData.outputFormat,
+					dimPast: formData.dimPast,
+					testFrame: formData.testFrame,
+					/* NOTE */
+					halfSplit: true // formData.halfSplit
+				})
 			});
 
 			const result = await response.json();
 
 			isLoading.set(false);
+			isImage.set(result.img);
 
-			return 'pls'; //result.path;
+			return result.path;
 		} catch (error) {
 			console.error('Error:', error);
 		} finally {
@@ -77,20 +94,8 @@
 			name="outputFormat"
 			value="month"
 			required
-			checked
 		/>
-		ig post <b>měsíc</b>
-	</label><br />
-	<label for="outputFormatMonthStory">
-		<input
-			on:change={() => changeOutput(true)}
-			type="radio"
-			id="outputFormatMonthStory"
-			name="outputFormat"
-			value="monthStory"
-			required
-		/>
-		ig story <b>měsíc</b> <i>(vyškrtaný)</i>
+		celý měsíc
 	</label><br />
 	<label for="outputFormatWeek">
 		<input
@@ -100,8 +105,9 @@
 			name="outputFormat"
 			value="week"
 			required
+			checked
 		/>
-		ig story <b>týden</b>
+		týden
 	</label><br />
 	<br />
 	{#if $isMonth === true}
@@ -115,12 +121,25 @@
 				value={`${currentYear}-${currentMonth}`}
 			/>
 		</label><br />
+		<label for="halfSplit">
+			<input type="checkbox" id="halfSplit" name="halfSplit" />
+			rozdělit v půlce na dvě části
+		</label><br />
 	{:else}
 		<label for="week">
 			týden
 			<input type="week" id="week" name="selectedDate" required value={currentWeek} />
 		</label><br />
 	{/if}
+	<br />
+	<label for="dimPast">
+		<input type="checkbox" id="dimPast" name="dimPast" checked />
+		zatmavit uplynulé akce
+	</label><br />
+	<label for="testFrame">
+		<input type="checkbox" id="testFrame" name="testFrame" />
+		testframe
+	</label><br />
 	<br /><button type="submit">generate</button>
 </form>
 
@@ -130,11 +149,17 @@
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
 {:else}
-	<!-- <img src="/dynamic/generator/testFrame.png" alt="test frame" width="342" height="607" /> -->
+	<!-- prettier-ignore -->
+	{#if $isImage}
+		<img src="/dynamic/generator/testFrame.png" alt="test frame" width="342" height="607"/>
+	{:else}
+		<a href="/dynamic/generator/video.mp4" target="_blank" download="video.mp4">stáhnout video</a><br />
+		<!-- svelte-ignore a11y-media-has-caption -->
+		<video width="342" height="607" autoplay loop>
+			<source src="/dynamic/generator/video.mp4" type="video/mp4" />
+		</video><br />
+	{/if}
 {/if}
-
-<!-- TODO whole month testFrame -->
-<!-- TODO whole month 2 parts (in case of too much texts) -->
 
 <style>
 	img {
