@@ -7,11 +7,9 @@ import path from 'path';
 const outputPath = "dynamic/generator";
 
 // 30
-const frameRate = 10;
+const frameRate = 30;
 const w = 1080;
 const h = 1920;
-
-const duration = 15;
 
 const yBorder = 250;
 
@@ -24,17 +22,21 @@ export async function POST({ request }) {
     registerFont(path.resolve("./vidGenAssets/karla.ttf"), { family: 'Karla Regular' });
     ffmpeg.setFfmpegPath(ffmpegStatic);
 
+    const data = await request.json();
+
+    const duration = data.duration;
+
     const frameCount = Math.floor(duration * frameRate);
     const canvas = new Canvas(w, h);
     const context = canvas.getContext('2d');
 
-    const data = await request.json();
-
-    let textsHeight = [0, 0];
+    const textsHeight = [0, 0];
     const eventsTexts = [[], []];
 
     const middleIndex = Math.floor(data.events.length / 2);
     const finalMiddleIndex = data.events.length % 2 === 0 ? middleIndex : middleIndex + 1;
+
+    const legalHalfSplit = data.halfSplit && data.events.length > 1;
 
     data.events.forEach((eventData, index) => {
         const { date, label, past, tickets } = eventData;
@@ -44,52 +46,31 @@ export async function POST({ request }) {
         const labelWrapped = getWrappedText(label, 170, context, labelLineHeight);
         const height = (dateWrapped.length * dateLineHeight) + (labelWrapped.length * labelLineHeight);
 
-        const halfsIndex = !data.halfSplit || (index < finalMiddleIndex && data.halfSplit) ? 0 : 1;
+        const halfsIndex = !legalHalfSplit || (index < finalMiddleIndex && legalHalfSplit) ? 0 : 1;
         textsHeight[halfsIndex] += height;
         eventsTexts[halfsIndex].push({ date: dateWrapped, label: labelWrapped, height, past });
     });
-    /* TODO if there is still space under the last text, add the space to the top (eg only one event, shift everything more to the center) */
+
+    const usableVerticalSpace = h - yBorder;
     const eventBottomPadding = [
-        ((h - yBorder - textsHeight[0]) / eventsTexts[0].length),
-        data.halfSplit ? ((h - yBorder - textsHeight[1]) / eventsTexts[1].length) : null
+        ((usableVerticalSpace - textsHeight[0]) / eventsTexts[0].length),
+        legalHalfSplit ? ((usableVerticalSpace - textsHeight[1]) / eventsTexts[1].length) : null
     ];
 
     const firstOutDuration = eventsTexts[0].length * eventEndShift;
+    const firstInDuration = eventsTexts[0].length * eventStartShift;
     const firstHalfTimes = {
         inStart: 0,
-        inDuration: eventsTexts[0].length * eventStartShift,
-        outStart: duration - firstOutDuration,
-        outDuration: firstOutDuration
+        outStart: duration - firstOutDuration
     };
-    console.log(`BEFORE SPLIT CHECK first (${eventsTexts[0].length} events to display): `);
-    console.log(firstHalfTimes);
 
-    if (data.halfSplit) {
-        
-        const secondInDuration = eventsTexts[1].length * eventStartShift
-        const secondOutDuration = eventsTexts[1].length * eventEndShift;
-        
-        const contentLenPerSection = (duration - firstHalfTimes.inDuration - (data.halfSplit ? secondOutDuration : firstHalfTimes.outDuration) - secondInDuration) / 2;
-        console.log("===================");
-        console.log(`contentLenPerSection: ${contentLenPerSection}\n`);
-        
-        firstHalfTimes.outStart = firstHalfTimes.inStart + firstHalfTimes.inDuration + contentLenPerSection;
-
+    if (legalHalfSplit) {
+        const contentLenPerSection = (duration - firstInDuration - (eventsTexts[1].length * (eventEndShift + eventStartShift))) / 2;
+        firstHalfTimes.outStart = firstHalfTimes.inStart + firstInDuration + contentLenPerSection;
         var secondHalfTimes = {
             inStart: firstHalfTimes.outStart,
-            inDuration: secondInDuration,
-            outStart: firstHalfTimes.outStart + firstHalfTimes.outDuration + contentLenPerSection,
-            outDuration: secondOutDuration
+            outStart: firstHalfTimes.outStart + firstOutDuration + contentLenPerSection,
         };
-        console.log(`first (${eventsTexts[0].length} events to display): `);
-        console.log(firstHalfTimes);
-        console.log("---------------------");
-        console.log(`second (${eventsTexts[1].length}): `);
-        console.log(secondHalfTimes);
-
-        console.log("===================");
-        console.log(`first content len: ${firstHalfTimes.outStart - firstHalfTimes.inStart - firstHalfTimes.inDuration}`);
-        console.log(`second content len: ${secondHalfTimes.outStart - secondHalfTimes.inStart - secondHalfTimes.inDuration}`);
     }
 
     const gradients = [];
@@ -99,11 +80,12 @@ export async function POST({ request }) {
         const gradH = 384 * sizeFactor;
         gradients.push({
             img: await loadImage(`./vidGenAssets/grads/grad${i}.png`),
-            /* TODO subtract half of compted w from x (and h from y ) to preserve visibility */
-            xStart: Math.floor(Math.random() * w),
-            xEnd: Math.floor(Math.random() * w),
-            yStart: Math.floor(Math.random() * h),
-            yEnd: Math.floor(Math.random() * h),
+            xStart: Math.floor(Math.random() * (w + gradW + 1)) - gradW,
+            xMid: Math.floor(Math.random() * (w + gradW + 1)) - gradW,
+            xEnd: Math.floor(Math.random() * (w + gradW + 1)) - gradW,
+            yStart: Math.floor(Math.random() * (h + gradH + 1)) - gradH,
+            yMid: Math.floor(Math.random() * (h + gradH + 1)) - gradH,
+            yEnd: Math.floor(Math.random() * (h + gradH + 1)) - gradH,
             w: gradW,
             h: gradH
         });
@@ -121,7 +103,7 @@ export async function POST({ request }) {
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        renderFrame(context, 10, eventsTexts, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, data.halfSplit);
+        renderFrame(context, 6, duration, eventsTexts, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes);
 
         const outputFile = `${outputPath}/testFrame.png`;
         const output = canvas.toBuffer('image/png');
@@ -138,7 +120,7 @@ export async function POST({ request }) {
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        renderFrame(context, time, eventsTexts, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, data.halfSplit);
+        renderFrame(context, time, duration, eventsTexts, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes);
 
         // Store the image in the directory where it can be found by FFmpeg
         const output = canvas.toBuffer('image/png');
@@ -157,18 +139,21 @@ export async function POST({ request }) {
     return new Response(JSON.stringify({ path: "outputFile", img: false }, { status: 200 }));
 }
 
-function renderFrame(context, time, eventsTexts, eventBottomPadding, gradients, noise, logo, label, dimPast, halfSplit) {
-    /* TODO find easing */
-    /* gradients.forEach(gradient => {
+function renderFrame(context, time, duration, eventsTexts, eventBottomPadding, gradients, noise, logo, label, dimPast, firstTimes, secondTimes = null) {
+    let gradientMiddleTimeOffset = -2;
+    gradients.forEach(gradient => {
         const x = interpolateKeyframes([
             { time: 0, value: gradient.xStart },
+            { time: (duration / 2) + gradientMiddleTimeOffset, value: gradient.xMid },
             { time: duration, value: gradient.xEnd }
-        ], time);
+        ], time, "inOutBack");
         const y = interpolateKeyframes([
             { time: 0, value: gradient.yStart },
+            { time: (duration / 2) + gradientMiddleTimeOffset, value: gradient.yMid },
             { time: duration, value: gradient.yEnd }
-        ], time);
-        context.drawImage(gradient.img, x, y, w, h);
+        ], time, "inOutBack");
+        context.drawImage(gradient.img, x, y, gradient.w, gradient.h);
+        gradientMiddleTimeOffset++;
     });
     context.drawImage(noise, 0, 0, w, h);
 
@@ -178,21 +163,19 @@ function renderFrame(context, time, eventsTexts, eventBottomPadding, gradients, 
     context.font = "80px 'Neue Machina Regular'";
     context.textAlign = "center";
     context.fillText(label, w / 2, 125);
-    context.fillText(label, (w / 2) + 2, 125); */
+    context.fillText(label, (w / 2) + 2, 125);
 
-    renderAllTexts(context, time, dimPast, eventsTexts[0], eventBottomPadding[0], halfSplit);
-    if (halfSplit) {
-        renderAllTexts(context, time, dimPast, eventsTexts[1], eventBottomPadding[1], halfSplit, true);
+    renderAllTexts(context, time, dimPast, eventsTexts[0], eventBottomPadding[0], firstTimes);
+    if (secondTimes) {
+        renderAllTexts(context, time, dimPast, eventsTexts[1], eventBottomPadding[1], secondTimes);
     }
 }
 
-function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, halfSplit = false, secondHalf = false) {
-    const secondHalfFadeInStart = 7.5;
-    const firstHalfFadeOutStart = 7.5;
-    let currentTextFadeInStart = (!halfSplit || !secondHalf) ? 0 : secondHalfFadeInStart;
-    let currentTextFadeOutStart = (!halfSplit || !secondHalf) ? firstHalfFadeOutStart : 15;
+function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, times) {
+    let currentTextFadeInStart = times.inStart;
+    let currentTextFadeOutStart = times.outStart;
 
-    let currY = yBorder;
+    let currY = yBorder + (eventBottomPadding / 2);
 
     const dateToLabelSpacer = 60;
     const lineStartX = w / 2;
@@ -200,7 +183,8 @@ function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, halfS
 
     context.lineWidth = 3;
 
-    texts.forEach((eventText) => {
+    texts.forEach((eventText, i) => {
+
         const lineY = currY - 40;
 
         const textFadeInStart = currentTextFadeInStart;
@@ -221,19 +205,18 @@ function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, halfS
         context.fillStyle = (eventText.past && dimPast) ? "#7f7f7f" : "#d4d4d4";
         context.strokeStyle = (eventText.past && dimPast) ? "#7f7f7f" : "#d4d4d4";
 
-        /* TODO find easing */
         const lineLeftX = interpolateKeyframes([
             { time: lineFadeInStart, value: lineStartX },
             { time: lineFadeInEnd, value: xPosition },
             { time: lineFadeOutStart, value: xPosition },
             { time: lineFadeOutEnd, value: lineStartX }
-        ], time);
+        ], time, "easeInOutQuint");
         const lineRightX = interpolateKeyframes([
             { time: lineFadeInStart, value: lineStartX },
             { time: lineFadeInEnd, value: w - xPosition },
             { time: lineFadeOutStart, value: w - xPosition },
             { time: lineFadeOutEnd, value: lineStartX }
-        ], time);
+        ], time, "easeInOutQuint");
         context.beginPath();
         context.moveTo(lineStartX, lineY);
         context.lineTo(lineLeftX, lineY);
@@ -313,6 +296,7 @@ function interpolateKeyframes(keyframes, time, easing = null) {
 
     let t = (time - keyframe1.time) / (keyframe2.time - keyframe1.time);
     if (easing === "inOutBack") t = easeInOutBack(t);
+    else if (easing === "easeInOutQuint") t = easeInOutQuint(t);
 
     return keyframe1.value + (keyframe2.value - keyframe1.value) * t;
 }
@@ -325,6 +309,8 @@ function easeInOutBack(x) {
         ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
         : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
 }
+
+const easeInOutQuint = (x) => x < 0.5 ? 16 * x * x * x * x * x : 1 - Math.pow(-2 * x + 2, 5) / 2;
 
 async function stitchFramesToVideo(
     framesFilepath,

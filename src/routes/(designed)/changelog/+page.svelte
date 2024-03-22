@@ -2,7 +2,12 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
-# TODO
+# TODO _DATE
+
+## přidáno
+- generátor akcí na měsíc (story a reel)
+- generátor akcí na týden (story a reel)
+
 
 ## přidáno
 - nadpis k ig story generátoru

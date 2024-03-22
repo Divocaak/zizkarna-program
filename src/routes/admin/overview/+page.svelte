@@ -32,10 +32,9 @@
 				formData.selectedDate.length
 			);
 
-			/* NOTE */
-			const apiPath = `/api/events/listOverviewMonth?year=2023&month=9`; /* $isMonth
+			const apiPath = $isMonth
 				? `/api/events/listOverviewMonth?year=${year}&month=${monthOrWeek}`
-				: `/api/events/listOverviewWeek?year=${year}&week=${monthOrWeek}`; */
+				: `/api/events/listOverviewWeek?year=${year}&week=${monthOrWeek}`;
 			const events = await fetch(apiPath);
 			let eventsData = await events.json();
 			eventsData.forEach((event) => {
@@ -63,8 +62,8 @@
 					outputFormat: formData.outputFormat,
 					dimPast: formData.dimPast,
 					testFrame: formData.testFrame,
-					/* NOTE */
-					halfSplit: true // formData.halfSplit
+					halfSplit: formData.halfSplit,
+					duration: formData.outputDuration
 				})
 			});
 
@@ -86,17 +85,6 @@
 <a href="/admin">zpět</a><br />
 <br />
 <form method="POST" on:submit={handleSubmit}>
-	<label for="outputFormatMonth">
-		<input
-			on:change={() => changeOutput(true)}
-			type="radio"
-			id="outputFormatMonth"
-			name="outputFormat"
-			value="month"
-			required
-		/>
-		celý měsíc
-	</label><br />
 	<label for="outputFormatWeek">
 		<input
 			on:change={() => changeOutput(false)}
@@ -109,7 +97,20 @@
 		/>
 		týden
 	</label><br />
-	<br />
+	<label for="outputFormatMonth">
+		<input
+			on:change={() => changeOutput(true)}
+			type="radio"
+			id="outputFormatMonth"
+			name="outputFormat"
+			value="month"
+			required
+		/>
+		celý měsíc
+	</label>
+
+	<br /><br />
+
 	{#if $isMonth === true}
 		<label for="month">
 			měsíc
@@ -120,22 +121,38 @@
 				required
 				value={`${currentYear}-${currentMonth}`}
 			/>
-		</label><br />
-		<label for="halfSplit">
-			<input type="checkbox" id="halfSplit" name="halfSplit" />
-			rozdělit v půlce na dvě části
-		</label><br />
+		</label>
 	{:else}
 		<label for="week">
 			týden
 			<input type="week" id="week" name="selectedDate" required value={currentWeek} />
-		</label><br />
+		</label>
 	{/if}
-	<br />
+
+	<br /><br />
+
+	<label for="outputDurationStory">
+		<input type="radio" id="outputDurationStory" name="outputDuration" value="8" required checked />
+		8 sekund (story)
+	</label><br />
+	<label for="outputDurationReel">
+		<input type="radio" id="outputDurationReel" name="outputDuration" value="15" required />
+		15 sekund (reel)
+	</label>
+
+	<br /><br />
+
 	<label for="dimPast">
 		<input type="checkbox" id="dimPast" name="dimPast" checked />
 		zatmavit uplynulé akce
 	</label><br />
+	<label for="halfSplit">
+		<input type="checkbox" id="halfSplit" name="halfSplit" />
+		rozdělit v půlce na dvě části
+	</label>
+
+	<br /><br />
+
 	<label for="testFrame">
 		<input type="checkbox" id="testFrame" name="testFrame" />
 		testframe
