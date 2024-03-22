@@ -7,6 +7,14 @@
 ## přidáno
 - generátor akcí na měsíc (story a reel)
 - generátor akcí na týden (story a reel)
+- TikTok je nově podporován jako kapelní odkaz (nastylováno)
+- žž presskit (odkazy, loga, prezentace) v info sekci
+
+## upraveno
+- navbar odkaz na dramaturgii přepsán na Info
+
+## odebráno
+- tel. číslo na dramaturgii
 
 
 ## přidáno
