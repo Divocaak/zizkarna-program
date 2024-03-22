@@ -54,26 +54,43 @@ export async function POST({ request }) {
         data.halfSplit ? ((h - yBorder - textsHeight[1]) / eventsTexts[1].length) : null
     ];
 
-    const firstInLen = eventsTexts[0].length * eventStartShift;
-    const firstOutLen = eventsTexts[0].length * eventEndShift;
-    
-    const secondInLen = eventsTexts[1].length * eventStartShift;
-    const secondOutLen = eventsTexts[1].length * eventEndShift;
-
-    const firstHalfTimes = [
-        0,
-        (data.halfSplit ? 7.5 : 15) - firstOutLen
-    ];
-
-    const secondHalfTimes = data.halfSplit ? [
-        firstHalfTimes[1] + secondInLen,
-        15 - secondOutLen
-    ] : null;
-
-    console.log(`first (${eventsTexts[0].length}): `);
+    const firstOutDuration = eventsTexts[0].length * eventEndShift;
+    const firstHalfTimes = {
+        inStart: 0,
+        inDuration: eventsTexts[0].length * eventStartShift,
+        outStart: duration - firstOutDuration,
+        outDuration: firstOutDuration
+    };
+    console.log(`BEFORE SPLIT CHECK first (${eventsTexts[0].length} events to display): `);
     console.log(firstHalfTimes);
-    console.log(`second (${eventsTexts[1].length}): `);
-    console.log(secondHalfTimes);
+
+    if (data.halfSplit) {
+        
+        const secondInDuration = eventsTexts[1].length * eventStartShift
+        const secondOutDuration = eventsTexts[1].length * eventEndShift;
+        
+        const contentLenPerSection = (duration - firstHalfTimes.inDuration - (data.halfSplit ? secondOutDuration : firstHalfTimes.outDuration) - secondInDuration) / 2;
+        console.log("===================");
+        console.log(`contentLenPerSection: ${contentLenPerSection}\n`);
+        
+        firstHalfTimes.outStart = firstHalfTimes.inStart + firstHalfTimes.inDuration + contentLenPerSection;
+
+        var secondHalfTimes = {
+            inStart: firstHalfTimes.outStart,
+            inDuration: secondInDuration,
+            outStart: firstHalfTimes.outStart + firstHalfTimes.outDuration + contentLenPerSection,
+            outDuration: secondOutDuration
+        };
+        console.log(`first (${eventsTexts[0].length} events to display): `);
+        console.log(firstHalfTimes);
+        console.log("---------------------");
+        console.log(`second (${eventsTexts[1].length}): `);
+        console.log(secondHalfTimes);
+
+        console.log("===================");
+        console.log(`first content len: ${firstHalfTimes.outStart - firstHalfTimes.inStart - firstHalfTimes.inDuration}`);
+        console.log(`second content len: ${secondHalfTimes.outStart - secondHalfTimes.inStart - secondHalfTimes.inDuration}`);
+    }
 
     const gradients = [];
     for (let i = 0; i < 4; i++) {
@@ -180,22 +197,22 @@ function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, halfS
     const dateToLabelSpacer = 60;
     const lineStartX = w / 2;
     const xPosition = 50;
-    
+
     context.lineWidth = 3;
 
     texts.forEach((eventText) => {
         const lineY = currY - 40;
-        
+
         const textFadeInStart = currentTextFadeInStart;
         const textFadeInEnd = textFadeInStart + 1;
         const textFadeOutStart = currentTextFadeOutStart;
         const textFadeOutEnd = textFadeOutStart + 1;
-        
+
         const lineFadeInStart = textFadeInStart + .35;
         const lineFadeInEnd = lineFadeInStart + .4;
         const lineFadeOutStart = textFadeOutStart;
         const lineFadeOutEnd = lineFadeOutStart + .4;
-        
+
         const dateFadeInStart = textFadeInStart + .1;
         const dateFadeInEnd = textFadeInEnd + .1;
         const dateFadeOutStart = textFadeOutStart + .1;
@@ -203,7 +220,7 @@ function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, halfS
 
         context.fillStyle = (eventText.past && dimPast) ? "#7f7f7f" : "#d4d4d4";
         context.strokeStyle = (eventText.past && dimPast) ? "#7f7f7f" : "#d4d4d4";
-        
+
         /* TODO find easing */
         const lineLeftX = interpolateKeyframes([
             { time: lineFadeInStart, value: lineStartX },
