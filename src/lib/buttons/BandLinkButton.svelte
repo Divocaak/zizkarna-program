@@ -8,13 +8,14 @@
 		Facebook: 'Facebook',
 		Instagram: 'Instagram',
 		SoundCloud: 'SoundCloud',
-		TikTok: "TikTok",
+		TikTok: 'TikTok',
 		Other: 'Jiný odkaz'
 	};
 
 	export let link;
 	export let eventLabel = '';
 	export let bandName = '';
+	export let zztvFromEvent = false;
 
 	export let isZizkarnaTV = false;
 
@@ -68,7 +69,12 @@
 
 <AnalyticsButtonWrapper event={analyticsEvent} data={analyticsData}>
 	<a href={link} class="btn btn-outline-secondary mt-1 me-1 {typeInfo.class} karla" target="_blank">
-		<i class="bi {typeInfo.icon} pe-2" />{type === Types.Other ? tmp : type}
+		<i class="bi {typeInfo.icon} pe-2" />
+		{#if zztvFromEvent}
+			Záznam z koncertu
+		{:else}
+			{type === Types.Other ? tmp : type}
+		{/if}
 	</a>
 </AnalyticsButtonWrapper>
 

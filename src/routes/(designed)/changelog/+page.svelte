@@ -11,13 +11,17 @@
 - žž presskit (odkazy, loga, prezentace) v info sekci
 - schéma db přidáno na admin homepage pro snažší pochopení a vysvětlování :)
 - YT playlist pole v databázi u eventu, přidána položka do formulářů (edit a create event)
+- YT btn ke kartě i detailu akce (pokud existuje odkaz na záznam v db)
 
 ## upraveno
 - navbar odkaz na dramaturgii přepsán na Info
 - hlavička tabulky v seznamu eventů
+- textace vstup zdarma
+- zzTV stránka se dynamicky naplňuje z odkazů na playlisty u jednotlivých eventů v databázi
 
 ## odebráno
 - tel. číslo na dramaturgii
+- tlačítko na předprodej u uplynulých akcí
 
 
 # 4. 3. 24

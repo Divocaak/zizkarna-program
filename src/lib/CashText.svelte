@@ -6,7 +6,7 @@
 <p class="karla">
 	<i class="bi bi-ticket-perforated pe-2" />
 	{#if cash == 0}
-		bez vstupného
+		vstup zdarma
 	{:else}
 		{cash},-&nbsp;Kč {#if presale != null}(na místě){/if}
 	{/if}

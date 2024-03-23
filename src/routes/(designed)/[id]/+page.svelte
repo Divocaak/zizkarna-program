@@ -67,14 +67,22 @@
 	<div class="row my-5 text-center" style="font-size:1.2rem">
 		<div class="col-12 col-md-6">
 			<FacebookEventButton fbEvent={event.fbEvent} label={event.label} />
-			<TicketsButton tickets={event.tickets} label={event.label} />
+			{#if !isPast}<TicketsButton tickets={event.tickets} label={event.label} />{/if}
 			<ShareButton label={event.label} past={isPast} />
 		</div>
-		{#if !isPast}
-			<div class="mt-3 mt-md-0 col-12 col-md-6">
+		<div class="mt-3 mt-md-0 col-12 col-md-6">
+			{#if !isPast}
 				<AddToCalButtons label={event.label} date={event.date} doors={event.doors} />
-			</div>
-		{/if}
+			{/if}
+			{#if event.youtube != null}
+				<BandLinkButton
+					link={event.youtube}
+					eventLabel={'zztv-from-event-card'}
+					bandName={event.label}
+					zztvFromEvent={true}
+				/>
+			{/if}
+		</div>
 	</div>
 	{#if event.description != null}
 		<p class="karla">

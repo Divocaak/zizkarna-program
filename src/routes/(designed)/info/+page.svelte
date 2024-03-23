@@ -1,5 +1,5 @@
 <script>
-	import BandLinkButton from "../../../lib/buttons/BandLinkButton.svelte";
+	import BandLinkButton from "$lib/buttons/BandLinkButton.svelte";
 
 </script>
 <svelte:head>
