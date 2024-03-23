@@ -135,6 +135,16 @@
 			>{data != null && data.description != null ? data.description : null}</textarea
 		>
 	</label><br />
+	<label for="yt">
+		odkaz na yt playlist (max 128)
+		<input
+			type="text"
+			id="yt"
+			name="yt"
+			maxlength="128"
+			value={data != null && data.youtube != null ? data.youtube : null}
+		/>
+	</label><br />
 	<label for="is_visible">
 		zveřejnit?
 		<input

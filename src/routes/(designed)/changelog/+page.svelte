@@ -10,19 +10,20 @@
 - TikTok je nově podporován jako kapelní odkaz (nastylováno)
 - žž presskit (odkazy, loga, prezentace) v info sekci
 - schéma db přidáno na admin homepage pro snažší pochopení a vysvětlování :)
+- YT playlist pole v databázi u eventu, přidána položka do formulářů (edit a create event)
 
 ## upraveno
 - navbar odkaz na dramaturgii přepsán na Info
+- hlavička tabulky v seznamu eventů
 
 ## odebráno
 - tel. číslo na dramaturgii
 
 
+# 4. 3. 24
+
 ## přidáno
 - nadpis k ig story generátoru
-
-
-# 4. 3. 24
 
 ## upraveno
 - framerate boost

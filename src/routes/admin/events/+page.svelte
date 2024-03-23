@@ -13,11 +13,22 @@
 <h1>seznam událostí</h1>
 <a href="/admin">zpět</a><br />
 <a href="/admin/events/add">vytvořit</a>
-<table class="admin-table">
+<table class="admin-table" style="margin-top:20px">
+	<thead>
+		<tr>
+			<th scope="col">id (prog.)</th>
+			<th scope="col">datum + dveře</th>
+			<th scope="col">👁️</th>
+			<th scope="col"></th>
+			<th scope="col"></th>
+			<th scope="col"></th>
+			<th scope="col">Místo | Online</th>
+		  </tr>
+	</thead>
 	{#each data.events as event}
 		<tr>
 			<td>
-				<b>{event.id}</b>
+				<a href="/{event.id}"><b>{event.id}</b></a>
 			</td>
 			<td style="background: {dateColor(event.date)}">
 				{new Date(event.date).toLocaleDateString('cs-CZ', {})}, {event.doors}
@@ -40,7 +51,11 @@
 				{/if}
 			</td>
 			<td>
-				<a href="/{event.id}">prog</a>
+				{#if event.youtube != null}
+					<a href={event.youtube} style="color:green" target="_blank">YT</a>
+				{:else}
+					<span style="color:darkred"><b>YT</b></span>
+				{/if}
 			</td>
 			<td>
 				{event.cash}{#if event.tickets != null}&nbsp;|&nbsp;<span style="color:cyan">{event.presalePrice}</span>{/if}
