@@ -9,6 +9,7 @@
 - generátor akcí na týden (story a reel)
 - TikTok je nově podporován jako kapelní odkaz (nastylováno)
 - žž presskit (odkazy, loga, prezentace) v info sekci
+- schéma db přidáno na admin homepage pro snažší pochopení a vysvětlování :)
 
 ## upraveno
 - navbar odkaz na dramaturgii přepsán na Info
