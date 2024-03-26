@@ -3,8 +3,12 @@
 
 	const isLoading = writable(null);
 	const isImage = writable(false);
+
 	const isMonth = writable(false);
 	const changeOutput = (newVal) => isMonth.set(newVal);
+
+	const isOffline = writable(false);
+	const changeOffline = (newVal) => isOffline.set(newVal);
 
 	const now = new Date();
 	const currentYear = now.getFullYear();
@@ -131,32 +135,71 @@
 
 	<br /><br />
 
+	<label for="outputDurationPoster">
+		<input
+			on:change={() => changeOffline(true)}
+			type="radio"
+			id="outputDurationPoster"
+			name="outputDuration"
+			value="a4"
+			required
+		/>
+		0 sekund, a4, 300 PPI/DPI (plakát)
+	</label><br />
+	<label for="outputDurationTarp">
+		<input
+			on:change={() => changeOffline(true)}
+			type="radio"
+			id="outputDurationTarp"
+			name="outputDuration"
+			value="a2"
+			required
+		/>
+		0 sekund, a2, 300 PPI/DPI (plachta (venkovní tabule))
+	</label><br />
 	<label for="outputDurationStory">
-		<input type="radio" id="outputDurationStory" name="outputDuration" value="8" required checked />
+		<input
+			on:change={() => changeOffline(false)}
+			type="radio"
+			id="outputDurationStory"
+			name="outputDuration"
+			value="8"
+			required
+			checked
+		/>
 		8 sekund (story)
 	</label><br />
 	<label for="outputDurationReel">
-		<input type="radio" id="outputDurationReel" name="outputDuration" value="15" required />
+		<input
+			on:change={() => changeOffline(false)}
+			type="radio"
+			id="outputDurationReel"
+			name="outputDuration"
+			value="15"
+			required
+		/>
 		15 sekund (reel)
 	</label>
 
 	<br /><br />
 
-	<label for="dimPast">
-		<input type="checkbox" id="dimPast" name="dimPast" checked />
-		zatmavit uplynulé akce
-	</label><br />
-	<label for="halfSplit">
-		<input type="checkbox" id="halfSplit" name="halfSplit" />
-		rozdělit v půlce na dvě části
-	</label>
+	{#if !$isOffline}
+		<label for="dimPast">
+			<input type="checkbox" id="dimPast" name="dimPast" checked />
+			zatmavit uplynulé akce
+		</label><br />
+		<label for="halfSplit">
+			<input type="checkbox" id="halfSplit" name="halfSplit" />
+			rozdělit v půlce na dvě části
+		</label>
 
-	<br /><br />
+		<br /><br />
 
-	<label for="testFrame">
-		<input type="checkbox" id="testFrame" name="testFrame" />
-		testframe
-	</label><br />
+		<label for="testFrame">
+			<input type="checkbox" id="testFrame" name="testFrame" />
+			testframe
+		</label><br />
+	{/if}
 	<br /><button type="submit">generate</button>
 </form>
 
@@ -168,6 +211,7 @@
 {:else}
 	<!-- prettier-ignore -->
 	{#if $isImage}
+	<!-- TODO repsonse output name -->
 		<img src="/dynamic/generator/testFrame.png" alt="test frame" width="342" height="607"/>
 	{:else}
 		<a href="/dynamic/generator/video.mp4" target="_blank" download="video.mp4">stáhnout video</a><br />

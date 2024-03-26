@@ -8,8 +8,6 @@ const outputPath = "dynamic/generator";
 
 // 30
 const frameRate = 30;
-const w = 1080;
-const h = 1920;
 
 const yBorder = 250;
 
@@ -23,11 +21,19 @@ export async function POST({ request }) {
     ffmpeg.setFfmpegPath(ffmpegStatic);
 
     const data = await request.json();
+    
+    const isPoster = data.duration == "a4" || data.duration == "a2";
+    const outputDimensions = {
+        w: isPoster ? (data.duration == "a2" ? 4961 : 2480) : 1080,
+        h: isPoster ? (data.duration == "a2" ? 7016 : 3508) : 1920
+    };
+
+    console.log(`isPoster ${isPoster}, duration data: ${data.duration}`)
 
     const duration = data.duration;
 
     const frameCount = Math.floor(duration * frameRate);
-    const canvas = new Canvas(w, h);
+    const canvas = new Canvas(outputDimensions.w, outputDimensions.h);
     const context = canvas.getContext('2d');
 
     const textsHeight = [0, 0];
@@ -36,7 +42,7 @@ export async function POST({ request }) {
     const middleIndex = Math.floor(data.events.length / 2);
     const finalMiddleIndex = data.events.length % 2 === 0 ? middleIndex : middleIndex + 1;
 
-    const legalHalfSplit = data.halfSplit && data.events.length > 1;
+    const legalHalfSplit = data.halfSplit && data.events.length > 1 && !isPoster;
 
     data.events.forEach((eventData, index) => {
         const { date, label, past, tickets } = eventData;
@@ -51,7 +57,7 @@ export async function POST({ request }) {
         eventsTexts[halfsIndex].push({ date: dateWrapped, label: labelWrapped, height, past });
     });
 
-    const usableVerticalSpace = h - yBorder;
+    const usableVerticalSpace = outputDimensions.h - yBorder;
     const eventBottomPadding = [
         ((usableVerticalSpace - textsHeight[0]) / eventsTexts[0].length),
         legalHalfSplit ? ((usableVerticalSpace - textsHeight[1]) / eventsTexts[1].length) : null
@@ -80,12 +86,12 @@ export async function POST({ request }) {
         const gradH = 384 * sizeFactor;
         gradients.push({
             img: await loadImage(`./vidGenAssets/grads/grad${i}.png`),
-            xStart: Math.floor(Math.random() * (w + gradW + 1)) - gradW,
-            xMid: Math.floor(Math.random() * (w + gradW + 1)) - gradW,
-            xEnd: Math.floor(Math.random() * (w + gradW + 1)) - gradW,
-            yStart: Math.floor(Math.random() * (h + gradH + 1)) - gradH,
-            yMid: Math.floor(Math.random() * (h + gradH + 1)) - gradH,
-            yEnd: Math.floor(Math.random() * (h + gradH + 1)) - gradH,
+            xStart: Math.floor(Math.random() * (outputDimensions.w + gradW + 1)) - gradW,
+            xMid: Math.floor(Math.random() * (outputDimensions.w + gradW + 1)) - gradW,
+            xEnd: Math.floor(Math.random() * (outputDimensions.w + gradW + 1)) - gradW,
+            yStart: Math.floor(Math.random() * (outputDimensions.h + gradH + 1)) - gradH,
+            yMid: Math.floor(Math.random() * (outputDimensions.h + gradH + 1)) - gradH,
+            yEnd: Math.floor(Math.random() * (outputDimensions.h + gradH + 1)) - gradH,
             w: gradW,
             h: gradH
         });
@@ -99,13 +105,16 @@ export async function POST({ request }) {
         await fs.promises.mkdir(path, { recursive: true });
     }
 
-    if (data.testFrame != null) {
+    if (isPoster || data.testFrame != null) {
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        renderFrame(context, 6, duration, eventsTexts, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes);
+        // TODO isPoster
+        console.log("right block");
+        renderFrame(context, 6, duration, outputDimensions, eventsTexts, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes);
+        console.log("after render");
 
-        const outputFile = `${outputPath}/testFrame.png`;
+        const outputFile = `${outputPath}/${isPoster ? data.duration : "testFrame"}.png`;
         const output = canvas.toBuffer('image/png');
         await fs.promises.writeFile(outputFile, output);
 
@@ -120,7 +129,7 @@ export async function POST({ request }) {
         context.fillStyle = '#1f1f1f';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        renderFrame(context, time, duration, eventsTexts, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes);
+        renderFrame(context, time, duration, outputDimensions, eventsTexts, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes);
 
         // Store the image in the directory where it can be found by FFmpeg
         const output = canvas.toBuffer('image/png');
@@ -139,7 +148,9 @@ export async function POST({ request }) {
     return new Response(JSON.stringify({ path: "outputFile", img: false }, { status: 200 }));
 }
 
-function renderFrame(context, time, duration, eventsTexts, eventBottomPadding, gradients, noise, logo, label, dimPast, firstTimes, secondTimes = null) {
+function renderFrame(context, time, duration, dimensions, eventsTexts, eventBottomPadding, gradients, noise, logo, label, dimPast, firstTimes, secondTimes = null) {
+    console.log(time);
+    console.log(duration);
     let gradientMiddleTimeOffset = -2;
     gradients.forEach(gradient => {
         const x = interpolateKeyframes([
@@ -155,23 +166,23 @@ function renderFrame(context, time, duration, eventsTexts, eventBottomPadding, g
         context.drawImage(gradient.img, x, y, gradient.w, gradient.h);
         gradientMiddleTimeOffset++;
     });
-    context.drawImage(noise, 0, 0, w, h);
+    context.drawImage(noise, 0, 0, dimensions.w, dimensions.h);
 
-    context.drawImage(logo, w - 120, 0, 150, 150);
+    context.drawImage(logo, dimensions.w - 120, 0, 150, 150);
 
     context.fillStyle = "#d4d4d4";
     context.font = "80px 'Neue Machina Regular'";
     context.textAlign = "center";
-    context.fillText(label, w / 2, 125);
-    context.fillText(label, (w / 2) + 2, 125);
+    context.fillText(label, dimensions.w / 2, 125);
+    context.fillText(label, (dimensions.w / 2) + 2, 125);
 
-    renderAllTexts(context, time, dimPast, eventsTexts[0], eventBottomPadding[0], firstTimes);
+    /* renderAllTexts(context, time, dimensions.w, dimPast, eventsTexts[0], eventBottomPadding[0], firstTimes);
     if (secondTimes) {
-        renderAllTexts(context, time, dimPast, eventsTexts[1], eventBottomPadding[1], secondTimes);
-    }
+        renderAllTexts(context, time, dimensions.w, dimPast, eventsTexts[1], eventBottomPadding[1], secondTimes);
+    } */
 }
 
-function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, times) {
+function renderAllTexts(context, time, w, dimPast, texts, eventBottomPadding, times) {
     let currentTextFadeInStart = times.inStart;
     let currentTextFadeOutStart = times.outStart;
 
@@ -183,8 +194,7 @@ function renderAllTexts(context, time, dimPast, texts, eventBottomPadding, times
 
     context.lineWidth = 3;
 
-    texts.forEach((eventText, i) => {
-
+    texts.forEach(eventText => {
         const lineY = currY - 40;
 
         const textFadeInStart = currentTextFadeInStart;

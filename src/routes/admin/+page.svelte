@@ -1,4 +1,4 @@
-<a href="/">zpátkyna program</a><br />
+<a href="/">zpátky na program</a><br />
 <br />
 <a href="/admin/events">eventy</a><br />
 <a href="/admin/bands">kapely</a><br />
