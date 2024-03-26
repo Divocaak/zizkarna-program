@@ -12,6 +12,7 @@
 - schéma db přidáno na admin homepage pro snažší pochopení a vysvětlování :)
 - YT playlist pole v databázi u eventu, přidána položka do formulářů (edit a create event)
 - YT btn ke kartě i detailu akce (pokud existuje odkaz na záznam v db)
+- mapa a adresa na info podstránce
 
 ## upraveno
 - navbar odkaz na dramaturgii přepsán na Info
