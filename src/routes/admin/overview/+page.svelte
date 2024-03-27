@@ -2,7 +2,7 @@
 	import { writable } from 'svelte/store';
 
 	const isLoading = writable(null);
-	const isImage = writable(false);
+	const isImage = writable(null);
 
 	const isMonth = writable(false);
 	const changeOutput = (newVal) => isMonth.set(newVal);
@@ -74,7 +74,7 @@
 			const result = await response.json();
 
 			isLoading.set(false);
-			isImage.set(result.img);
+			if(result.img) isImage.set(result.path);
 
 			return result.path;
 		} catch (error) {
@@ -144,7 +144,7 @@
 			value="a4"
 			required
 		/>
-		0 sekund, a4, 300 PPI/DPI (plakát)
+		0 sekund, a4 (2480x3508px), 300 PPI/DPI (plakát)
 	</label><br />
 	<label for="outputDurationTarp">
 		<input
@@ -152,10 +152,10 @@
 			type="radio"
 			id="outputDurationTarp"
 			name="outputDuration"
-			value="a2"
+			value="b0"
 			required
 		/>
-		0 sekund, a2, 300 PPI/DPI (plachta (venkovní tabule))
+		0 sekund, b0 (11811x16701px), 300 PPI/DPI (plachta (venkovní tabule))
 	</label><br />
 	<label for="outputDurationStory">
 		<input
@@ -167,7 +167,7 @@
 			required
 			checked
 		/>
-		8 sekund (story)
+		8 sekund (story, 1080x1920px)
 	</label><br />
 	<label for="outputDurationReel">
 		<input
@@ -178,7 +178,7 @@
 			value="15"
 			required
 		/>
-		15 sekund (reel)
+		15 sekund (reel, 1080x1920px)
 	</label>
 
 	<br /><br />
@@ -210,15 +210,17 @@
 	(ᵔᴥᵔ)
 {:else}
 	<!-- prettier-ignore -->
-	{#if $isImage}
-	<!-- TODO repsonse output name -->
-		<img src="/dynamic/generator/testFrame.png" alt="test frame" width="342" height="607"/>
-	{:else}
+	{#if $isImage === null}
 		<a href="/dynamic/generator/video.mp4" target="_blank" download="video.mp4">stáhnout video</a><br />
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video width="342" height="607" autoplay loop>
 			<source src="/dynamic/generator/video.mp4" type="video/mp4" />
 		</video><br />
+	{:else}
+		{#if $isOffline}
+			<a href="/dynamic/generator/output.png" target="_blank" download="output.png">stáhnout grafiku</a><br />
+		{/if}
+		<img src="/dynamic/generator/output.png" alt="test frame" width="342" height="607"/>
 	{/if}
 {/if}
 
