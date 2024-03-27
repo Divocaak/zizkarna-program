@@ -17,6 +17,11 @@ export async function getEventDetailed({ params, fetch }) {
 
         const resultBandTags = await fetch("/api/tagInBand/get?id=" + band.id);
         band.tags = await resultBandTags.json();
+        band.tags.forEach((tag) => {
+            if (tag.label == "// POŘADATEL //") {
+                band.isCoorganiser = true;
+            }
+        });
     }));
 
     const eventStartHour = parseInt(data.doors.split(":")[0]);
