@@ -2,7 +2,7 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
-# TODO _DATE
+# 28. 3. 24
 
 ## přidáno
 - generátor akcí na měsíc (story, reel, a4, b0 (plachta))
