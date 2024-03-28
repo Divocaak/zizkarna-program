@@ -20,6 +20,7 @@
 - textace vstup zdarma
 - zzTV stránka se dynamicky naplňuje z odkazů na playlisty u jednotlivých eventů v databázi
 - pokud je intepret označen jako pořadatel, nezobrazuje se u něj stage time a není vypsaný ani v čas. harmonogramu (detail události, admin copy)
+- snížena verze canvas za účelem načítání fontů v produkci (vid gen)
 
 ## odebráno
 - tel. číslo na dramaturgii
