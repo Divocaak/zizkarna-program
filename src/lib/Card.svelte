@@ -12,9 +12,12 @@
 	import DateText from '$lib/DateText.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 	import LazyImage from '$lib/LazyImage.svelte';
-	import AnalyticsButtonWrapper from './buttons/AnalyticsButtonWrapper.svelte';
+	import AnalyticsButtonWrapper from '$lib/buttons/AnalyticsButtonWrapper.svelte';
+	import BandLinkButton from '$lib/buttons/BandLinkButton.svelte';
 
-	function showDetail () {window.location = '/' + event.id};
+	function showDetail() {
+		window.location = '/' + event.id;
+	}
 
 	const imagePath = `/dynamic/events/${event.id}.jpg`;
 	let imageExists = false;
@@ -68,10 +71,20 @@
 			</a>
 		</AnalyticsButtonWrapper>
 		<FacebookEventButton fbEvent={event.fbEvent} label={event.label} card={true} />
-		<TicketsButton tickets={event.tickets} label={event.label} card={true} />
+		{#if !isPast}
+			<TicketsButton tickets={event.tickets} label={event.label} card={true} />
+		{/if}
 		<ShareButton urlSuffix={event.id} label={event.label} past={isPast} card={true} />
 		{#if !isPast}
 			<AddToCalButtons label={event.label} date={event.date} doors={event.doors} card={true} />
+		{/if}
+		{#if event.youtube != null}
+			<BandLinkButton
+				link={event.youtube}
+				eventLabel={'zztv-from-event-card'}
+				bandName={event.label}
+				zztvFromEvent={true}
+			/>
 		{/if}
 	</div>
 </div>

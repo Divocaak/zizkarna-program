@@ -8,12 +8,14 @@
 		Facebook: 'Facebook',
 		Instagram: 'Instagram',
 		SoundCloud: 'SoundCloud',
+		TikTok: 'TikTok',
 		Other: 'Jiný odkaz'
 	};
 
 	export let link;
 	export let eventLabel = '';
 	export let bandName = '';
+	export let zztvFromEvent = false;
 
 	export let isZizkarnaTV = false;
 
@@ -39,6 +41,9 @@
 		case 'soundcloud.com':
 			type = Types.SoundCloud;
 			break;
+		case 'tiktok.com':
+			type = Types.TikTok;
+			break;
 		default:
 			type = Types.Other;
 			break;
@@ -50,7 +55,8 @@
 		[Types.AppleMusic]: { icon: 'bi-music-note-beamed', class: 'applemusic' },
 		[Types.Facebook]: { icon: 'bi-facebook', class: 'facebook' },
 		[Types.Instagram]: { icon: 'bi-instagram', class: 'instagram' },
-		[Types.SoundCloud]: { icon: 'bi-cloud-fill', class: 'soundcloud' }
+		[Types.SoundCloud]: { icon: 'bi-cloud-fill', class: 'soundcloud' },
+		[Types.TikTok]: { icon: 'bi-tiktok', class: 'tiktok' }
 	};
 
 	const typeInfo = typeData[type] || { icon: 'bi-link-45deg', class: '' };
@@ -63,7 +69,12 @@
 
 <AnalyticsButtonWrapper event={analyticsEvent} data={analyticsData}>
 	<a href={link} class="btn btn-outline-secondary mt-1 me-1 {typeInfo.class} karla" target="_blank">
-		<i class="bi {typeInfo.icon} pe-2" />{type === Types.Other ? tmp : type}
+		<i class="bi {typeInfo.icon} pe-2" />
+		{#if zztvFromEvent}
+			Záznam z koncertu
+		{:else}
+			{type === Types.Other ? tmp : type}
+		{/if}
 	</a>
 </AnalyticsButtonWrapper>
 
@@ -143,6 +154,19 @@
 
 	.soundcloud:hover {
 		background-color: #ff7700;
+		color: #f8f9fa;
+	}
+
+	.tiktok,
+	.tiktok:active,
+	.tiktok:visited,
+	.tiktok:focus {
+		border-color: #000000;
+		color: #000000;
+	}
+
+	.tiktok:hover {
+		background-color: #000000;
 		color: #f8f9fa;
 	}
 </style>

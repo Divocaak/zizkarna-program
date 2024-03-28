@@ -2,7 +2,35 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# 28. 3. 24
+
+## přidáno
+- generátor akcí na měsíc (story, reel, a4, b0 (plachta))
+- generátor akcí na týden (story, reel, a4, b0 (plachta))
+- TikTok je nově podporován jako kapelní odkaz (nastylováno)
+- žž presskit (odkazy, loga, prezentace) v info sekci
+- schéma db přidáno na admin homepage pro snažší pochopení a vysvětlování :)
+- YT playlist pole v databázi u eventu, přidána položka do formulářů (edit a create event)
+- YT btn ke kartě i detailu akce (pokud existuje odkaz na záznam v db)
+- mapa a adresa na info podstránce
+
+## upraveno
+- navbar odkaz na dramaturgii přepsán na Info
+- hlavička tabulky v seznamu eventů
+- textace vstup zdarma
+- zzTV stránka se dynamicky naplňuje z odkazů na playlisty u jednotlivých eventů v databázi
+- pokud je intepret označen jako pořadatel, nezobrazuje se u něj stage time a není vypsaný ani v čas. harmonogramu (detail události, admin copy)
+- snížena verze canvas za účelem načítání fontů v produkci (vid gen)
+
+## odebráno
+- tel. číslo na dramaturgii
+- tlačítko na předprodej u uplynulých akcí
+
+
 # 4. 3. 24
+
+## přidáno
+- nadpis k ig story generátoru
 
 ## upraveno
 - framerate boost
@@ -141,7 +169,7 @@
 
 # 14. 12. 23
 
-# přidáno
+## přidáno
 - změna-časů-možná-text přidáno do copy
 
 ## upraveno

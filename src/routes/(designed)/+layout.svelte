@@ -90,7 +90,7 @@
 			<div class="d-none d-md-block border-start border-1 mx-1" />
 			<a class="nav-item nav-link neue" href="/zztv">žžTV</a>
 			<div class="d-none d-md-block border-start border-1 mx-1" />
-			<a class="nav-item nav-link neue" href="/info">Dramaturgie</a>
+			<a class="nav-item nav-link neue" href="/info">Info</a>
 		</div>
 	</div>
 </nav>

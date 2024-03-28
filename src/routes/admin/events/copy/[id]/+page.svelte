@@ -69,9 +69,11 @@
 	// Harmonogram<br />
 	🚪 {timeFormat(event.doors)} otevření Žižkárny<br />
 	{#each bands as band}
-		{timeFormat(band.stageTime)} {band.label}<br />
+		{#if !band.isCoorganiser}
+			{timeFormat(band.stageTime)} {band.label}<br />
+		{/if}
 	{/each}
-	<br>
+	<br />
 	⚠️ Dovolujeme si upozornit, že časy jsou pouze orientační a mohou se změnit
 </p>
 <!-- inbudejovice form data to copy -->

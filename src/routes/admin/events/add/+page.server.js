@@ -18,7 +18,8 @@ export const actions = {
         fbEvent: formData.fbEvent != "" ? formData.fbEvent : null,
         tickets: formData.tickets != "" ? formData.tickets : null,
         description: formData.description != null ? formData.description : null,
-        is_visible: formData.is_visible == "on"
+        is_visible: formData.is_visible == "on",
+        yt: formData.yt != "" ? formData.yt : null
       })
     });
     const result = await response.json();

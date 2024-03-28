@@ -96,6 +96,7 @@
 	<li>facebook.com</li>
 	<li>instagram.com</li>
 	<li>soundcloud.com</li>
+	<li>tiktok.com</li>
 </ul>
 <p>odkazy musí obsahovat ssl sertifikát (https://)</p>
 <pre>

@@ -89,7 +89,8 @@ export const actions = {
         tickets: formData.tickets != "" ? formData.tickets : null,
         description: formData.description != null ? formData.description : null,
         is_visible: formData.is_visible == "on",
-        id: formData.id
+        id: formData.id,
+        yt: formData.yt != "" ? formData.yt : null
       })
     });
     const result = await response.json();

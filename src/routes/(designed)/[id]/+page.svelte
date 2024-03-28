@@ -67,14 +67,22 @@
 	<div class="row my-5 text-center" style="font-size:1.2rem">
 		<div class="col-12 col-md-6">
 			<FacebookEventButton fbEvent={event.fbEvent} label={event.label} />
-			<TicketsButton tickets={event.tickets} label={event.label} />
+			{#if !isPast}<TicketsButton tickets={event.tickets} label={event.label} />{/if}
 			<ShareButton label={event.label} past={isPast} />
 		</div>
-		{#if !isPast}
-			<div class="mt-3 mt-md-0 col-12 col-md-6">
+		<div class="mt-3 mt-md-0 col-12 col-md-6">
+			{#if !isPast}
 				<AddToCalButtons label={event.label} date={event.date} doors={event.doors} />
-			</div>
-		{/if}
+			{/if}
+			{#if event.youtube != null}
+				<BandLinkButton
+					link={event.youtube}
+					eventLabel={'zztv-from-event-card'}
+					bandName={event.label}
+					zztvFromEvent={true}
+				/>
+			{/if}
+		</div>
 	</div>
 	{#if event.description != null}
 		<p class="karla">
@@ -85,7 +93,9 @@
 		<h2 class="display-2 text-center neue mt-0 mt-md-5 pt-0 pt-md-5">{band.label}</h2>
 		<div class="text-center mb-3" style="font-size:1.1rem"><TagsBuilder tags={band.tags} /></div>
 		<p class="karla">{band.description}</p>
-		<p class="text-center karla">Stage time: <b>{timeFormat(band.stageTime)}</b></p>
+		{#if !band.isCoorganiser}
+			<p class="text-center karla">Stage time: <b>{timeFormat(band.stageTime)}</b></p>
+		{/if}
 		<div class="text-center">
 			{#each band.links as link}
 				<BandLinkButton {link} eventLabel={event.label} bandName={band.label} />
@@ -98,7 +108,9 @@
 		<div class="mx-auto centered-div my-5" style="font-size: 1.2rem;">
 			<p><b>{timeFormat(event.doors)}</b><i class="bi bi-door-open px-2" />Otevření Žižkárny</p>
 			{#each bands as band}
-				<p><b>{timeFormat(band.stageTime)}</b> {band.label}</p>
+				{#if !band.isCoorganiser}
+					<p><b>{timeFormat(band.stageTime)}</b> {band.label}</p>
+				{/if}
 			{/each}
 		</div>
 		<p class="text-center">
