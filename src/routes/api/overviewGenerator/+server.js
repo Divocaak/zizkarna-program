@@ -3,6 +3,7 @@ import ffmpegStatic from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
 import { Canvas, loadImage, registerFont } from 'canvas';
 import path from 'path';
+import nodeHtmlToImage from 'node-html-to-image';
 
 const outputPath = "dynamic/generator";
 
@@ -13,13 +14,13 @@ const eventStartShift = .5;
 const eventEndShift = .4;
 
 export async function POST({ request }) {
-    
-    registerFont(path.resolve("./vidGenAssets/neue.otf"), { family: 'Neue Machina Regular' });
-    registerFont(path.resolve("./vidGenAssets/karla.ttf"), { family: 'Karla Regular' });
+
+    // registerFont(path.resolve("./vidGenAssets/neue.otf"), { family: 'Neue Machina Regular' });
+    // registerFont(path.resolve("./vidGenAssets/karla.ttf"), { family: 'Karla Regular' });
     ffmpeg.setFfmpegPath(ffmpegStatic);
-    
+
     const data = await request.json();
-    
+
     const isPoster = data.duration == "a4" || data.duration == "b0";
     const outputDimensions = {
         w: isPoster ? (data.duration == "b0" ? 11811 : 2480) : 1080,
@@ -30,7 +31,7 @@ export async function POST({ request }) {
         h: outputDimensions.h / 1920
     }
     const topBorder = 250 * scalingFactor.h;
-    
+
     const duration = data.duration;
 
     const frameCount = Math.floor(duration * frameRate);
@@ -109,20 +110,40 @@ export async function POST({ request }) {
     }
 
     if (isPoster || data.testFrame != null) {
-        context.fillStyle = '#1f1f1f';
-        context.fillRect(0, 0, canvas.width, canvas.height);
+        // context.fillStyle = '#1f1f1f';
+        // context.fillRect(0, 0, canvas.width, canvas.height);
 
-        renderFrame(context, 6, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes, isPoster);
+        // renderFrame(context, 6, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes, isPoster);
 
-        const outputFile = `${outputPath}/output.png`;
-        const output = canvas.toBuffer('image/png');
-        await fs.promises.writeFile(outputFile, output);
+        const outputFile = `${outputPath}/output.jpg`;
+        //const output = canvas.toBuffer('image/png');
+        //await fs.promises.writeFile(outputFile, output);
+
+        nodeHtmlToImage({
+            output: outputFile,
+            html: `
+                <html>
+                    <head>
+                        <style>
+                            body {
+                                background-color: #1f1f1f;
+                                width: ${outputDimensions.w}px;
+                                height: ${outputDimensions.h}px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        Hello world!
+                    </body>
+                </html>`
+        })
+            .then(() => console.log('The image was created successfully!'))
 
         return new Response(JSON.stringify({ path: outputFile, img: true }, { status: 200 }));
     }
 
     // Render each frame
-    for (let i = 0; i < frameCount; i++) {
+    /* for (let i = 0; i < frameCount; i++) {
         const time = i / frameRate;
 
         // clear canvas
@@ -143,7 +164,7 @@ export async function POST({ request }) {
         outputFile,
         duration,
         frameRate,
-    );
+    ); */
 
     return new Response(JSON.stringify({ path: "outputFile", img: false }, { status: 200 }));
 }
