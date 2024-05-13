@@ -2,6 +2,15 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# TODO
+
+## upraveno
+- title info stránky
+- anglická prezentace a texty k ní vedoucí
+
+## přidáno
+- cs verze prezentace
+
 # 28. 3. 24
 
 ## přidáno
