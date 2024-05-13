@@ -2,6 +2,19 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+# 13. 5. 25
+
+## upraveno
+- title info stránky
+- anglická prezentace a texty k ní vedoucí
+- line breaks povoleny v anotaci k eventu
+- line breaks povoleny v biu kapel
+- line breaks povoleny v copy
+
+## přidáno
+- cs verze prezentace
+
+
 # 28. 3. 24
 
 ## přidáno

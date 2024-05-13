@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Dramaturgie</title>
+	<title>Info</title>
 	<meta name="description" content="Kontakt na dramaturgii" />
 </svelte:head>
 
@@ -27,22 +27,17 @@
 		<a class="link-secondary" href="mailto:vojtech@zizkarna.cz">
 			<i class="bi bi-envelope pe-2" />vojtech@zizkarna.cz
 		</a>
-		<!-- <a class="link-secondary" href="tel:722680481">
-			<i class="bi bi-telephone pe-2" />722&nbsp;680&nbsp;481
-		</a> -->
 	</p>
 	<h2 class="pt-5 neue-bold">Pro promotéry</h2>
 	<p class="karla">
-		Logo Žižkárny (<i>.svg</i> a <i>.png</i>) pro použití na plakátech a grafikách lze stáhnout
+		<b>Logo Žižkárny</b> (<i>.svg</i> a <i>.png</i>) pro použití na plakátech a grafikách lze stáhnout
 		<a
 			class="text-muted karla"
 			href="https://drive.google.com/drive/folders/13tpyB-pHEA3KqaPG3sJChPRgNj3QJ7cc?usp=sharing"
 			target="_blank">zde</a
 		>.
 	</p>
-	<a class="text-muted karla" href="/about.pdf" target="_blank"
-		>Prezentace o Žižkárně (pouze v angličtině) / Presentation about Žižkárna (English only)</a
-	>
+	Prezentace o Žižkárně v <a class="text-muted karla" href="/presentations/cs.pdf" target="_blank">🇨🇿 češtině</a> a <a class="text-muted karla" href="/presentations/en.pdf" target="_blank">🇬🇧 angličtině (EN)</a>
 	<h2 class="pt-5 neue-bold">Kde nás najdete</h2>
 	<p class="karla lead">a jak se k nám dostanete</p>
 	<div class="row pt-3 mx-5">
@@ -73,8 +68,8 @@
 </div>
 
 <style>
-	.map{
-		border:0;
+	.map {
+		border: 0;
 		position: relative;
 		width: 100%;
 		height: 100%;
