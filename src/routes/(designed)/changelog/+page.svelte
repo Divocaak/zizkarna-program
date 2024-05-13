@@ -9,6 +9,7 @@
 - anglická prezentace a texty k ní vedoucí
 - line breaks povoleny v anotaci k eventu
 - line breaks povoleny v biu kapel
+- line breaks povoleny v copy
 
 ## přidáno
 - cs verze prezentace

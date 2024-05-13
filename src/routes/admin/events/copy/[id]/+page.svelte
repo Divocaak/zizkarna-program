@@ -43,7 +43,7 @@
 	//
 </p>
 {#if event.description != null}
-	<p>{event.description}</p>
+	<p style="white-space: pre-line;">{event.description}</p>
 {/if}
 <p>👉 více informací na https://program.zizkarna.cz/{event.id}?from=copy</p>
 {#each bands as band}
@@ -56,7 +56,7 @@
 			<br />
 		{/if}
 		{#if band.description != '' && band.description != ' ' && band.description != null}
-			{band.description}<br />
+			<span style="white-space: pre-line;">{band.description}</span><br />
 		{/if}
 		{#each band.links as link}
 			🔘 {link}<br />
