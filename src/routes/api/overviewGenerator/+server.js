@@ -110,16 +110,17 @@ export async function POST({ request }) {
     }
 
     if (isPoster || data.testFrame != null) {
-        // context.fillStyle = '#1f1f1f';
-        // context.fillRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = '#1f1f1f';
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
-        // renderFrame(context, 6, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes, isPoster);
+        renderFrame(context, 6, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes, isPoster);
 
-        const outputFile = `${outputPath}/output.jpg`;
-        //const output = canvas.toBuffer('image/png');
-        //await fs.promises.writeFile(outputFile, output);
+        //const outputFile = `${outputPath}/output.jpg`;
+        const outputFile = `${outputPath}/output.png`;
+        const output = canvas.toBuffer('image/png');
+        await fs.promises.writeFile(outputFile, output);
 
-        nodeHtmlToImage({
+        /* nodeHtmlToImage({
             output: outputFile,
             html: `
                 <html>
@@ -137,13 +138,13 @@ export async function POST({ request }) {
                     </body>
                 </html>`
         })
-            .then(() => console.log('The image was created successfully!'))
+            .then(() => console.log('The image was created successfully!')) */
 
         return new Response(JSON.stringify({ path: outputFile, img: true }, { status: 200 }));
     }
 
     // Render each frame
-    /* for (let i = 0; i < frameCount; i++) {
+    for (let i = 0; i < frameCount; i++) {
         const time = i / frameRate;
 
         // clear canvas
@@ -164,7 +165,7 @@ export async function POST({ request }) {
         outputFile,
         duration,
         frameRate,
-    ); */
+    );
 
     return new Response(JSON.stringify({ path: "outputFile", img: false }, { status: 200 }));
 }
