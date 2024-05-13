@@ -7,6 +7,8 @@
 ## upraveno
 - title info stránky
 - anglická prezentace a texty k ní vedoucí
+- line breaks povoleny v anotaci k eventu
+- line breaks povoleny v biu kapel
 
 ## přidáno
 - cs verze prezentace
