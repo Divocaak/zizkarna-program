@@ -5,9 +5,9 @@ import { getPngBase64, interpolateKeyframes } from './vidGenHelperFunctions';
 const outputPath = "dynamic/generator";
 // TODO
 // const frameRate = 30;
-const frameRate = 2;
+const frameRate = 1;
 
-export async function renderTemplate(outputDimensions, scalingFactor, middleFrameCondition = false) {
+export async function renderTemplate(duration, outputDimensions, scalingFactor, middleFrameCondition = false) {
     // Clean up the temporary directories first
     // TODO delete after buffer implementation
     for (const path of [outputPath]) {
@@ -44,63 +44,64 @@ export async function renderTemplate(outputDimensions, scalingFactor, middleFram
         // return
     }
 
+    const frameCount = Math.floor(duration * frameRate);
+    //const frames = [];
     for (let i = 0; i < frameCount; i++) {
         const time = i / frameRate;
-        
-        const output = canvas.toBuffer('image/jpg');
-        const paddedNumber = String(i).padStart(4, '0');
 
-        renderFrameTemplate(`${outputPath}/frame-${paddedNumber}.png`, time, outputDimensions, middleFrameCondition, gradients, noise);
+        const paddedNumber = String(i).padStart(4, '0');
+        await renderFrameTemplate(`${outputPath}/frame-${paddedNumber}.jpg`, time, duration, outputDimensions, middleFrameCondition, gradients, noise);//.then((result) => frames.push(result));
+
+        // TODO idealne nepouzit a ukladat do bufferu, ale pro test ucely nechat lezet
+        /* const outputFile = `${outputPath}/video.mp4`;
+        await stitchFramesToVideo(
+            `${outputPath}/frame-%04d.png`,
+            outputFile,
+            duration,
+            frameRate,
+        );
+    
+        return new Response(JSON.stringify({ path: "outputFile", img: false }, { status: 200 })); */
     }
 
-    // TODO idealne nepouzit a ukladat do bufferu, ale pro test ucely nechat lezet
-    /* const outputFile = `${outputPath}/video.mp4`;
-    await stitchFramesToVideo(
-        `${outputPath}/frame-%04d.png`,
-        outputFile,
-        duration,
-        frameRate,
-    );
+    async function renderFrameTemplate(outputFile, time, duration, outputDimensions, middleFrameCondition, gradients, noise) {
+        // frame specific values calculations
+        // URGENT move calculations to gradient declaration, so in this functions is ONLY the render with the actaula frame specific data
+        // NOTE or mby not??
+        let gradientMiddleTimeOffset = -2;
+        gradients.forEach(gradient => {
+            /* const x = middleFrameCondition ? gradient.xMid : interpolateKeyframes([
+                { time: 0, value: gradient.xStart },
+                { time: (duration / 2) + gradientMiddleTimeOffset, value: gradient.xMid },
+                { time: duration, value: gradient.xEnd }
+            ], time, "inOutBack");
+            const y = middleFrameCondition ? gradient.yMid : interpolateKeyframes([
+                { time: 0, value: gradient.yStart },
+                { time: (duration / 2) + gradientMiddleTimeOffset, value: gradient.yMid },
+                { time: duration, value: gradient.yEnd }
+            ], time, "inOutBack"); */
+            gradient.currentX = interpolateKeyframes([
+                { time: 0, value: gradient.xStart },
+                { time: (duration / 2) + gradientMiddleTimeOffset, value: gradient.xMid },
+                { time: duration, value: gradient.xEnd }
+            ], time, "inOutBack");
+            gradient.currentY = interpolateKeyframes([
+                { time: 0, value: gradient.yStart },
+                { time: (duration / 2) + gradientMiddleTimeOffset, value: gradient.yMid },
+                { time: duration, value: gradient.yEnd }
+            ], time, "inOutBack");
+            gradientMiddleTimeOffset++;
+        });
 
-    return new Response(JSON.stringify({ path: "outputFile", img: false }, { status: 200 })); */
-}
-
-function renderFrameTemplate(outputFile, time, outputDimensions, middleFrameCondition, gradients, noise) {
-
-    // frame specific values calculations
-    // URGENT move calculations to gradient declaration, so in this functions is ONLY the render with the actaula frame specific data
-    // NOTE or mby not??
-    let gradientMiddleTimeOffset = -2;
-    gradients.forEach(gradient => {
-        /* const x = middleFrameCondition ? gradient.xMid : interpolateKeyframes([
-            { time: 0, value: gradient.xStart },
-            { time: (duration / 2) + gradientMiddleTimeOffset, value: gradient.xMid },
-            { time: duration, value: gradient.xEnd }
-        ], time, "inOutBack");
-        const y = middleFrameCondition ? gradient.yMid : interpolateKeyframes([
-            { time: 0, value: gradient.yStart },
-            { time: (duration / 2) + gradientMiddleTimeOffset, value: gradient.yMid },
-            { time: duration, value: gradient.yEnd }
-        ], time, "inOutBack"); */
-        gradient.currentX = interpolateKeyframes([
-            { time: 0, value: gradient.xStart },
-            { time: (duration / 2) + gradientMiddleTimeOffset, value: gradient.xMid },
-            { time: duration, value: gradient.xEnd }
-        ], time, "inOutBack");
-        gradient.currentY = interpolateKeyframes([
-            { time: 0, value: gradient.yStart },
-            { time: (duration / 2) + gradientMiddleTimeOffset, value: gradient.yMid },
-            { time: duration, value: gradient.yEnd }
-        ], time, "inOutBack");
-        gradientMiddleTimeOffset++;
-    });
-
-    return nodeHtmlToImage({
-        output: outputFile,
-        type: "jpeg",
-        /* TODO 100? default is 80 */
-        quality: 80,
-        html: `
+        // TODO performance https://github.com/frinyvonnick/node-html-to-image/issues/80
+        console.time("render");
+        //const frame = await nodeHtmlToImage({
+        return await nodeHtmlToImage({
+            output: outputFile,
+            type: "jpeg",
+            /* TODO 100? default is 80 */
+            quality: 80,
+            html: `
                 <html>
                     <head>
                         <style>
@@ -162,5 +163,9 @@ function renderFrameTemplate(outputFile, time, outputDimensions, middleFrameCond
                         Hello world!
                     </body>
                 </html>`,
-    });
+        }).then(() => {
+            console.log(console.log(`frame ${time}/${duration} rendered!`));
+            console.timeEnd("render");
+        });
+    }
 }

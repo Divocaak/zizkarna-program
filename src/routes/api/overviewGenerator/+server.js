@@ -13,6 +13,7 @@ export async function POST({ request }) {
     ffmpeg.setFfmpegPath(ffmpegStatic);
 
     const data = await request.json();
+    const duration = data.duration;
 
     const isPoster = data.duration == "a4" || data.duration == "b0";
     const outputDimensions = {
@@ -25,9 +26,8 @@ export async function POST({ request }) {
     }
     /* const topBorder = 250 * scalingFactor.h;
 
-    const duration = data.duration;
 
-    const frameCount = Math.floor(duration * frameRate);
+    
     const canvas = new Canvas(outputDimensions.w, outputDimensions.h);
     const context = canvas.getContext('2d');
 
@@ -76,7 +76,7 @@ export async function POST({ request }) {
         };
     } */
 
-    renderTemplate(outputDimensions, scalingFactor);
+    renderTemplate(duration, outputDimensions, scalingFactor);
 
     // TODO logo and title only here
     // band promo does not have a logo and static title
