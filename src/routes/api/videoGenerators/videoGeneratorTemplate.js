@@ -18,6 +18,7 @@ export async function renderTemplate(duration, outputDimensions, scalingFactor, 
     const noise = getPngBase64("./vidGenAssets/grads/noise.png");
     const logo = getPngBase64("./vidGenAssets/logo_transparent.png");
     const gradients = [];
+    let gradientMiddleTimeOffset = -2;
     for (let i = 0; i < 4; i++) {
         const sizeFactor = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
         const gradW = 512 * sizeFactor * scalingFactor.w;
@@ -36,6 +37,7 @@ export async function renderTemplate(duration, outputDimensions, scalingFactor, 
             currentY: this.yStart
         });
     }
+
     // TODO fonts
 
     if (middleFrameCondition) {
@@ -49,26 +51,7 @@ export async function renderTemplate(duration, outputDimensions, scalingFactor, 
     for (let i = 0; i < frameCount; i++) {
         const time = i / frameRate;
 
-        const paddedNumber = String(i).padStart(4, '0');
-        await renderFrameTemplate(`${outputPath}/frame-${paddedNumber}.jpg`, time, duration, outputDimensions, middleFrameCondition, gradients, noise);//.then((result) => frames.push(result));
-
-        // TODO idealne nepouzit a ukladat do bufferu, ale pro test ucely nechat lezet
-        /* const outputFile = `${outputPath}/video.mp4`;
-        await stitchFramesToVideo(
-            `${outputPath}/frame-%04d.png`,
-            outputFile,
-            duration,
-            frameRate,
-        );
-    
-        return new Response(JSON.stringify({ path: "outputFile", img: false }, { status: 200 })); */
-    }
-
-    async function renderFrameTemplate(outputFile, time, duration, outputDimensions, middleFrameCondition, gradients, noise) {
         // frame specific values calculations
-        // URGENT move calculations to gradient declaration, so in this functions is ONLY the render with the actaula frame specific data
-        // NOTE or mby not??
-        let gradientMiddleTimeOffset = -2;
         gradients.forEach(gradient => {
             /* const x = middleFrameCondition ? gradient.xMid : interpolateKeyframes([
                 { time: 0, value: gradient.xStart },
@@ -93,15 +76,38 @@ export async function renderTemplate(duration, outputDimensions, scalingFactor, 
             gradientMiddleTimeOffset++;
         });
 
-        // TODO performance https://github.com/frinyvonnick/node-html-to-image/issues/80
-        console.time("render");
-        //const frame = await nodeHtmlToImage({
-        return await nodeHtmlToImage({
-            output: outputFile,
-            type: "jpeg",
-            /* TODO 100? default is 80 */
-            quality: 80,
-            html: `
+        const paddedNumber = String(i).padStart(4, '0');
+        await renderFrameTemplate(`${outputPath}/frame-${paddedNumber}.jpg`, outputDimensions, gradients, noise);
+        //.then((result) => frames.push(result));
+
+        // TODO idealne nepouzit a ukladat do bufferu, ale pro test ucely nechat lezet
+        /* const outputFile = `${outputPath}/video.mp4`;
+        await stitchFramesToVideo(
+            `${outputPath}/frame-%04d.png`,
+            outputFile,
+            duration,
+            frameRate,
+        );
+    
+        return new Response(JSON.stringify({ path: "outputFile", img: false }, { status: 200 })); */
+    }
+}
+
+async function renderFrameTemplate(outputFile, outputDimensions, gradients, noise) {
+    // TODO performance https://github.com/frinyvonnick/node-html-to-image/issues/80
+    console.time("render");
+    //const frame = await nodeHtmlToImage({
+    return nodeHtmlToImage({
+        output: outputFile,
+        type: "jpeg",
+        /* TODO 100? default is 80 */
+        quality: 80,
+        puppeteerArgs: {
+            /* concurrency: Cluster.CONCURRENCY_CONTEXT, */
+            maxConcurrency: 10,
+            puppeteerOptions: { args: [['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-accelerated-2d-canvas', '--no-first-run', '--no-zygote']] }
+        },
+        html: `
                 <html>
                     <head>
                         <style>
@@ -163,9 +169,5 @@ export async function renderTemplate(duration, outputDimensions, scalingFactor, 
                         Hello world!
                     </body>
                 </html>`,
-        }).then(() => {
-            console.log(console.log(`frame ${time}/${duration} rendered!`));
-            console.timeEnd("render");
-        });
-    }
+    }).then(() => console.timeEnd("render"));
 }

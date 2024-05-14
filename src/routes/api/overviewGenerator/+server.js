@@ -76,12 +76,11 @@ export async function POST({ request }) {
         };
     } */
 
-    renderTemplate(duration, outputDimensions, scalingFactor);
-
+    
     // TODO logo and title only here
     // band promo does not have a logo and static title
-
-    // renderTemplate
+    
+    renderTemplate(duration, outputDimensions, scalingFactor);
 }
 
 function renderFrame(context, time, duration, dimensions, dimensionScaleFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, label, dimPast, firstTimes, secondTimes = null, isPoster = false) {
