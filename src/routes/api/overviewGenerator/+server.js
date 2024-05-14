@@ -1,14 +1,7 @@
-import fs from 'fs';
 import ffmpegStatic from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
 import { Canvas, loadImage, registerFont } from 'canvas';
-import path from 'path';
-import nodeHtmlToImage from 'node-html-to-image';
-
-const outputPath = "dynamic/generator";
-
-// 30
-const frameRate = 30;
+import { renderTemplate } from '../videoGenerators/videoGeneratorTemplate.js';
 
 const eventStartShift = .5;
 const eventEndShift = .4;
@@ -30,7 +23,7 @@ export async function POST({ request }) {
         w: outputDimensions.w / 1080,
         h: outputDimensions.h / 1920
     }
-    const topBorder = 250 * scalingFactor.h;
+    /* const topBorder = 250 * scalingFactor.h;
 
     const duration = data.duration;
 
@@ -81,93 +74,14 @@ export async function POST({ request }) {
             inStart: firstHalfTimes.outStart,
             outStart: firstHalfTimes.outStart + firstOutDuration + contentLenPerSection,
         };
-    }
+    } */
 
-    const gradients = [];
-    for (let i = 0; i < 4; i++) {
-        const sizeFactor = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
-        const gradW = 512 * sizeFactor * scalingFactor.w;
-        const gradH = 384 * sizeFactor * scalingFactor.h;
-        gradients.push({
-            img: await loadImage(`./vidGenAssets/grads/grad${i}.png`),
-            xStart: Math.floor(Math.random() * (outputDimensions.w + gradW + 1)) - gradW,
-            xMid: Math.floor(Math.random() * (outputDimensions.w + gradW + 1)) - gradW,
-            xEnd: Math.floor(Math.random() * (outputDimensions.w + gradW + 1)) - gradW,
-            yStart: Math.floor(Math.random() * (outputDimensions.h + gradH + 1)) - gradH,
-            yMid: Math.floor(Math.random() * (outputDimensions.h + gradH + 1)) - gradH,
-            yEnd: Math.floor(Math.random() * (outputDimensions.h + gradH + 1)) - gradH,
-            w: gradW,
-            h: gradH
-        });
-    }
-    const noise = await loadImage("./vidGenAssets/grads/noise.png");
-    const logo = await loadImage("./vidGenAssets/logo_transparent.png");
+    renderTemplate(outputDimensions, scalingFactor);
 
-    // Clean up the temporary directories first
-    for (const path of [outputPath]) {
-        if (fs.existsSync(path)) await fs.promises.rm(path, { recursive: true });
-        await fs.promises.mkdir(path, { recursive: true });
-    }
+    // TODO logo and title only here
+    // band promo does not have a logo and static title
 
-    if (isPoster || data.testFrame != null) {
-        context.fillStyle = '#1f1f1f';
-        context.fillRect(0, 0, canvas.width, canvas.height);
-
-        renderFrame(context, 6, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes, isPoster);
-
-        //const outputFile = `${outputPath}/output.jpg`;
-        const outputFile = `${outputPath}/output.png`;
-        const output = canvas.toBuffer('image/png');
-        await fs.promises.writeFile(outputFile, output);
-
-        /* nodeHtmlToImage({
-            output: outputFile,
-            html: `
-                <html>
-                    <head>
-                        <style>
-                            body {
-                                background-color: #1f1f1f;
-                                width: ${outputDimensions.w}px;
-                                height: ${outputDimensions.h}px;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        Hello world!
-                    </body>
-                </html>`
-        })
-            .then(() => console.log('The image was created successfully!')) */
-
-        return new Response(JSON.stringify({ path: outputFile, img: true }, { status: 200 }));
-    }
-
-    // Render each frame
-    for (let i = 0; i < frameCount; i++) {
-        const time = i / frameRate;
-
-        // clear canvas
-        context.fillStyle = '#1f1f1f';
-        context.fillRect(0, 0, canvas.width, canvas.height);
-
-        renderFrame(context, time, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes);
-
-        // Store the image in the directory where it can be found by FFmpeg
-        const output = canvas.toBuffer('image/png');
-        const paddedNumber = String(i).padStart(4, '0');
-        await fs.promises.writeFile(`${outputPath}/frame-${paddedNumber}.png`, output);
-    }
-
-    const outputFile = `${outputPath}/video.mp4`;
-    await stitchFramesToVideo(
-        `${outputPath}/frame-%04d.png`,
-        outputFile,
-        duration,
-        frameRate,
-    );
-
-    return new Response(JSON.stringify({ path: "outputFile", img: false }, { status: 200 }));
+    // renderTemplate
 }
 
 function renderFrame(context, time, duration, dimensions, dimensionScaleFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, label, dimPast, firstTimes, secondTimes = null, isPoster = false) {
@@ -285,84 +199,5 @@ function renderAllTexts(context, time, w, dimPast, texts, topBorder, eventBottom
         currY += eventBottomPadding + eventText.height;
         currentTextFadeInStart += eventStartShift;
         currentTextFadeOutStart += eventEndShift;
-    });
-}
-
-function getWrappedText(text, maxWidth, context, lineHeight) {
-    let words = text.split(' ');
-    let line = '';
-    let lineArray = [];
-    let y = 0;
-
-    words.forEach(word => {
-        let testLine = line + word + ' ';
-        let testLineWidth = context.measureText(testLine).width;
-
-        if (testLineWidth <= maxWidth) {
-            line = testLine;
-            return;
-        }
-
-        lineArray.push([line.trim(), y]);
-        line = word + ' ';
-        y += lineHeight;
-    });
-
-    lineArray.push([line.trim(), y]);
-
-    return lineArray;
-}
-
-function interpolateKeyframes(keyframes, time, easing = null) {
-
-    const firstKeyframe = keyframes[0];
-    if (time < firstKeyframe.time) return firstKeyframe.value;
-
-    const lastKeyframe = keyframes[keyframes.length - 1];
-    if (time >= lastKeyframe.time) return lastKeyframe.value;
-
-    let index;
-    for (index = 0; index < keyframes.length - 1; index++) {
-        if (keyframes[index].time <= time && keyframes[index + 1].time >= time) break;
-    }
-
-    const keyframe1 = keyframes[index];
-    const keyframe2 = keyframes[index + 1];
-
-    let t = (time - keyframe1.time) / (keyframe2.time - keyframe1.time);
-    if (easing === "inOutBack") t = easeInOutBack(t);
-    else if (easing === "easeInOutQuint") t = easeInOutQuint(t);
-
-    return keyframe1.value + (keyframe2.value - keyframe1.value) * t;
-}
-
-function easeInOutBack(x) {
-    const c1 = 1.70158 * .75;
-    const c2 = c1 * 1.525 * .75;
-
-    return x < 0.5
-        ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
-        : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
-}
-
-const easeInOutQuint = (x) => x < 0.5 ? 16 * x * x * x * x * x : 1 - Math.pow(-2 * x + 2, 5) / 2;
-
-async function stitchFramesToVideo(
-    framesFilepath,
-    outputFilepath,
-    duration,
-    frameRate,
-) {
-    await new Promise((resolve, reject) => {
-        ffmpeg()
-            .input(framesFilepath)
-            .inputOptions([`-framerate ${frameRate}`])
-            .videoCodec('libx264')
-            .outputOptions(['-pix_fmt yuv420p'])
-            .duration(duration)
-            .fps(frameRate)
-            .saveToFile(outputFilepath)
-            .on('end', () => resolve())
-            .on('error', (error) => reject(new Error(error)));
     });
 }
