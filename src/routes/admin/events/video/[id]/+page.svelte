@@ -58,6 +58,7 @@
 				})
 			});
 
+			// TODO rewrite to use new responses
 			const result = await response.json();
 
 			isLoading.set(false);

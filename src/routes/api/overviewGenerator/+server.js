@@ -25,8 +25,6 @@ export async function POST({ request }) {
         h: outputDimensions.h / 1920
     }
     /* const topBorder = 250 * scalingFactor.h;
-
-
     
     const canvas = new Canvas(outputDimensions.w, outputDimensions.h);
     const context = canvas.getContext('2d');
@@ -80,7 +78,20 @@ export async function POST({ request }) {
     // TODO logo and title only here
     // band promo does not have a logo and static title
     
-    renderTemplate(duration, outputDimensions, scalingFactor);
+    const testPage = true;
+    const testFrame = false;
+    const response = renderTemplate(
+        testPage,
+        duration,
+        outputDimensions,
+        scalingFactor,
+        false,
+        (time, duration)=>console.log(`curr ${time}/${duration}`),
+        ".test{color:red;}",
+        "<p class='test'>test tesaasfasfaf</p>"
+    );
+
+    return new Response(JSON.stringify({ output: response, format: (testPage ? "html" : (testFrame ? "image" : "video")) }, { status: 200 }));
 }
 
 function renderFrame(context, time, duration, dimensions, dimensionScaleFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, label, dimPast, firstTimes, secondTimes = null, isPoster = false) {

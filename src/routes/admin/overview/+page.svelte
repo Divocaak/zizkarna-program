@@ -1,8 +1,10 @@
 <script>
 	import { writable } from 'svelte/store';
+	import { goto } from '$app/navigation';
 
 	const isLoading = writable(null);
 	const isImage = writable(null);
+	const output = writable(null);
 
 	const isMonth = writable(false);
 	const changeOutput = (newVal) => isMonth.set(newVal);
@@ -71,12 +73,24 @@
 				})
 			});
 
+			// URGENT rewrite to use new responses
 			const result = await response.json();
 
 			isLoading.set(false);
-			if(result.img) isImage.set(result.path);
 
-			return result.path;
+			output.set(result.output);
+			if (result.format == 'html') {
+				const newTab = window.open('/admin/videoPreview', '_blank');
+
+				// Wait for the new tab to be fully loaded
+				newTab.onload = () => {
+					// Send data to the new tab
+					newTab.postMessage(result.output, '*');
+				};
+			}
+
+			isImage.set(result.format == 'image');
+			return;
 		} catch (error) {
 			console.error('Error:', error);
 		} finally {
