@@ -1,9 +1,11 @@
 <script>
 	import { writable } from 'svelte/store';
+	import { goto } from '$app/navigation';
+	import videoPreview from '$lib/stores/videoPreviewStore.js';
 	export let data;
 
 	const isLoading = writable(null);
-	const isImage = writable(false);
+	const isImage = writable(null);
 
 	const selectedEvent = data.event;
 	const eventTags = data.eventTags;
@@ -39,7 +41,7 @@
 				weekday: 'long'
 			});
 
-			const response = await fetch('/api/videoGenerator/', {
+			const response = await fetch('/api/videoGenerators/bandInEvent', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -58,13 +60,16 @@
 				})
 			});
 
-			// TODO rewrite to use new responses
 			const result = await response.json();
-
 			isLoading.set(false);
-			isImage.set(result.img);
 
-			return result.path;
+			if (result.format == 'html') {
+				videoPreview.set(result.output);
+				goto('/admin/videoPreview');
+			}
+			isImage.set(result.format == 'image');
+
+			return;
 		} catch (error) {
 			console.error('Error:', error);
 		} finally {
@@ -175,6 +180,7 @@
 	ʕ•ᴥ•ʔ (generuju, sorry, trvá mi to, vydrž pls)
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
+<!-- TODO rew same -->
 {:else}
 	<!-- prettier-ignore -->
 	{#if $isImage}

@@ -1,14 +1,11 @@
+// NOTE need?
 import fs from 'fs';
 import ffmpegStatic from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
 import { Canvas, loadImage, registerFont } from 'canvas';
 import path from 'path';
 
-const outputPath = "dynamic/generator";
-
-const frameRate = 30;
-const w = 1080;
-const h = 1920;
+import { renderTemplate } from '$lib/scripts/video/template.js';
 
 const crossfadeTime = .1;
 const fadeTime = .8;
@@ -31,87 +28,56 @@ const duration = zzContent + sectionLen;
 
 export async function POST({ request }) {
 
-    registerFont(path.resolve("./vidGenAssets/neue.otf"), { family: 'Neue Machina Regular' });
-    registerFont(path.resolve("./vidGenAssets/karla.ttf"), { family: 'Karla Regular' });
+    // NOTE need?
     ffmpeg.setFfmpegPath(ffmpegStatic);
-
-    const frameCount = Math.floor(duration * frameRate);
-    const canvas = new Canvas(w, h);
-    const context = canvas.getContext('2d');
 
     const data = await request.json();
 
-    const eventLabelWrapped = getWrappedText(data.eventLabel, 130, context, 80);
-    const eventTagsWrapped = getWrappedText(data.eventTags, 200, context, 50);
-    const poster = await loadImage(`dynamic/events/${data.eventId}.jpg`);
-    const posterDimensions = getImgDimensions(poster, "contain", 1080, 1500);
+    // const eventLabelWrapped = getWrappedText(data.eventLabel, 130, context, 80);
+    // const eventTagsWrapped = getWrappedText(data.eventTags, 200, context, 50);
+    // const poster = await loadImage(`dynamic/events/${data.eventId}.jpg`);
+    // const posterDimensions = getImgDimensions(poster, "contain", 1080, 1500);
 
-    const bandLabelWrapped = getWrappedText(data.bandLabel, 120, context, 70);
-    const bandDescWrapped = getWrappedText(data.bandDesc, 250, context, 50);
-    const bandTagsWrapped = getWrappedText(data.bandTags, 200, context, 50);
-    const bandStageTimeWrapped = getWrappedText(data.bandStageTime, 300, context, 40);
-    const bandImage = await loadImage(`dynamic/bands/${data.bandImage}`);
-    const bandImageDimensions = getImgDimensions(bandImage, "contain", 1080, 1500);
+    // const bandLabelWrapped = getWrappedText(data.bandLabel, 120, context, 70);
+    // const bandDescWrapped = getWrappedText(data.bandDesc, 250, context, 50);
+    // const bandTagsWrapped = getWrappedText(data.bandTags, 200, context, 50);
+    // const bandStageTimeWrapped = getWrappedText(data.bandStageTime, 300, context, 40);
+    // const bandImage = await loadImage(`dynamic/bands/${data.bandImage}`);
+    // const bandImageDimensions = getImgDimensions(bandImage, "contain", 1080, 1500);
 
-    const dateWrapped = getWrappedText(data.date, 500, context, 90);
-    const doorsWrapped = getWrappedText(data.doors, 500, context, 90);
-    const ticketsWrapped = data.tickets ? getWrappedText(data.tickets, 100, context, 90) : null;
-    const logo = await loadImage("./vidGenAssets/logo_transparent.png");
+    // const dateWrapped = getWrappedText(data.date, 500, context, 90);
+    // const doorsWrapped = getWrappedText(data.doors, 500, context, 90);
+    // const ticketsWrapped = data.tickets ? getWrappedText(data.tickets, 100, context, 90) : null;
+    // const logo = await loadImage("./vidGenAssets/logo_transparent.png");
 
-    // Clean up the temporary directories first
-    for (const path of [outputPath]) {
-        if (fs.existsSync(path)) await fs.promises.rm(path, { recursive: true });
-        await fs.promises.mkdir(path, { recursive: true });
-    }
+    const testPage = true;
+    const testFrame = false;
+    const response = await renderTemplate({
+        testPage: testPage,
+        duration: duration,
+        paddingPx: {x: 100, y: 250},
+        calculations: (time, duration) => console.log(`curr ${time}/${duration}`),
+        styles: ".test{color:red;}",
+        htmls: "<p class='test'>test tesaasfasfaf</p>"
+    });
 
-    if (data.testFrame != null) {
-        context.fillStyle = '#1f1f1f';
-        context.fillRect(0, 0, canvas.width, canvas.height);
+    return new Response(JSON.stringify({
+        output: response,
+        format: (testPage ? "html" : (testFrame ? "image" : "video"))
+    }, { status: 200 }));
+}
 
-        const testFrameTime = data.testFrame == "event" ? eventContent : bandContent;
-        renderFrame(context, testFrameTime, poster, posterDimensions, eventLabelWrapped, eventTagsWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped, bandStageTimeWrapped);
-
-        const outputFile = `${outputPath}/testFrame.png`;
-        const output = canvas.toBuffer('image/png');
-        await fs.promises.writeFile(outputFile, output);
-
-        return new Response(JSON.stringify({ path: outputFile, img: true }, { status: 200 }));
-    }
-
-    // Render each frame
-    for (let i = 0; i < frameCount; i++) {
-        const time = i / frameRate;
-
-        // clear canvas
-        context.fillStyle = '#1f1f1f';
-        context.fillRect(0, 0, canvas.width, canvas.height);
-
-        renderFrame(context, time, poster, posterDimensions, eventLabelWrapped, eventTagsWrapped, bandLabelWrapped, bandDescWrapped, bandImage, bandImageDimensions, bandTagsWrapped, bandStageTimeWrapped, logo, dateWrapped, doorsWrapped, ticketsWrapped);
-
-        // Store the image in the directory where it can be found by FFmpeg
-        const output = canvas.toBuffer('image/png');
-        const paddedNumber = String(i).padStart(4, '0');
-        await fs.promises.writeFile(`${outputPath}/frame-${paddedNumber}.png`, output);
-    }
-
-    const outputFile = `${outputPath}/video.mp4`;
-    await stitchFramesToVideo(
-        `${outputPath}/frame-%04d.png`,
-        outputFile,
-        duration,
-        frameRate,
-    );
-
-    return new Response(JSON.stringify({ path: outputFile, img: false }, { status: 200 }));
+function calculations (time, duration){
+    
 }
 
 function renderFrame(context, time, poster, posterDimensions, eventLabel, eventTags, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags, bandStageTime, logo = null, date = null, doors = null, tickets = null) {
 
-    context.fillStyle = "#d4d4d4";
+    //context.fillStyle = "#d4d4d4";
 
     /* event section */
 
-    const eventLabelX = interpolateKeyframes([
+    /* const eventLabelX = interpolateKeyframes([
         { time: eventOut, value: 50 },
         { time: eventEnd, value: -1500 }
     ], time);
@@ -145,11 +111,11 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
     context.textAlign = "center";
     eventTags.forEach(function (item) {
         context.fillText(item[0], eventTagsX, eventTagsY + item[1]);
-    });
+    }); */
 
     /* band section */
 
-    const bandLabelX = interpolateKeyframes([
+    /* const bandLabelX = interpolateKeyframes([
         { time: bandIn, value: 1080 },
         { time: bandContent, value: 50 },
         { time: bandOut, value: 50 },
@@ -202,11 +168,11 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
         { time: bandIn, value: 2000 },
         { time: bandContent, value: 1920 - (bandImageDimensions.h) }
     ], time);
-    context.drawImage(bandImage, bandImageX, bandImageY, bandImageDimensions.w, bandImageDimensions.h);
+    context.drawImage(bandImage, bandImageX, bandImageY, bandImageDimensions.w, bandImageDimensions.h); */
 
     /* zz section */
 
-    if (logo != null) {
+    /* if (logo != null) {
         const logoY = interpolateKeyframes([
             { time: zzIn + .2, value: -1080 },
             { time: zzContent, value: 150 }
@@ -243,9 +209,10 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
         tickets.forEach(function (item) {
             context.fillText(item[0], ticketsX, 1600 + item[1]);
         });
-    }
+    } */
 }
 
+// NOTE need?
 function getImgDimensions(img, type, maxWidth, maxHeight) {
     const imgRatio = img.height / img.width;
     const winRatio = maxHeight / maxWidth;

@@ -1,17 +1,10 @@
 <script>
-	import { onMount } from 'svelte';
-
-	let data = "";
-
-	onMount(() => {
-		// Listen for messages from the parent window
-		window.addEventListener('message', (event) => {
-			data = event.data;
-			// Trigger a reactive update
-			$: data;
-		});
+	import videoPreview from '$lib/stores/videoPreviewStore.js';
+	
+	let storeValue;
+	videoPreview.subscribe((value) => {
+		storeValue = value;
 	});
 </script>
 
-<h1>generator preview</h1>
-{@html $data}
+{@html $videoPreview}

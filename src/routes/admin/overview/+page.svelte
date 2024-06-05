@@ -1,10 +1,10 @@
 <script>
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
+	import videoPreview from '$lib/stores/videoPreviewStore.js';
 
 	const isLoading = writable(null);
 	const isImage = writable(null);
-	const output = writable(null);
 
 	const isMonth = writable(false);
 	const changeOutput = (newVal) => isMonth.set(newVal);
@@ -59,7 +59,7 @@
 						.toUpperCase()
 				: 'TENTO TÝDEN';
 
-			const response = await fetch('/api/overviewGenerator/', {
+			const response = await fetch('/api/videoGenerators/overviews/', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -73,23 +73,15 @@
 				})
 			});
 
-			// URGENT rewrite to use new responses
 			const result = await response.json();
-
 			isLoading.set(false);
 
-			output.set(result.output);
 			if (result.format == 'html') {
-				const newTab = window.open('/admin/videoPreview', '_blank');
-
-				// Wait for the new tab to be fully loaded
-				newTab.onload = () => {
-					// Send data to the new tab
-					newTab.postMessage(result.output, '*');
-				};
+				videoPreview.set(result.output);
+				goto('/admin/videoPreview');
 			}
-
 			isImage.set(result.format == 'image');
+
 			return;
 		} catch (error) {
 			console.error('Error:', error);
@@ -222,6 +214,7 @@
 	ʕ•ᴥ•ʔ (generuju, sorry, trvá mi to, vydrž pls)
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
+<!-- TODO rew same -->
 {:else}
 	<!-- prettier-ignore -->
 	{#if $isImage === null}

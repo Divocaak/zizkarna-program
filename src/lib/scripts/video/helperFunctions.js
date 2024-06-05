@@ -1,5 +1,17 @@
 import fs from 'fs';
 
+export function getImagePositionInRange(imgW, imgH, maxW, maxH) {
+    const minX = -imgW / 2;
+    const maxX = maxW - imgW / 2;
+    const x = Math.random() * (maxX - minX) + minX;
+
+    const minY = -imgH / 2;
+    const maxY = maxH - imgH / 2;
+    const y = Math.random() * (maxY - minY) + minY;
+
+    return { x, y };
+}
+
 export function getWrappedText(text, maxWidth, context, lineHeight) {
     let words = text.split(' ');
     let line = '';
@@ -25,7 +37,8 @@ export function getWrappedText(text, maxWidth, context, lineHeight) {
     return lineArray;
 }
 
-export function interpolateKeyframes(keyframes, time, easing = null) {
+/* TODO move to videoElement object */
+export function interpolateKeyframes({ keyframes = [], time = 0, easing = null }) {
 
     const firstKeyframe = keyframes[0];
     if (time < firstKeyframe.time) return firstKeyframe.value;

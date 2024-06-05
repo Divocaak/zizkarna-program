@@ -1,15 +1,19 @@
+// NOTE need?
 import ffmpegStatic from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
 import { Canvas, loadImage, registerFont } from 'canvas';
-import { renderTemplate } from '../videoGenerators/videoGeneratorTemplate.js';
+
+import { renderTemplate } from '$lib/scripts/video/template.js';
 
 const eventStartShift = .5;
 const eventEndShift = .4;
 
 export async function POST({ request }) {
 
+    // NOTE font import
     // registerFont(path.resolve("./vidGenAssets/neue.otf"), { family: 'Neue Machina Regular' });
     // registerFont(path.resolve("./vidGenAssets/karla.ttf"), { family: 'Karla Regular' });
+    // NOTE need?
     ffmpeg.setFfmpegPath(ffmpegStatic);
 
     const data = await request.json();
@@ -74,24 +78,28 @@ export async function POST({ request }) {
         };
     } */
 
-    
+
     // TODO logo and title only here
     // band promo does not have a logo and static title
-    
+
     const testPage = true;
     const testFrame = false;
-    const response = renderTemplate(
-        testPage,
-        duration,
-        outputDimensions,
-        scalingFactor,
-        false,
-        (time, duration)=>console.log(`curr ${time}/${duration}`),
-        ".test{color:red;}",
-        "<p class='test'>test tesaasfasfaf</p>"
-    );
+    const response = await renderTemplate({
+        testPage: testPage,
+        duration: duration,
+        outputDimensions: outputDimensions,
+        scalingFactor: scalingFactor,
+        /* TODO padding */
+        paddingPx: {x: 100, y: 300},
+        calculations: (time, duration) => console.log(`curr ${time}/${duration}`),
+        styles: ".test{color:red;}",
+        htmls: "<p class='test'>test tesaasfasfaf</p>"
+    });
 
-    return new Response(JSON.stringify({ output: response, format: (testPage ? "html" : (testFrame ? "image" : "video")) }, { status: 200 }));
+    return new Response(JSON.stringify({
+        output: response,
+        format: (testPage ? "html" : (testFrame ? "image" : "video"))
+    }, { status: 200 }));
 }
 
 function renderFrame(context, time, duration, dimensions, dimensionScaleFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, label, dimPast, firstTimes, secondTimes = null, isPoster = false) {
