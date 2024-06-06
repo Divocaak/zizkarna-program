@@ -1,3 +1,4 @@
+// NOTE need?
 export function getWrappedText(text, maxWidth, context, lineHeight) {
     let words = text.split(' ');
     let line = '';
@@ -23,6 +24,7 @@ export function getWrappedText(text, maxWidth, context, lineHeight) {
     return lineArray;
 }
 
+// NOTE need?
 export async function stitchFramesToVideo(framesFilepath, outputFilepath, duration, frameRate) {
     await new Promise((resolve, reject) => {
         ffmpeg()

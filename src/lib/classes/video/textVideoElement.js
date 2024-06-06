@@ -15,6 +15,7 @@ export class TextVideoElement extends VideoElement {
         * @param {number} fontSizePx - font size in px for css
         * @param {string} fontColor - text color in hex (including #) for css
         * @param {string} textAlign - text align for css
+        * @param {string} easing - easing type from implemented (inOutBack, inOutQuint)
     */
     constructor({
         id,
@@ -24,13 +25,15 @@ export class TextVideoElement extends VideoElement {
         fontName = "Arial",
         fontSizePx = 14,
         fontColor = "#d4d4d4",
-        textAlign = "left"
+        textAlign = "left",
+        easing = null
     }) {
         super({
             id: id,
             content: content,
             posX: posX,
-            posY: posY
+            posY: posY,
+            easing: easing
         });
         this.fontName = fontName;
         this.fontSizePx = fontSizePx;
@@ -40,15 +43,12 @@ export class TextVideoElement extends VideoElement {
 
     /**
         * Get the css for html template
-        * @param {number} id - identificator for the style
         * @param {number} time - time for calculations based on keyframes
-        * @param {string} easing - type of easing when using keyframe interpolation
         * @returns {string} The css of the element
     */
-    getStyles({ time, easing = null }) {
+    getStyles(time) {
         return super.getStyles({
             time: time,
-            easing: easing,
             additionalStyles: `
                 font-size: ${this.#getFontSizePx()}px;
                 font-family: ${this.#getFontName()}, sans-serif;
@@ -56,6 +56,14 @@ export class TextVideoElement extends VideoElement {
                 text-align: ${this.#getTextAlign()};
             `
         });
+    }
+
+    /**
+        * Get the elements html code
+        * @returns {string} The html code to be used in video generator template
+    */
+    getHtml() {
+        return `<p id="${super.getId()}">${super.getContent()}</p>`;
     }
 
     #getFontName() { return this.fontName; }

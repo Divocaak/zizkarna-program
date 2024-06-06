@@ -1,5 +1,6 @@
 import fs from 'fs';
 import nodeHtmlToImage from 'node-html-to-image';
+import font2base64 from 'node-font2base64';
 import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
 
 const outputPath = "dynamic/generator";
@@ -13,9 +14,7 @@ export async function renderTemplate({
     scalingFactor = { w: 1, h: 1 },
     paddingPx = { x: 0, y: 0 },
     onlyStaticMiddleFrame = false,
-    calculations,
-    styles,
-    htmls
+    videoElements = []
 }) {
     // Clean up the temporary directories first
     for (const path of [outputPath]) {
@@ -48,12 +47,12 @@ export async function renderTemplate({
                 { time: duration, value: posEnd.y }
             ],
             wPx: gradW,
-            hPx: gradH
+            hPx: gradH,
+            easing: "inOutBack"
         }));
         gradientMiddleTimeOffset++;
     }
 
-    // TODO fonts
     // NOTE mby call getHtml only once and save to var, then reuse?
 
     if (testPage) {
@@ -62,8 +61,7 @@ export async function renderTemplate({
             outputDimensions: outputDimensions,
             gradients: gradients,
             padding: paddingPx,
-            styles: styles,
-            htmls: htmls
+            videoElements: videoElements
         });
     }
 
@@ -77,8 +75,7 @@ export async function renderTemplate({
             outputDimensions: outputDimensions,
             gradients: gradients,
             padding: paddingPx,
-            styles: styles,
-            htmls: htmls
+            videoElements: videoElements
         }));
         return responseFile;
     }
@@ -87,19 +84,13 @@ export async function renderTemplate({
     //const frames = [];
     for (let i = 0; i < frameCount; i++) {
         const time = i / frameRate;
-
-        // frame specific values calculations
-
-        calculations(time, duration);
-
         const paddedNumber = String(i).padStart(4, '0');
         await renderFrameTemplate(`${outputPath}/frame-${paddedNumber}.jpg`, getHtml({
             time: time,
             outputDimensions: outputDimensions,
             gradients: gradients,
             padding: paddingPx,
-            styles: styles,
-            htmls: htmls
+            videoElements: videoElements
         }));
         //.then((result) => frames.push(result));
 
@@ -139,21 +130,37 @@ function getHtml({
     outputDimensions = { w: 1080, h: 1920 },
     gradients = [],
     padding = { x: 0, y: 0 },
-    styles = "",
-    htmls = ""
+    videoElements = []
 }) {
-
-
     let gradientsStyles = '';
     let gradientsHtml = '';
-    gradients.forEach(gradient => {
-        gradientsStyles += `${gradient.getStyles({ time: time, easing: "inOutBack" })}\n`;
+    /* gradients.forEach(gradient => {
+        gradientsStyles += `${gradient.getStyles(time)}\n`;
         gradientsHtml += `${gradient.getHtml()}\n`;
+    }); */
+
+    let elementStyles = '';
+    let elementHtml = '';
+    videoElements.forEach(element => {
+        elementStyles += `${element.getStyles(time)}\n`;
+        elementHtml += `${element.getHtml()}\n`;
     });
+    const fontDataNeue = font2base64.encodeToDataUrlSync('./vidGenAssets/neue.otf')
+    const fontDataKarla = font2base64.encodeToDataUrlSync('./vidGenAssets/karla.ttf')
 
     return `<html>
                 <head>
                     <style>
+                        @font-face {
+                            font-family: 'Neue Machina Regular';
+                            src: url(${fontDataNeue}) format('woff2');
+                        }
+
+                        @font-face {
+                            font-family: 'Karla Regular';
+                            src: url(${fontDataKarla}) format('woff2');
+                        }
+
                         html{
                             background: lime;
                         }
@@ -194,7 +201,7 @@ function getHtml({
 
                         ${gradientsStyles}
 
-                        ${styles}
+                        ${elementStyles}
                     </style>
                 </head>
                 <body>
@@ -203,7 +210,7 @@ function getHtml({
                         <div class="noise"></div>
                     </div>
                     <div class="content">
-                        ${htmls}
+                        ${elementHtml}
                     </div>
                 </body>
             </html>`;

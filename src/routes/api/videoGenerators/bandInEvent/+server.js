@@ -9,6 +9,8 @@ import { renderTemplate } from '$lib/scripts/video/template.js';
 import { TextVideoElement } from '$lib/classes/video/textVideoElement.js';
 import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
 
+const outputDimensions = { w: 1080, h: 1920 };
+
 const crossfadeTime = .1;
 const fadeTime = .8;
 const sectionLen = 2;
@@ -37,13 +39,13 @@ export async function POST({ request }) {
 
     const testPage = true;
     const testFrame = false;
+
     const response = await renderTemplate({
         testPage: testPage,
         duration: duration,
+        outputDimensions: outputDimensions,
         paddingPx: { x: 100, y: 250 },
-        calculations: (time, duration) => console.log(`curr ${time}/${duration}`),
-        styles: ".test{color:red;}",
-        htmls: "<p class='test'>test tesaasfasfaf</p>"
+        videoElements: videoElements(data),
     });
 
     return new Response(JSON.stringify({
@@ -52,11 +54,9 @@ export async function POST({ request }) {
     }, { status: 200 }));
 }
 
-function renderFrame(context, time, poster, posterDimensions, eventLabel, eventTags, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags, bandStageTime, logo = null, date = null, doors = null, tickets = null) {
-
-    /* event section */
-
-    const eventLabel = new TextVideoElement({
+const videoElements = (data) => [
+    new TextVideoElement({
+        id: "event-label",
         content: data.eventLabel,
         posX: [
             { time: eventOut, value: 50 },
@@ -67,10 +67,11 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
             { time: eventContent, value: 200 }
         ],
         fontName: "Neue Machina Regular",
-        fontSizePx: 70
-    });
-
-    const poster = new ImageVideoElement({
+        fontSizePx: 70,
+        easing: "inOutBack"
+    }),
+    new ImageVideoElement({
+        id: "event-poster",
         content: `dynamic/events/${data.eventId}.jpg`,
         posX: [
             { time: eventIn, value: -1400 },
@@ -79,16 +80,17 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
             { time: eventEnd, value: -1400 }
         ],
         posY: 500,
-        /* TODO dimensions */
+        // TODO dimensions
         wPx: 300,
-        hPx: 300
-    });
-
-    const eventTags = new TextVideoElement({
+        hPx: 300,
+        easing: "inOutBack"
+    }),
+    new TextVideoElement({
+        id: "event-tags",
         content: data.eventTags,
         posX: [
-            { time: eventOut, value: w / 2 },
-            { time: eventEnd, value: 1080 * -1.5 }
+            { time: eventOut, value: outputDimensions.w / 2 },
+            { time: eventEnd, value: outputDimensions.w * -1.5 }
         ],
         posY: [
             { time: eventIn, value: 2000 },
@@ -96,66 +98,69 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
         ],
         fontName: "Neue Machina Regular",
         fontSizePx: 40,
-        textAlign: "center"
-    });
-
-    /* band section */
-
-    const bandLabel = new TextVideoElement({
+        textAlign: "center",
+        easing: "inOutBack"
+    }),
+    new TextVideoElement({
+        id: "band-label",
         content: data.bandLabel,
         posX: [
-            { time: bandIn, value: 1080 },
+            { time: bandIn, value: outputDimensions.w },
             { time: bandContent, value: 50 },
             { time: bandOut, value: 50 },
             { time: bandEnd, value: -1400 },
         ],
         posY: 150,
         fontName: "Neue Machina Regular",
-        fontSizePx: 70
-    });
-
-    const bandDesc = new TextVideoElement({
+        fontSizePx: 70,
+        easing: "inOutBack"
+    }),
+    new TextVideoElement({
+        id: "band-desc",
         content: data.bandDesc,
         posX: [
-            { time: bandIn + .1, value: 1080 },
+            { time: bandIn + .1, value: outputDimensions.w },
             { time: bandContent, value: 60 },
             { time: bandOut, value: 60 },
             { time: bandEnd, value: -1400 },
         ],
         posY: 300,
         fontName: "Karla Regular",
-        fontSizePx: 40
-    });
-
-    const bandStageTime = new TextVideoElement({
+        fontSizePx: 40,
+        easing: "inOutBack"
+    }),
+    new TextVideoElement({
+        id: "band-stage-time",
         content: data.bandStageTime,
         posX: [
-            { time: bandIn + .2, value: 1080 * 1.5 },
-            { time: bandContent, value: w / 2 },
-            { time: bandOut, value: w / 2 },
-            { time: bandEnd, value: 1080 * -1.5 },
+            { time: bandIn + .2, value: outputDimensions.w * 1.5 },
+            { time: bandContent, value: outputDimensions.w / 2 },
+            { time: bandOut, value: outputDimensions.w / 2 },
+            { time: bandEnd, value: outputDimensions.w * -1.5 },
         ],
         posY: 950,
         fontName: "Karla Regular",
         fontSizePx: 40,
-        textAlign: "center"
-    });
-
-    const bandTags = new TextVideoElement({
+        textAlign: "center",
+        easing: "inOutBack"
+    }),
+    new TextVideoElement({
+        id: "band-tags",
         content: data.bandTags,
         posX: [
-            { time: bandIn + .3, value: 1080 * 1.5 },
-            { time: bandContent, value: w / 2 },
-            { time: bandOut, value: w / 2 },
-            { time: bandEnd, value: 1080 * -1.5 },
+            { time: bandIn + .3, value: outputDimensions.w * 1.5 },
+            { time: bandContent, value: outputDimensions.w / 2 },
+            { time: bandOut, value: outputDimensions.w / 2 },
+            { time: bandEnd, value: outputDimensions.w * -1.5 },
         ],
         posY: 1050,
         fontName: "Neue Machina Regular",
         fontSizePx: 40,
-        textAlign: "center"
-    });
-
-    const bandImage = new ImageVideoElement({
+        textAlign: "center",
+        easing: "inOutBack"
+    }),
+    new ImageVideoElement({
+        id: "band-image",
         content: `dynamic/bands/${data.bandImage}`,
         posX: [
             { time: bandOut, value: 0 },
@@ -163,61 +168,65 @@ function renderFrame(context, time, poster, posterDimensions, eventLabel, eventT
         ],
         posY: [
             { time: bandIn, value: 2000 },
-            { time: bandContent, value: 1920 - (bandImageDimensions.h) }
+            // TODO same value as img height
+            { time: bandContent, value: outputDimensions.h - 100 }
         ],
         // TODO dimensions
         wPx: 100,
-        hPx: 100
-    });
-
-    /* zz section */
-
-    const logo = new ImageVideoElement({
+        hPx: 100,
+        easing: "inOutBack"
+    }),
+    new ImageVideoElement({
+        id: "zz-logo",
         content: "./vidGenAssets/logo_transparent.png",
         posX: 0,
         posY: [
-            { time: zzIn + .2, value: -1080 },
+            { time: zzIn + .2, value: -outputDimensions.w },
             { time: zzContent, value: 150 }
         ],
-        /* TODO dimensions */
+        // TODO dimensions
         wPx: 100,
-        hPx: 100
-    });
-
-    const date = new TextVideoElement({
+        hPx: 100,
+        easing: "inOutBack"
+    }),
+    new TextVideoElement({
+        id: "event-date",
         content: data.date,
         posX: [
-            { time: zzIn, value: 1080 * 1.5 },
-            { time: zzContent, value: w / 2 }
+            { time: zzIn, value: outputDimensions.w * 1.5 },
+            { time: zzContent, value: outputDimensions.w / 2 }
         ],
         posY: 1300,
         fontName: "Neue Machina Regular",
-        fontSizePx: 60
-    });
-
-    const doors = new TextVideoElement({
+        fontSizePx: 60,
+        easing: "inOutBack"
+    }),
+    new TextVideoElement({
+        id: "event-doors",
         content: data.date,
         posX: [
-            { time: zzIn + .1, value: 1080 * 1.5 },
-            { time: zzContent, value: w / 2 }
+            { time: zzIn + .1, value: outputDimensions.w * 1.5 },
+            { time: zzContent, value: outputDimensions.w / 2 }
         ],
         posY: 1450,
         fontName: "Neue Machina Regular",
-        fontSizePx: 60
-    });
-
-    /* TODO if not null */
-    const tickets = new TextVideoElement({
+        fontSizePx: 60,
+        easing: "inOutBack"
+    }),
+    // TODO if not null
+    new TextVideoElement({
+        id: "event-tickets",
         content: data.tickets,
         posX: [
-            { time: zzIn + .2, value: 1080 * 1.5 },
-            { time: zzContent, value: w / 2 }
+            { time: zzIn + .2, value: outputDimensions.w * 1.5 },
+            { time: zzContent, value: outputDimensions.w / 2 }
         ],
         posY: 1600,
         fontName: "Neue Machina Regular",
-        fontSizePx: 60
-    });
-}
+        fontSizePx: 60,
+        easing: "inOutBack"
+    })
+];
 
 // NOTE need?
 function getImgDimensions(img, type, maxWidth, maxHeight) {

@@ -14,20 +14,23 @@ export class ImageVideoElement extends VideoElement {
         * @param {number | Array<*>} posY - Y position of element, array for keyframe interpolation or static number
         * @param {number} wPx - width in px for css
         * @param {number} hPx - height in px for css
+        * @param {string} easing - easing type from implemented (inOutBack, inOutQuint)
     */
     constructor({
         id,
         content,
-        posX = [],
-        posY = [],
+        posX = 0,
+        posY = 0,
         wPx = 100,
-        hPx = 100
+        hPx = 100,
+        easing = null
     }) {
         super({
             id: id,
             content: ImageVideoElement.getPngBase64(content),
             posX: posX,
-            posY: posY
+            posY: posY,
+            easing: easing
         });
         this.wPx = wPx;
         this.hPx = hPx;
@@ -36,13 +39,11 @@ export class ImageVideoElement extends VideoElement {
     /**
         * Get the css for html template
         * @param {number} time - time for calculations based on keyframes
-        * @param {string} easing - type of easing when using keyframe interpolation
         * @returns {string} The css of the element
     */
-    getStyles({ time, easing = null }) {
+    getStyles(time) {
         return super.getStyles({
             time: time,
-            easing: easing,
             additionalStyles: `
                 width: ${this.#getWPx()}px;
                 height: ${this.#getHPx()}px;

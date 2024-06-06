@@ -10,9 +10,6 @@ const eventEndShift = .4;
 
 export async function POST({ request }) {
 
-    // NOTE font import
-    // registerFont(path.resolve("./vidGenAssets/neue.otf"), { family: 'Neue Machina Regular' });
-    // registerFont(path.resolve("./vidGenAssets/karla.ttf"), { family: 'Karla Regular' });
     // NOTE need?
     ffmpeg.setFfmpegPath(ffmpegStatic);
 
@@ -91,9 +88,7 @@ export async function POST({ request }) {
         scalingFactor: scalingFactor,
         /* TODO padding */
         paddingPx: {x: 100, y: 300},
-        calculations: (time, duration) => console.log(`curr ${time}/${duration}`),
-        styles: ".test{color:red;}",
-        htmls: "<p class='test'>test tesaasfasfaf</p>"
+        videoElements: []
     });
 
     return new Response(JSON.stringify({
