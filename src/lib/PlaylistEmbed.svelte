@@ -5,7 +5,6 @@
 	export let src = '';
 </script>
 
-<!-- BUG analytics not working -->
 <AnalyticsButtonWrapper classes={"col-12 col-md-6"} event={'zztv-playlist'} data={{ playlistTitle: title, src: src }} youtubePlaylist={true}>
 	<iframe
 		{src}

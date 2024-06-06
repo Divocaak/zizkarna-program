@@ -6,6 +6,8 @@ import { Canvas, loadImage, registerFont } from 'canvas';
 import path from 'path';
 
 import { renderTemplate } from '$lib/scripts/video/template.js';
+import { TextVideoElement } from '$lib/classes/video/textVideoElement.js';
+import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
 
 const crossfadeTime = .1;
 const fadeTime = .8;
@@ -33,29 +35,12 @@ export async function POST({ request }) {
 
     const data = await request.json();
 
-    // const eventLabelWrapped = getWrappedText(data.eventLabel, 130, context, 80);
-    // const eventTagsWrapped = getWrappedText(data.eventTags, 200, context, 50);
-    // const poster = await loadImage(`dynamic/events/${data.eventId}.jpg`);
-    // const posterDimensions = getImgDimensions(poster, "contain", 1080, 1500);
-
-    // const bandLabelWrapped = getWrappedText(data.bandLabel, 120, context, 70);
-    // const bandDescWrapped = getWrappedText(data.bandDesc, 250, context, 50);
-    // const bandTagsWrapped = getWrappedText(data.bandTags, 200, context, 50);
-    // const bandStageTimeWrapped = getWrappedText(data.bandStageTime, 300, context, 40);
-    // const bandImage = await loadImage(`dynamic/bands/${data.bandImage}`);
-    // const bandImageDimensions = getImgDimensions(bandImage, "contain", 1080, 1500);
-
-    // const dateWrapped = getWrappedText(data.date, 500, context, 90);
-    // const doorsWrapped = getWrappedText(data.doors, 500, context, 90);
-    // const ticketsWrapped = data.tickets ? getWrappedText(data.tickets, 100, context, 90) : null;
-    // const logo = await loadImage("./vidGenAssets/logo_transparent.png");
-
     const testPage = true;
     const testFrame = false;
     const response = await renderTemplate({
         testPage: testPage,
         duration: duration,
-        paddingPx: {x: 100, y: 250},
+        paddingPx: { x: 100, y: 250 },
         calculations: (time, duration) => console.log(`curr ${time}/${duration}`),
         styles: ".test{color:red;}",
         htmls: "<p class='test'>test tesaasfasfaf</p>"
@@ -67,149 +52,171 @@ export async function POST({ request }) {
     }, { status: 200 }));
 }
 
-function calculations (time, duration){
-    
-}
-
 function renderFrame(context, time, poster, posterDimensions, eventLabel, eventTags, bandLabel, bandDesc, bandImage, bandImageDimensions, bandTags, bandStageTime, logo = null, date = null, doors = null, tickets = null) {
-
-    //context.fillStyle = "#d4d4d4";
 
     /* event section */
 
-    /* const eventLabelX = interpolateKeyframes([
-        { time: eventOut, value: 50 },
-        { time: eventEnd, value: -1500 }
-    ], time);
-    const eventLabelY = interpolateKeyframes([
-        { time: eventIn, value: -200 },
-        { time: eventContent, value: 200 }
-    ], time);
-    context.font = "70px 'Neue Machina Regular'";
-    context.textAlign = "left";
-    eventLabel.forEach(function (item) {
-        context.fillText(item[0], eventLabelX, eventLabelY + item[1]);
+    const eventLabel = new TextVideoElement({
+        content: data.eventLabel,
+        posX: [
+            { time: eventOut, value: 50 },
+            { time: eventEnd, value: -1500 }
+        ],
+        posY: [
+            { time: eventIn, value: -200 },
+            { time: eventContent, value: 200 }
+        ],
+        fontName: "Neue Machina Regular",
+        fontSizePx: 70
     });
 
-    const posterX = interpolateKeyframes([
-        { time: eventIn, value: -1400 },
-        { time: eventContent, value: 0 },
-        { time: eventOut, value: 0 },
-        { time: eventEnd, value: -1400 }
-    ], time);
-    context.drawImage(poster, posterX, 500, posterDimensions.w, posterDimensions.h);
+    const poster = new ImageVideoElement({
+        content: `dynamic/events/${data.eventId}.jpg`,
+        posX: [
+            { time: eventIn, value: -1400 },
+            { time: eventContent, value: 0 },
+            { time: eventOut, value: 0 },
+            { time: eventEnd, value: -1400 }
+        ],
+        posY: 500,
+        /* TODO dimensions */
+        wPx: 300,
+        hPx: 300
+    });
 
-    const eventTagsX = interpolateKeyframes([
-        { time: eventOut, value: w / 2 },
-        { time: eventEnd, value: 1080 * -1.5 }
-    ], time);
-    const eventTagsY = interpolateKeyframes([
-        { time: eventIn, value: 2000 },
-        { time: eventContent, value: 1500 }
-    ], time);
-    context.font = "40px 'Neue Machina Regular'";
-    context.textAlign = "center";
-    eventTags.forEach(function (item) {
-        context.fillText(item[0], eventTagsX, eventTagsY + item[1]);
-    }); */
+    const eventTags = new TextVideoElement({
+        content: data.eventTags,
+        posX: [
+            { time: eventOut, value: w / 2 },
+            { time: eventEnd, value: 1080 * -1.5 }
+        ],
+        posY: [
+            { time: eventIn, value: 2000 },
+            { time: eventContent, value: 1500 }
+        ],
+        fontName: "Neue Machina Regular",
+        fontSizePx: 40,
+        textAlign: "center"
+    });
 
     /* band section */
 
-    /* const bandLabelX = interpolateKeyframes([
-        { time: bandIn, value: 1080 },
-        { time: bandContent, value: 50 },
-        { time: bandOut, value: 50 },
-        { time: bandEnd, value: -1400 },
-    ], time);
-    context.font = "70px 'Neue Machina Regular'";
-    context.textAlign = "left";
-    bandLabel.forEach(function (item) {
-        context.fillText(item[0], bandLabelX, 150 + item[1]);
+    const bandLabel = new TextVideoElement({
+        content: data.bandLabel,
+        posX: [
+            { time: bandIn, value: 1080 },
+            { time: bandContent, value: 50 },
+            { time: bandOut, value: 50 },
+            { time: bandEnd, value: -1400 },
+        ],
+        posY: 150,
+        fontName: "Neue Machina Regular",
+        fontSizePx: 70
     });
 
-    const bandDescX = interpolateKeyframes([
-        { time: bandIn + .1, value: 1080 },
-        { time: bandContent, value: 60 },
-        { time: bandOut, value: 60 },
-        { time: bandEnd, value: -1400 },
-    ], time);
-    context.font = "40px 'Karla Regular'";
-    bandDesc.forEach(function (item) {
-        context.fillText(item[0], bandDescX, 300 + item[1]);
+    const bandDesc = new TextVideoElement({
+        content: data.bandDesc,
+        posX: [
+            { time: bandIn + .1, value: 1080 },
+            { time: bandContent, value: 60 },
+            { time: bandOut, value: 60 },
+            { time: bandEnd, value: -1400 },
+        ],
+        posY: 300,
+        fontName: "Karla Regular",
+        fontSizePx: 40
     });
 
-    const bandStageTimeX = interpolateKeyframes([
-        { time: bandIn + .2, value: 1080 * 1.5 },
-        { time: bandContent, value: w / 2 },
-        { time: bandOut, value: w / 2 },
-        { time: bandEnd, value: 1080 * -1.5 },
-    ], time);
-    context.textAlign = "center";
-    bandStageTime.forEach(function (item) {
-        context.fillText(item[0], bandStageTimeX, 950 + item[1]);
+    const bandStageTime = new TextVideoElement({
+        content: data.bandStageTime,
+        posX: [
+            { time: bandIn + .2, value: 1080 * 1.5 },
+            { time: bandContent, value: w / 2 },
+            { time: bandOut, value: w / 2 },
+            { time: bandEnd, value: 1080 * -1.5 },
+        ],
+        posY: 950,
+        fontName: "Karla Regular",
+        fontSizePx: 40,
+        textAlign: "center"
     });
 
-    const bandTagsX = interpolateKeyframes([
-        { time: bandIn + .3, value: 1080 * 1.5 },
-        { time: bandContent, value: w / 2 },
-        { time: bandOut, value: w / 2 },
-        { time: bandEnd, value: 1080 * -1.5 },
-    ], time);
-    context.font = "40px 'Neue Machina Regular'";
-    bandTags.forEach(function (item) {
-        context.fillText(item[0], bandTagsX, 1050 + item[1]);
+    const bandTags = new TextVideoElement({
+        content: data.bandTags,
+        posX: [
+            { time: bandIn + .3, value: 1080 * 1.5 },
+            { time: bandContent, value: w / 2 },
+            { time: bandOut, value: w / 2 },
+            { time: bandEnd, value: 1080 * -1.5 },
+        ],
+        posY: 1050,
+        fontName: "Neue Machina Regular",
+        fontSizePx: 40,
+        textAlign: "center"
     });
 
-    const bandImageX = interpolateKeyframes([
-        { time: bandOut, value: 0 },
-        { time: bandEnd, value: -1400 }
-    ], time);
-    const bandImageY = interpolateKeyframes([
-        { time: bandIn, value: 2000 },
-        { time: bandContent, value: 1920 - (bandImageDimensions.h) }
-    ], time);
-    context.drawImage(bandImage, bandImageX, bandImageY, bandImageDimensions.w, bandImageDimensions.h); */
+    const bandImage = new ImageVideoElement({
+        content: `dynamic/bands/${data.bandImage}`,
+        posX: [
+            { time: bandOut, value: 0 },
+            { time: bandEnd, value: -1400 }
+        ],
+        posY: [
+            { time: bandIn, value: 2000 },
+            { time: bandContent, value: 1920 - (bandImageDimensions.h) }
+        ],
+        // TODO dimensions
+        wPx: 100,
+        hPx: 100
+    });
 
     /* zz section */
 
-    /* if (logo != null) {
-        const logoY = interpolateKeyframes([
+    const logo = new ImageVideoElement({
+        content: "./vidGenAssets/logo_transparent.png",
+        posX: 0,
+        posY: [
             { time: zzIn + .2, value: -1080 },
             { time: zzContent, value: 150 }
-        ], time);
-        context.drawImage(logo, 0, logoY, 1080, 1080);
-    }
+        ],
+        /* TODO dimensions */
+        wPx: 100,
+        hPx: 100
+    });
 
-    if (date != null) {
-        const dateX = interpolateKeyframes([
+    const date = new TextVideoElement({
+        content: data.date,
+        posX: [
             { time: zzIn, value: 1080 * 1.5 },
             { time: zzContent, value: w / 2 }
-        ], time);
-        context.font = "60px 'Neue Machina Regular'";
-        date.forEach(function (item) {
-            context.fillText(item[0], dateX, 1300 + item[1]);
-        });
-    }
+        ],
+        posY: 1300,
+        fontName: "Neue Machina Regular",
+        fontSizePx: 60
+    });
 
-    if (doors != null) {
-        const doorsX = interpolateKeyframes([
+    const doors = new TextVideoElement({
+        content: data.date,
+        posX: [
             { time: zzIn + .1, value: 1080 * 1.5 },
             { time: zzContent, value: w / 2 }
-        ], time);
-        doors.forEach(function (item) {
-            context.fillText(item[0], doorsX, 1450 + item[1]);
-        });
-    }
+        ],
+        posY: 1450,
+        fontName: "Neue Machina Regular",
+        fontSizePx: 60
+    });
 
-    if (tickets != null) {
-        const ticketsX = interpolateKeyframes([
+    /* TODO if not null */
+    const tickets = new TextVideoElement({
+        content: data.tickets,
+        posX: [
             { time: zzIn + .2, value: 1080 * 1.5 },
             { time: zzContent, value: w / 2 }
-        ], time);
-        tickets.forEach(function (item) {
-            context.fillText(item[0], ticketsX, 1600 + item[1]);
-        });
-    } */
+        ],
+        posY: 1600,
+        fontName: "Neue Machina Regular",
+        fontSizePx: 60
+    });
 }
 
 // NOTE need?
