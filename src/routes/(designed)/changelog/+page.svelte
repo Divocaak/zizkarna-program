@@ -2,6 +2,19 @@
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
 
+## upraveno
+- video generátory sjednoceny, použito OOP
+- video generátory běží na html kódu, ne na Canvas
+
+## přidáno
+- gradienty ve video generátorech u kapel v rámci eventu
+- html stránka jako preview generovaného videa
+
+## opraveno
+- fonty u videogenerátorů
+- padding-y u generovaných videí formátu ig story
+
+
 # 13. 5. 25
 
 ## upraveno

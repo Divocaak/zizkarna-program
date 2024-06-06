@@ -203,7 +203,7 @@ const videoElements = (data) => [
     }),
     new TextVideoElement({
         id: "event-doors",
-        content: data.date,
+        content: data.doors,
         posX: [
             { time: zzIn + .1, value: outputDimensions.w * 1.5 },
             { time: zzContent, value: outputDimensions.w / 2 }
@@ -213,19 +213,19 @@ const videoElements = (data) => [
         fontSizePx: 60,
         easing: "inOutBack"
     }),
-    // TODO if not null
-    new TextVideoElement({
-        id: "event-tickets",
-        content: data.tickets,
-        posX: [
-            { time: zzIn + .2, value: outputDimensions.w * 1.5 },
-            { time: zzContent, value: outputDimensions.w / 2 }
-        ],
-        posY: 1600,
-        fontName: "Neue Machina Regular",
-        fontSizePx: 60,
-        easing: "inOutBack"
-    })
+    data.tickets != null ?
+        new TextVideoElement({
+            id: "event-tickets",
+            content: data.tickets,
+            posX: [
+                { time: zzIn + .2, value: outputDimensions.w * 1.5 },
+                { time: zzContent, value: outputDimensions.w / 2 }
+            ],
+            posY: 1600,
+            fontName: "Neue Machina Regular",
+            fontSizePx: 60,
+            easing: "inOutBack"
+        }) : null
 ];
 
 // NOTE need?

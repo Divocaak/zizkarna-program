@@ -65,6 +65,8 @@ export async function renderTemplate({
         });
     }
 
+    /* URGENT https://github.com/Divocaak/zizkarna-program/issues/146 */
+
     if (onlyStaticMiddleFrame) {
         // NOTE test frame and/or static poster
         //renderFrame(context, 6, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes, isPoster);
@@ -142,6 +144,7 @@ function getHtml({
     let elementStyles = '';
     let elementHtml = '';
     videoElements.forEach(element => {
+        if (element === null) return;
         elementStyles += `${element.getStyles(time)}\n`;
         elementHtml += `${element.getHtml()}\n`;
     });
