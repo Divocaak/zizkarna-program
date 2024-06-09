@@ -1,6 +1,8 @@
-// NOTE need?
+// NOTE mby need in img buffer to video conversion, otherwise npm uninstall?
 import ffmpegStatic from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
+// in beggining of the method run ffmpeg.setFfmpegPath(ffmpegStatic);
+// is it really needed?
 
 import { renderTemplate } from '$lib/scripts/video/template.js';
 import { TextVideoElement } from '$lib/classes/video/textVideoElement.js';
@@ -29,16 +31,36 @@ const duration = zzContent + sectionLen;
 
 export async function POST({ request }) {
 
-    // NOTE need?
-    ffmpeg.setFfmpegPath(ffmpegStatic);
+    console.log(`
+        === CONSTS
+        crossfadeTime: ${crossfadeTime}
+        fadeTime: ${fadeTime}
+        sectionLen: ${sectionLen}
+        
+        === EVENT
+        eventIn: ${eventIn}
+        eventContent: ${eventContent}
+        eventOut: ${eventOut}
+        eventEnd: ${eventEnd}
+        
+        === BAND
+        bandIn: ${bandIn}
+        bandContent: ${bandContent}
+        bandOut: ${bandOut}
+        bandEnd: ${bandEnd}
+        
+        === LAST
+        zzIn: ${zzIn}
+        zzContent: ${zzContent}
+        
+        === DURATION
+        duration: ${duration}\n`
+    );
 
     const data = await request.json();
 
-    const testPage = true;
-    const testFrame = false;
-
     const response = await renderTemplate({
-        testPage: testPage,
+        onlyFrame: data.testFrame,
         duration: duration,
         outputDimensions: outputDimensions,
         paddingPx: { x: 100, y: 250 },
@@ -47,7 +69,7 @@ export async function POST({ request }) {
 
     return new Response(JSON.stringify({
         output: response,
-        format: (testPage ? "html" : (testFrame ? "image" : "video"))
+        format: (data.testFrame ? "html" : "video")
     }, { status: 200 }));
 }
 

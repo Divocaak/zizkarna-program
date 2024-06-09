@@ -5,6 +5,9 @@
 ## upraveno
 - video generátory sjednoceny, použito OOP
 - video generátory běží na html kódu, ne na Canvas
+- video generátor kapel v rámci eventu:
+  - obrázek kapely kliknutelný
+  - console log časů (kdy co)
 
 ## přidáno
 - gradienty ve video generátorech u kapel v rámci eventu

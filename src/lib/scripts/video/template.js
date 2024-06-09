@@ -4,11 +4,10 @@ import font2base64 from 'node-font2base64';
 import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
 
 const outputPath = "dynamic/generator";
-// NOTE framerate 30
-const frameRate = 1;
+const frameRate = 30;
 
 export async function renderTemplate({
-    testPage = false,
+    onlyFrame = null,
     duration,
     outputDimensions = { w: 1080, h: 1920 },
     scalingFactor = { w: 1, h: 1 },
@@ -55,9 +54,10 @@ export async function renderTemplate({
 
     // NOTE mby call getHtml only once and save to var, then reuse?
 
-    if (testPage) {
+    // not null, which means that a number of wanted test frame is passed
+    if (onlyFrame !== null) {
         return getHtml({
-            time: 1,
+            time: onlyFrame,
             outputDimensions: outputDimensions,
             gradients: gradients,
             padding: paddingPx,
@@ -67,6 +67,7 @@ export async function renderTemplate({
 
     /* URGENT https://github.com/Divocaak/zizkarna-program/issues/146 */
 
+    // TODO rewrite "all data at once" to use for monthly overview for posters
     if (onlyStaticMiddleFrame) {
         // NOTE test frame and/or static poster
         //renderFrame(context, 6, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes, isPoster);
@@ -128,7 +129,7 @@ async function renderFrameTemplate(outputFile, html) {
 }
 
 function getHtml({
-    time = 1,
+    time,
     outputDimensions = { w: 1080, h: 1920 },
     gradients = [],
     padding = { x: 0, y: 0 },

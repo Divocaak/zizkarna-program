@@ -163,7 +163,9 @@
 		{#each $selectedBand.imgs as img}
 			<div class="img-select">
 				<input type="radio" id={img} name="selectedImg" value="{$selectedBand.id}/{img}" required />
-				<img src="/dynamic/bands/{$selectedBand.id}/{img}" alt="band img {img}" />
+				<label for={img}>
+					<img src="/dynamic/bands/{$selectedBand.id}/{img}" alt="band img {img}" />
+				</label>
 			</div>
 		{/each}
 	{/if}
@@ -173,9 +175,8 @@
 	</label><br />
 	{#if $isTestFrame}
 		<label for="testFrameNumber">
-			test frame <i>(<b>x</b> event, <b>y</b> band)</i>
-			<!-- TODO band frame number as default -->
-			<input type="number" id="testFrameNumber" name="testFrameNumber" value="40" />
+			test frame <i>(<b>0.8</b> event, <b>3.7</b> band)</i>
+			<input type="number" step="0.1" id="testFrameNumber" name="testFrameNumber" value="3.7" />
 		</label><br />
 	{/if}
 	<br /><button type="submit">generate</button>

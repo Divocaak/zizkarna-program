@@ -1,17 +1,9 @@
-// NOTE need?
-import ffmpegStatic from 'ffmpeg-static';
-import ffmpeg from 'fluent-ffmpeg';
-
 import { renderTemplate } from '$lib/scripts/video/template.js';
 
 const eventStartShift = .5;
 const eventEndShift = .4;
 
 export async function POST({ request }) {
-
-    // NOTE need?
-    ffmpeg.setFfmpegPath(ffmpegStatic);
-
     const data = await request.json();
     const duration = data.duration;
 
