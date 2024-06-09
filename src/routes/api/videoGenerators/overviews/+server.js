@@ -1,7 +1,6 @@
 // NOTE need?
 import ffmpegStatic from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
-import { Canvas, loadImage, registerFont } from 'canvas';
 
 import { renderTemplate } from '$lib/scripts/video/template.js';
 

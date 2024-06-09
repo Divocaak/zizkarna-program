@@ -20,6 +20,9 @@
 		selectedBand.set(newBand);
 	}
 
+	const isTestFrame = writable(false);
+	const changeTestFrame = () => isTestFrame.set(!$isTestFrame);
+
 	const timeFormatted = (time) => time.substring(0, time.length - 3);
 
 	const getTagsString = (tags) =>
@@ -45,7 +48,7 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					testFrame: formData.submitType ?? null,
+					testFrame: $isTestFrame ? formData.testFrameNumber : null,
 					eventId: selectedEvent.id,
 					eventLabel: formData.eventLabel,
 					eventTags: formData.eventTags,
@@ -164,14 +167,17 @@
 			</div>
 		{/each}
 	{/if}
-	<label for="testFrameEvent">
-		<input type="radio" id="testFrameEvent" name="submitType" value="event" />
-		test frame <b>event</b> section
+	<label for="testFrame">
+		<input on:change={() => changeTestFrame()} type="checkbox" id="testFrame" name="testFrame" />
+		test frame
 	</label><br />
-	<label for="testFrameBand">
-		<input type="radio" id="testFrameBand" name="submitType" value="band" />
-		test frame <b>band</b> section
-	</label><br />
+	{#if $isTestFrame}
+		<label for="testFrameNumber">
+			test frame <i>(<b>x</b> event, <b>y</b> band)</i>
+			<!-- TODO band frame number as default -->
+			<input type="number" id="testFrameNumber" name="testFrameNumber" value="40" />
+		</label><br />
+	{/if}
 	<br /><button type="submit">generate</button>
 </form>
 
@@ -180,7 +186,7 @@
 	ʕ•ᴥ•ʔ (generuju, sorry, trvá mi to, vydrž pls)
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
-<!-- TODO rew same -->
+	<!-- TODO rew same -->
 {:else}
 	<!-- prettier-ignore -->
 	{#if $isImage}
