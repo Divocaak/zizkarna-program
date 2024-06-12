@@ -1,7 +1,5 @@
 <script>
 	import { writable } from 'svelte/store';
-	import { goto } from '$app/navigation';
-	import videoPreview from '$lib/stores/videoPreviewStore.js';
 	export let data;
 
 	const isLoading = writable(null);
@@ -11,6 +9,7 @@
 	const eventTags = data.eventTags;
 	const bands = data.bands ?? [];
 
+	const selectedBand = writable(null);
 	async function selectBand(newBand) {
 		const res = await fetch(`/dynamic/bands/${newBand.id}/band.json`);
 		const data = res.ok ? await res.json() : { imgs: [], links: [] };
@@ -19,6 +18,7 @@
 		selectedBand.set(newBand);
 	}
 
+	const testFrame = writable(false);
 	const changeTestFrame = () => testFrame.set(!$testFrame);
 
 	const timeFormatted = (time) => time.substring(0, time.length - 3);
@@ -29,9 +29,7 @@
 			.join('')
 			.replaceAll('////', '//');
 
-	const selectedBand = writable(null);
 	const bandTags = writable(null);
-	const testFrame = writable(false);
 	const formData = writable({
 		eventLabel: selectedEvent.label,
 		eventTags: getTagsString(eventTags),
@@ -52,32 +50,40 @@
 				weekday: 'long'
 			});
 
-			const response = await fetch('/api/videoGenerators/bandInEvent', {
+			const requestPath = '/api/videoGenerators/bandInEvent';
+			const requestBody = {
+				testFrame: $testFrame ? $formData.testFrameNumber : null,
+				eventId: selectedEvent.id,
+				eventLabel: $formData.eventLabel,
+				eventTags: $formData.eventTags,
+				bandLabel: $selectedBand.label,
+				bandDesc: $selectedBand.description,
+				bandTags: $bandTags,
+				bandImage: $formData.selectedImg,
+				bandStageTime: `Stage time: ${timeFormatted($selectedBand.stageTime)}`,
+				doors: `otevřeno od ${timeFormatted(selectedEvent.doors)}`,
+				date: dateFormatted,
+				tickets: $formData.eventTickets ?? null
+			};
+
+			if ($testFrame) {
+				window.open(
+					`/admin/videoPreview?data=${encodeURIComponent(
+						JSON.stringify({ requestBody: requestBody, requestPath: requestPath })
+					)}`,
+					'_blank'
+				);
+				return;
+			}
+
+			const response = await fetch(requestPath, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					testFrame: $testFrame ? $formData.testFrameNumber : null,
-					eventId: selectedEvent.id,
-					eventLabel: $formData.eventLabel,
-					eventTags: $formData.eventTags,
-					bandLabel: $selectedBand.label,
-					bandDesc: $selectedBand.description,
-					bandTags: $bandTags,
-					bandImage: $formData.selectedImg,
-					bandStageTime: `Stage time: ${timeFormatted($selectedBand.stageTime)}`,
-					doors: `otevřeno od ${timeFormatted(selectedEvent.doors)}`,
-					date: dateFormatted,
-					tickets: $formData.eventTickets ?? null
-				})
+				body: JSON.stringify(requestBody)
 			});
 
 			const result = await response.json();
 			isLoading.set(false);
-
-			if (result.format == 'html') {
-				videoPreview.update(result.output);
-				window.open('/admin/videoPreview', "_blank");
-			}
 			isImage.set(result.format == 'image');
 
 			return;

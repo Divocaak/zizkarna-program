@@ -43,8 +43,8 @@ export class VideoElement {
     }) {
         return `#${this.getId()}{
             position: absolute;
-            top: ${this.#getXInTime(time)}px;
-            left: ${this.#getYInTime(time)}px;
+            top: ${this.#getYInTime(time)}px;
+            left: ${this.#getXInTime(time)}px;
             padding: 0;
             margin: 0;
             ${additionalStyles}
