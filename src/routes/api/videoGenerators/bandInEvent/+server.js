@@ -1,9 +1,3 @@
-// NOTE mby need in img buffer to video conversion, otherwise npm uninstall?
-import ffmpegStatic from 'ffmpeg-static';
-import ffmpeg from 'fluent-ffmpeg';
-// in beggining of the method run ffmpeg.setFfmpegPath(ffmpegStatic);
-// is it really needed?
-
 import { renderTemplate } from '$lib/scripts/video/template.js';
 import { TextVideoElement } from '$lib/classes/video/textVideoElement.js';
 import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';

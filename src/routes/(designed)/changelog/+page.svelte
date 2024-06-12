@@ -8,6 +8,7 @@
 - video generátor kapel v rámci eventu:
   - obrázek kapely kliknutelný
   - console log časů (kdy co)
+- video se skládá z obrázků uložených v paměti (jednotlivé snímky už se nukládají jako fotky na disk)
 
 ## přidáno
 - gradienty ve video generátorech u kapel v rámci eventu

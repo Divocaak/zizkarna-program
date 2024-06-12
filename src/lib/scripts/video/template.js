@@ -1,10 +1,14 @@
 import fs from 'fs';
 import nodeHtmlToImage from 'node-html-to-image';
 import font2base64 from 'node-font2base64';
+import ffmpeg from 'fluent-ffmpeg';
+import ffmpegStatic from 'ffmpeg-static';
 import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
+import { PassThrough } from 'stream';
 
-const outputPath = "dynamic/generator";
-const frameRate = 30;
+const outputPath = "dynamic/generator/";
+// NOTE 30
+const frameRate = 1;
 
 export async function renderTemplate({
     onlyFrame = null,
@@ -15,6 +19,8 @@ export async function renderTemplate({
     onlyStaticMiddleFrame = false,
     videoElements = []
 }) {
+    ffmpeg.setFfmpegPath(ffmpegStatic);
+
     // Clean up the temporary directories first
     for (const path of [outputPath]) {
         if (fs.existsSync(path)) await fs.promises.rm(path, { recursive: true });
@@ -65,68 +71,106 @@ export async function renderTemplate({
         });
     }
 
-    /* URGENT https://github.com/Divocaak/zizkarna-program/issues/146 */
-
     // TODO rewrite "all data at once" to use for monthly overview for posters
     if (onlyStaticMiddleFrame) {
         // NOTE test frame and/or static poster
         //renderFrame(context, 6, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes, isPoster);
         // return
-        const responseFile = `${outputPath}/output.jpg`;
-        renderFrameTemplate(responseFile, getHtml({
-            time: 1,
-            outputDimensions: outputDimensions,
-            gradients: gradients,
-            padding: paddingPx,
-            videoElements: videoElements
-        }));
-        return responseFile;
+        renderFrame({
+            html: getHtml({
+                time: 1,
+                outputDimensions: outputDimensions,
+                gradients: gradients,
+                padding: paddingPx,
+                videoElements: videoElements
+            })
+        });
+        return `${outputPath}/output.jpg`;
     }
 
+
+    const imageBuffers = await generateImages({
+        duration: duration,
+        outputDimensions: outputDimensions,
+        gradients: gradients,
+        padding: paddingPx,
+        videoElements: videoElements
+    });
+
+    await createVideoFromBuffers(imageBuffers);
+    // return new Response(JSON.stringify({ path: "outputFile", format: "video" }, { status: 200 }));
+}
+
+// NOTE performance https://github.com/frinyvonnick/node-html-to-image/issues/80
+// NOTE quality: 100? default is 80
+const renderFrame = ({ html, isBufferFrame = false }) => nodeHtmlToImage({
+    html: html,
+    type: 'jpeg',
+    quality: 80,
+    encoding: isBufferFrame ? "buffer" : "binary",
+    output: isBufferFrame ? undefined : `${outputPath}output.jpg`
+    /* puppeteerArgs: {
+        // concurrency: Cluster.CONCURRENCY_CONTEXT,
+        maxConcurrency: 10,
+        puppeteerOptions: { args: [['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-accelerated-2d-canvas', '--no-first-run', '--no-zygote']] }
+    } */
+});
+
+const generateImages = async ({ duration, outputDimensions, gradients, padding, videoElements }) => {
+    const imageBuffers = [];
     const frameCount = Math.floor(duration * frameRate);
-    //const frames = [];
     for (let i = 0; i < frameCount; i++) {
+        console.time(`render frame ${i}`);
+
         const time = i / frameRate;
-        const paddedNumber = String(i).padStart(4, '0');
-        await renderFrameTemplate(`${outputPath}/frame-${paddedNumber}.jpg`, getHtml({
-            time: time,
-            outputDimensions: outputDimensions,
-            gradients: gradients,
-            padding: paddingPx,
-            videoElements: videoElements
-        }));
-        //.then((result) => frames.push(result));
+        const buffer = await renderFrame({
+            html: getHtml({
+                time: time,
+                outputDimensions: outputDimensions,
+                gradients: gradients,
+                padding: padding,
+                videoElements: videoElements
+            }),
+            isBufferFrame: true
+        });
 
-        // TODO idealne nepouzit a ukladat do bufferu, ale pro test ucely nechat lezet
-        /* const outputFile = `${outputPath}/video.mp4`;
-        await stitchFramesToVideo(
-            `${outputPath}/frame-%04d.png`,
-            outputFile,
-            duration,
-            frameRate,
-        );
-    
-        return new Response(JSON.stringify({ path: "outputFile", format: "video" }, { status: 200 })); */
+        imageBuffers.push(buffer);
+        console.timeEnd(`render frame ${i}`);
     }
-}
+    return imageBuffers;
+};
 
-async function renderFrameTemplate(outputFile, html) {
-    // NOTE performance https://github.com/frinyvonnick/node-html-to-image/issues/80
-    console.time("render");
-    //const frame = await nodeHtmlToImage({
-    return nodeHtmlToImage({
-        output: outputFile,
-        type: "jpeg",
-        /* NOTE 100? default is 80 */
-        quality: 80,
-        puppeteerArgs: {
-            /* concurrency: Cluster.CONCURRENCY_CONTEXT, */
-            maxConcurrency: 10,
-            puppeteerOptions: { args: [['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-accelerated-2d-canvas', '--no-first-run', '--no-zygote']] }
-        },
-        html: html,
-    }).then(() => console.timeEnd("render"));
-}
+const createVideoFromBuffers = (buffers) => {
+    return new Promise((resolve, reject) => {
+        const videoOutputPath = `${outputPath}output.mp4`;
+        const inputStream = new PassThrough();
+        
+        ffmpeg(inputStream)
+            .inputFormat('image2pipe')
+            .inputFPS(frameRate)
+            .videoCodec('libx264')
+            .outputOptions(['-pix_fmt yuv420p'])
+            .on('end', () => {
+                console.log('Video created successfully');
+                resolve(videoOutputPath);
+            })
+            .on('error', (err, stdout, stderr) => {
+                console.error('Error creating video:', err);
+                console.log("stdout:\n" + stdout);
+                console.log("stderr:\n" + stderr);
+                reject(err);
+            })
+            .save(videoOutputPath);
+
+        // Write each buffer to the input stream
+        buffers.forEach(buffer => {
+            inputStream.write(buffer);
+        });
+
+        // End the input stream once all buffers are written
+        inputStream.end();
+    });
+};
 
 function getHtml({
     time,
@@ -137,10 +181,10 @@ function getHtml({
 }) {
     let gradientsStyles = '';
     let gradientsHtml = '';
-    /* gradients.forEach(gradient => {
+    gradients.forEach(gradient => {
         gradientsStyles += `${gradient.getStyles(time)}\n`;
         gradientsHtml += `${gradient.getHtml()}\n`;
-    }); */
+    });
 
     let elementStyles = '';
     let elementHtml = '';
@@ -163,10 +207,6 @@ function getHtml({
                         @font-face {
                             font-family: 'Karla Regular';
                             src: url(${fontDataKarla}) format('woff2');
-                        }
-
-                        html{
-                            background: lime;
                         }
 
                         body {

@@ -54,6 +54,7 @@ export class TextVideoElement extends VideoElement {
                 font-family: ${this.#getFontName()}, sans-serif;
                 color: ${this.#getFontColor()};
                 text-align: ${this.#getTextAlign()};
+                border: 1px solid purple;
             `
         });
     }

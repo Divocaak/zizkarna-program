@@ -51,6 +51,7 @@ export class ImageVideoElement extends VideoElement {
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
+                border: 1px solid cyan;
             `
         });
     }

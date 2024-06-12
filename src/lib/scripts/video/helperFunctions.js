@@ -23,19 +23,3 @@ export function getWrappedText(text, maxWidth, context, lineHeight) {
 
     return lineArray;
 }
-
-// NOTE need?
-export async function stitchFramesToVideo(framesFilepath, outputFilepath, duration, frameRate) {
-    await new Promise((resolve, reject) => {
-        ffmpeg()
-            .input(framesFilepath)
-            .inputOptions([`-framerate ${frameRate}`])
-            .videoCodec('libx264')
-            .outputOptions(['-pix_fmt yuv420p'])
-            .duration(duration)
-            .fps(frameRate)
-            .saveToFile(outputFilepath)
-            .on('end', () => resolve())
-            .on('error', (error) => reject(new Error(error)));
-    });
-}

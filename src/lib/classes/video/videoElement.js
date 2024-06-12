@@ -47,7 +47,6 @@ export class VideoElement {
             left: ${this.#getYInTime(time)}px;
             padding: 0;
             margin: 0;
-            border: 1px solid blue;
             ${additionalStyles}
         }`;
     }
