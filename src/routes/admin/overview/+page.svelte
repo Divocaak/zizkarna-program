@@ -1,21 +1,16 @@
 <script>
 	import { writable } from 'svelte/store';
-	import { goto } from '$app/navigation';
-	import videoPreview from '$lib/stores/videoPreviewStore.js';
 
 	const isLoading = writable(null);
 	const isImage = writable(null);
 
-	const isMonth = writable(false);
-	const changeOutput = (newVal) => isMonth.set(newVal);
-
-	const isOffline = writable(false);
-	const changeOffline = (newVal) => isOffline.set(newVal);
+	const isOfflineMedium = writable(false);
+	const changeOutputMediumPoster = (newVal) => isOfflineMedium.set(newVal);
 
 	const now = new Date();
-	const currentYear = now.getFullYear();
+	/* const currentYear = now.getFullYear();
 	const currentMonth = ('0' + (now.getMonth() + 1)).slice(-2);
-	const currentWeek = now.getFullYear() + '-W' + getWeekNumber(now).toString().padStart(2, '0');
+	const currentWeek = now.getFullYear() + '-W' + getWeekNumber(now).toString().padStart(2, '0'); */
 
 	function getWeekNumber(d) {
 		d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -25,20 +20,29 @@
 		return weekNo;
 	}
 
+	const testFrame = writable(false);
+	const changeTestFrame = () => testFrame.set(!$testFrame);
+
+	const formData = writable({
+		outputRange: 'month',
+		selectedDate: undefined,
+		outputMediumOrVidLength: '8',
+		dimPastEvents: undefined,
+		splitForTwoSections: undefined,
+		testFrameNumber: 1
+	});
+
 	async function handleSubmit(event) {
 		event.preventDefault();
-		const formData = Object.fromEntries(new FormData(event.target));
 
 		try {
 			isLoading.set(true);
 
-			const year = formData.selectedDate.substring(0, 4);
-			const monthOrWeek = formData.selectedDate.substring(
-				formData.selectedDate.length - 2,
-				formData.selectedDate.length
-			);
-
-			const apiPath = $isMonth
+			const isMonth = $formData.outputRange == 'month';
+			const selectedDate = $formData.selectedDate;
+			const monthOrWeek = selectedDate.substring(selectedDate.length - 2, selectedDate.length);
+			const year = selectedDate.substring(0, 4);
+			const apiPath = isMonth
 				? `/api/events/listOverviewMonth?year=${year}&month=${monthOrWeek}`
 				: `/api/events/listOverviewWeek?year=${year}&week=${monthOrWeek}`;
 			const events = await fetch(apiPath);
@@ -53,35 +57,50 @@
 				});
 			});
 
-			const label = $isMonth
+			const label = isMonth
 				? new Date(2000, monthOrWeek - 1, 1)
 						.toLocaleString('cs-CZ', { month: 'long' })
 						.toUpperCase()
 				: 'TENTO TÝDEN';
 
-			const response = await fetch('/api/videoGenerators/overviews/', {
+			const requestPath = '/api/videoGenerators/overviews/';
+			// NOTE delete unsupported keys when done
+			const requestBody = {
+				events: eventsData,
+				label: label,
+				// outputFormat: formData.outputFormat,
+				outputRange: $formData.outputRange,
+				// dimPast: formData.dimPast,
+				dimPastEvents: $formData.dimPastEvents,
+				// halfSplit: formData.halfSplit,
+				splitForTwoSections: $formData.splitForTwoSections,
+				// duration: formData.outputDuration,
+				outputMediumOrVidLength: $formData.outputMediumOrVidLength,
+				testFrame: $testFrame ? $formData.testFrameNumber : null
+			};
+
+			// URGENT
+			console.log(requestBody);
+
+			/* if ($testFrame) {
+				window.open(
+					`/admin/videoPreview?data=${encodeURIComponent(
+						JSON.stringify({ requestBody: requestBody, requestPath: requestPath })
+					)}`,
+					'_blank'
+				);
+				return;
+			}
+
+			const response = await fetch(requestPath, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					events: eventsData,
-					label: label,
-					outputFormat: formData.outputFormat,
-					dimPast: formData.dimPast,
-					testFrame: formData.testFrame,
-					halfSplit: formData.halfSplit,
-					duration: formData.outputDuration
-				})
+				body: JSON.stringify(requestBody)
 			});
 
-			const result = await response.json();
+			const result = await response.json(); */
 			isLoading.set(false);
-
-			if (result.format == 'html') {
-				videoPreview.set(result.output);
-				goto('/admin/videoPreview');
-			}
-			isImage.set(result.format == 'image');
-
+			//isImage.set(result.format == 'image');
 			return;
 		} catch (error) {
 			console.error('Error:', error);
@@ -97,113 +116,149 @@
 <form method="POST" on:submit={handleSubmit}>
 	<label for="outputFormatWeek">
 		<input
-			on:change={() => changeOutput(false)}
 			type="radio"
 			id="outputFormatWeek"
 			name="outputFormat"
 			value="week"
 			required
-			checked
+			bind:group={$formData.outputRange}
 		/>
 		týden
 	</label><br />
 	<label for="outputFormatMonth">
 		<input
-			on:change={() => changeOutput(true)}
 			type="radio"
 			id="outputFormatMonth"
 			name="outputFormat"
 			value="month"
 			required
+			bind:group={$formData.outputRange}
 		/>
 		celý měsíc
 	</label>
 
 	<br /><br />
 
-	{#if $isMonth === true}
-		<label for="month">
+	<label for="selectedDate">
+		{#if $formData.outputRange === 'month'}
 			měsíc
 			<input
 				type="month"
-				id="month"
+				id="selectedDate"
 				name="selectedDate"
 				required
-				value={`${currentYear}-${currentMonth}`}
+				bind:value={$formData.selectedDate}
 			/>
-		</label>
-	{:else}
-		<label for="week">
+		{:else}
 			týden
-			<input type="week" id="week" name="selectedDate" required value={currentWeek} />
-		</label>
-	{/if}
+			<input
+				type="week"
+				id="selectedDate"
+				name="selectedDate"
+				required
+				bind:value={$formData.selectedDate}
+			/>
+		{/if}
+	</label>
 
 	<br /><br />
 
 	<label for="outputDurationPoster">
 		<input
-			on:change={() => changeOffline(true)}
+			on:change={() => changeOutputMediumPoster(true)}
 			type="radio"
 			id="outputDurationPoster"
 			name="outputDuration"
 			value="a4"
 			required
+			bind:group={$formData.outputMediumOrVidLength}
 		/>
 		0 sekund, a4 (2480x3508px), 300 PPI/DPI (plakát)
 	</label><br />
 	<label for="outputDurationTarp">
 		<input
-			on:change={() => changeOffline(true)}
+			on:change={() => changeOutputMediumPoster(true)}
 			type="radio"
 			id="outputDurationTarp"
 			name="outputDuration"
 			value="b0"
 			required
+			bind:group={$formData.outputMediumOrVidLength}
 		/>
 		0 sekund, b0 (11811x16701px), 300 PPI/DPI (plachta (venkovní tabule))
 	</label><br />
 	<label for="outputDurationStory">
 		<input
-			on:change={() => changeOffline(false)}
+			on:change={() => changeOutputMediumPoster(false)}
 			type="radio"
 			id="outputDurationStory"
 			name="outputDuration"
 			value="8"
 			required
 			checked
+			bind:group={$formData.outputMediumOrVidLength}
 		/>
 		8 sekund (story, 1080x1920px)
 	</label><br />
 	<label for="outputDurationReel">
 		<input
-			on:change={() => changeOffline(false)}
+			on:change={() => changeOutputMediumPoster(false)}
 			type="radio"
 			id="outputDurationReel"
 			name="outputDuration"
 			value="15"
 			required
+			bind:group={$formData.outputMediumOrVidLength}
 		/>
 		15 sekund (reel, 1080x1920px)
 	</label>
 
 	<br /><br />
 
-	{#if !$isOffline}
-		<label for="dimPast">
-			<input type="checkbox" id="dimPast" name="dimPast" checked />
+	{#if !$isOfflineMedium}
+		<label for="dimPastEvents">
+			<input
+				type="checkbox"
+				id="dimPastEvents"
+				name="dimPastEvents"
+				checked
+				bind:value={$formData.dimPastEvents}
+			/>
 			zatmavit uplynulé akce
 		</label><br />
-		<label for="halfSplit">
-			<input type="checkbox" id="halfSplit" name="halfSplit" />
+		<label for="splitForTwoSections">
+			<input
+				type="checkbox"
+				id="splitForTwoSections"
+				name="splitForTwoSections"
+				bind:value={$formData.splitForTwoSections}
+			/>
 			rozdělit v půlce na dvě části
 		</label>
 
 		<br /><br />
+	{/if}
 
-		<label for="testFrame">
-			<input type="checkbox" id="testFrame" name="testFrame" />
-			testframe
+	<label for="testFrame">
+		<input
+			on:change={() => changeTestFrame()}
+			type="checkbox"
+			id="testFrame"
+			name="testFrame"
+			bind:value={$testFrame}
+		/>
+		test frame
+	</label><br />
+	{#if $testFrame}
+		<label for="testFrameNumber">
+			TODO
+			<input
+				type="number"
+				step="0.1"
+				id="testFrameNumber"
+				name="testFrameNumber"
+				bind:value={$formData.testFrameNumber}
+			/>
 		</label><br />
 	{/if}
 	<br /><button type="submit">generate</button>
@@ -214,7 +269,7 @@
 	ʕ•ᴥ•ʔ (generuju, sorry, trvá mi to, vydrž pls)
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
-<!-- TODO rew same -->
+	<!-- TODO rew same -->
 {:else}
 	<!-- prettier-ignore -->
 	{#if $isImage === null}
@@ -224,7 +279,7 @@
 			<source src="/dynamic/generator/video.mp4" type="video/mp4" />
 		</video><br />
 	{:else}
-		{#if $isOffline}
+		{#if $isOfflineMedium}
 			<a href="/dynamic/generator/output.png" target="_blank" download="output.png">stáhnout grafiku</a><br />
 		{/if}
 		<img src="/dynamic/generator/output.png" alt="test frame" width="342" height="607"/>

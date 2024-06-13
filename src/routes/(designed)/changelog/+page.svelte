@@ -12,7 +12,8 @@
 
 ## přidáno
 - gradienty ve video generátorech u kapel v rámci eventu
-- html stránka jako preview generovaného videa
+- html stránka jako preview generovaného videa, frame skrz GET parametr
+- console log času renderování jednotlivých framů
 
 ## opraveno
 - fonty u videogenerátorů

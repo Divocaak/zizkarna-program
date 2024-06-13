@@ -3,7 +3,6 @@
 	export let data;
 
 	const isLoading = writable(null);
-	const isImage = writable(null);
 
 	const selectedEvent = data.event;
 	const eventTags = data.eventTags;
@@ -84,8 +83,6 @@
 
 			const result = await response.json();
 			isLoading.set(false);
-			isImage.set(result.format == 'image');
-
 			return;
 		} catch (error) {
 			console.error('Error:', error);
@@ -226,25 +223,16 @@
 	(ᵔᴥᵔ)
 	<!-- TODO rew same -->
 {:else}
-	<!-- prettier-ignore -->
-	{#if $isImage}
-		<img src="/dynamic/generator/testFrame.png" alt="test frame" width="342" height="607"/>
-	{:else}
 		<a href="/dynamic/generator/video.mp4" target="_blank" download="video.mp4">stáhnout video</a><br />
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video width="342" height="607" autoplay loop>
 			<source src="/dynamic/generator/video.mp4" type="video/mp4" />
 		</video><br />
-	{/if}
 {/if}
 
 <style>
 	video {
 		border: 2px solid green;
-	}
-
-	img {
-		border: 2px solid red;
 	}
 
 	.img-select {
