@@ -26,7 +26,8 @@ export class TextVideoElement extends VideoElement {
         fontSizePx = 14,
         fontColor = "#d4d4d4",
         textAlign = "left",
-        easing = null
+        easing = null,
+        lineHeight = "normal"
     }) {
         super({
             id: id,
@@ -39,6 +40,7 @@ export class TextVideoElement extends VideoElement {
         this.fontSizePx = fontSizePx;
         this.fontColor = fontColor;
         this.textAlign = textAlign;
+        this.lineHeight = lineHeight;
     }
 
     /**
@@ -54,7 +56,9 @@ export class TextVideoElement extends VideoElement {
                 font-family: ${this.#getFontName()}, sans-serif;
                 color: ${this.#getFontColor()};
                 text-align: ${this.#getTextAlign()};
-                border: 1px solid purple;
+                line-height: ${this.#getLineHeight()};
+                width:100%;
+                border: 1px solid magenta;
             `
         });
     }
@@ -74,20 +78,6 @@ export class TextVideoElement extends VideoElement {
     #getFontColor() { return this.fontColor; }
 
     #getTextAlign() { return this.textAlign; }
+
+    #getLineHeight() { return this.lineHeight; }
 }
-
-// NOTE saved line lengths and amx len and img dimensions
-// const eventLabelWrapped = getWrappedText(data.eventLabel, 130, context, 80);
-// const eventTagsWrapped = getWrappedText(data.eventTags, 200, context, 50);
-// const posterDimensions = getImgDimensions(poster, "contain", 1080, 1500);
-
-// const bandLabelWrapped = getWrappedText(data.bandLabel, 120, context, 70);
-// const bandDescWrapped = getWrappedText(data.bandDesc, 250, context, 50);
-// const bandTagsWrapped = getWrappedText(data.bandTags, 200, context, 50);
-// const bandStageTimeWrapped = getWrappedText(data.bandStageTime, 300, context, 40);
-// const bandImageDimensions = getImgDimensions(bandImage, "contain", 1080, 1500);
-
-// const dateWrapped = getWrappedText(data.date, 500, context, 90);
-// const doorsWrapped = getWrappedText(data.doors, 500, context, 90);
-// const ticketsWrapped = data.tickets ? getWrappedText(data.tickets, 100, context, 90) : null;
-// const logo = await loadImage("./vidGenAssets/logo_transparent.png");

@@ -8,7 +8,7 @@ import { PassThrough } from 'stream';
 
 const outputPath = "dynamic/generator/";
 // NOTE 30
-const frameRate = 1;
+const frameRate = 2;
 
 export async function renderTemplate({
     onlyFrame = null,
@@ -144,7 +144,7 @@ const createVideoFromBuffers = (buffers) => {
     return new Promise((resolve, reject) => {
         const videoOutputPath = `${outputPath}output.mp4`;
         const inputStream = new PassThrough();
-        
+
         ffmpeg(inputStream)
             .inputFormat('image2pipe')
             .inputFPS(frameRate)
@@ -182,15 +182,21 @@ function getHtml({
     let gradientsStyles = '';
     let gradientsHtml = '';
     gradients.forEach(gradient => {
-        gradientsStyles += `${gradient.getStyles(time)}\n`;
+        gradientsStyles += `${gradient.getGradientStyles(time)}\n`;
         gradientsHtml += `${gradient.getHtml()}\n`;
     });
 
     let elementStyles = '';
     let elementHtml = '';
+    let elementHtmlImgs = "";
     videoElements.forEach(element => {
         if (element === null) return;
         elementStyles += `${element.getStyles(time)}\n`;
+        
+        if (element instanceof ImageVideoElement) {
+            elementHtmlImgs += `${element.getHtml()}\n`;
+            return;
+        }
         elementHtml += `${element.getHtml()}\n`;
     });
     const fontDataNeue = font2base64.encodeToDataUrlSync('./vidGenAssets/neue.otf')
@@ -233,14 +239,23 @@ function getHtml({
                         }
                     
                         .content{
-                            position: relative;
-                            border: 1px solid red;
+                            position: absolute;
                             top: 0;
                             left: 0;
+                            width: calc(100% - (2 * ${padding.x}px));
+                            height: calc(100% - (2 * ${padding.y}px));
                             margin: 0;
-                            max-width: ${outputDimensions.w}px;
-                            max-height: ${outputDimensions.h}px;
                             padding: ${padding.y}px ${padding.x}px;
+                            
+                            background:rgba(255,0,0,.1);
+                            border: 1px solid red;
+                        }
+
+                        .inner{
+                            position:relative;
+                            width:100%;
+                            height:100%;
+                            background: rgba(255,255,255,.1);
                         }
 
                         ${gradientsStyles}
@@ -254,7 +269,10 @@ function getHtml({
                         <div class="noise"></div>
                     </div>
                     <div class="content">
-                        ${elementHtml}
+                        <div class="inner">
+                            ${elementHtml}
+                        </div>
+                        ${elementHtmlImgs}
                     </div>
                 </body>
             </html>`;

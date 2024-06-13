@@ -12,8 +12,8 @@ export class ImageVideoElement extends VideoElement {
         * @param {string} content - image in base64 (insert path to image, conversion to base64 is applied in constructor)
         * @param {number | Array<*>} posX - X position of element, array for keyframe interpolation or static number
         * @param {number | Array<*>} posY - Y position of element, array for keyframe interpolation or static number
-        * @param {number} wPx - width in px for css
-        * @param {number} hPx - height in px for css
+        * @param {number} wPx - width in px for css (used only for gradients)
+        * @param {number} hPx - height in px for css (used only for gradients)
         * @param {string} easing - easing type from implemented (inOutBack, inOutQuint)
     */
     constructor({
@@ -37,11 +37,31 @@ export class ImageVideoElement extends VideoElement {
     }
 
     /**
-        * Get the css for html template
+        * Get the css for html template for user selected image
         * @param {number} time - time for calculations based on keyframes
         * @returns {string} The css of the element
     */
     getStyles(time) {
+        return super.getStyles({
+            time: time,
+            additionalStyles: `
+                min-width: 100%;
+                aspect-ratio: 16/9;
+                background-image: url('${super.getContent()}');
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+                border: 1px solid cyan;
+            `
+        });
+    }
+
+    /**
+        * Get the css for html template for gradients
+        * @param {number} time - time for calculations based on keyframes
+        * @returns {string} The css of the element
+    */
+    getGradientStyles(time) {
         return super.getStyles({
             time: time,
             additionalStyles: `

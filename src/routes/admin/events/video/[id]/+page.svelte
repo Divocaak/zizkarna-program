@@ -33,9 +33,9 @@
 	const formData = writable({
 		eventLabel: selectedEvent.label,
 		eventTags: getTagsString(eventTags),
-		eventTickets: selectedEvent.tickets ? 'Předprodej v síti GoOut' : null,
 		selectedImg: null,
-		testFrameNumber: 3.7
+		testFrameNumber: 3.7,
+		tickets: selectedEvent.tickets ? 'Předprodej v síti GoOut' : null
 	});
 
 	async function handleSubmit(event) {
@@ -63,7 +63,7 @@
 				bandStageTime: `Stage time: ${timeFormatted($selectedBand.stageTime)}`,
 				doors: `otevřeno od ${timeFormatted(selectedEvent.doors)}`,
 				date: dateFormatted,
-				tickets: $formData.eventTickets ?? null
+				tickets: $formData.tickets ?? null
 			};
 
 			if ($testFrame) {

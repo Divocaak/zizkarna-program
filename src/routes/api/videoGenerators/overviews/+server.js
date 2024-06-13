@@ -1,4 +1,4 @@
-import { renderTemplate } from '$lib/scripts/video/template.js';
+import { renderTemplate } from '$lib/scripts/videoTemplateGenerator.js';
 
 const eventStartShift = .5;
 const eventEndShift = .4;
