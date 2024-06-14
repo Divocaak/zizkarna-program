@@ -1,5 +1,7 @@
+import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
 import { MonthlyOverviewEventText } from '$lib/classes/video/monthlyOverview/eventText.js';
 import { MonthlyOverviewPartHolder } from '$lib/classes/video/monthlyOverview/partHolder.js';
+import { TextVideoElement } from '$lib/classes/video/textVideoElement.js';
 import { renderTemplate } from '$lib/scripts/videoTemplateGenerator.js';
 
 const eventStartShift = .5;
@@ -30,7 +32,7 @@ export async function POST({ request }) {
     const textParts = { first: new MonthlyOverviewPartHolder(), second: new MonthlyOverviewPartHolder() };
     data.events.forEach((eventData, index) => {
         const { date, label, tickets } = eventData;
-        
+
         /* const dateMaxWidth = isPoster ? 310 : 200;
         const dateLineHeight = 40 * scalingFactor.h;
         const dateWrapped = getWrappedText(`${date}${tickets != null ? " (předprodej online)" : ""}`, dateMaxWidth, context, dateLineHeight);
@@ -78,15 +80,6 @@ export async function POST({ request }) {
 }
 
 function renderFrame(context, time, duration, dimensions, dimensionScaleFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, label, dimPast, firstTimes, secondTimes = null, isPoster = false) {
-
-    context.drawImage(logo, dimensions.w - (120 * dimensionScaleFactor.w), 0, 150 * dimensionScaleFactor.w, 150 * dimensionScaleFactor.h);
-
-    context.fillStyle = "#d4d4d4";
-    const labelFont = 80 * dimensionScaleFactor.h;
-    context.font = `${labelFont}px 'Neue Machina Regular'`;
-    context.textAlign = "center";
-    context.fillText(label, dimensions.w / 2, 125 * dimensionScaleFactor.h);
-
     renderAllTexts(context, time, dimensions.w, dimPast, eventsTexts[0], topBorder, eventBottomPadding[0], firstTimes, isPoster, dimensionScaleFactor);
     if (secondTimes) {
         renderAllTexts(context, time, dimensions.w, dimPast, eventsTexts[1], topBorder, eventBottomPadding[1], secondTimes, isPoster, dimensionScaleFactor);
@@ -107,11 +100,8 @@ function renderAllTexts(context, time, w, dimPast, texts, topBorder, eventBottom
     const labelFontSize = 50 * dimensionScaleFactor.h;
 
     texts.forEach(eventText => {
-        
-        const lineY = currY - (40 * dimensionScaleFactor.h);
 
-        context.fillStyle = (eventText.past && dimPast) ? "#7f7f7f" : "#d4d4d4";
-        context.strokeStyle = (eventText.past && dimPast) ? "#7f7f7f" : "#d4d4d4";
+        const lineY = currY - (40 * dimensionScaleFactor.h);
 
         const lineLeftX = isPoster ? xPosition : interpolateKeyframes([
             { time: lineFadeInStart, value: lineStartX },
@@ -133,28 +123,18 @@ function renderAllTexts(context, time, w, dimPast, texts, topBorder, eventBottom
         context.lineTo(lineRightX, lineY);
         context.stroke();
 
-        const dateX = isPoster ? xPosition : interpolateKeyframes([
-            { time: dateFadeInStart, value: 1300 },
-            { time: dateFadeInEnd, value: xPosition },
-            { time: dateFadeOutStart, value: xPosition },
-            { time: dateFadeOutEnd, value: -1000 }
-        ], time, "inOutBack");
+        /* const dateX = isPoster ? xPosition : interpolateKeyframes(, time, "inOutBack");
         context.font = `${dateFontSize}px 'Karla Regular'`;
         context.textAlign = "left";
         eventText.date.forEach(function (item) {
             context.fillText(item[0], dateX, currY + item[1]);
         });
 
-        const labelX = isPoster ? xPosition : interpolateKeyframes([
-            { time: textFadeInStart, value: 1300 },
-            { time: textFadeInEnd, value: xPosition },
-            { time: textFadeOutStart, value: xPosition },
-            { time: textFadeOutEnd, value: -1000 },
-        ], time, "inOutBack");
+        const labelX = isPoster ? xPosition : interpolateKeyframes(, time, "inOutBack");
         context.font = `${labelFontSize}px 'Neue Machina Regular'`;
         eventText.label.forEach(function (item) {
             context.fillText(item[0], labelX, currY + dateToLabelSpacer + item[1]);
-        });
+        }); */
 
         currY += eventBottomPadding + eventText.height;
         currentTextFadeInStart += eventStartShift;
@@ -162,7 +142,22 @@ function renderAllTexts(context, time, w, dimPast, texts, topBorder, eventBottom
     });
 }
 
-const videoElements = (data) => [
-    // TODO static logo
-    // TODO static title, with bold pls
+const videoElements = (data, scaleFactor) => [
+    new ImageVideoElement({
+        id: "zz-logo",
+        content: "./vidGenAssets/logo_transparent.png",
+        posX: 0,
+        posY: 0
+    }),
+    new TextVideoElement({
+        id: "poster-label",
+        content: data.label,
+        posX: 0,
+        posY: 0,
+        fontName: "Neue Machina Regular",
+        fontSizePx: 80 * scaleFactor.h,
+        fontColor: "#d4d4d4",
+        textAlign: "center"
+    }),
+    /* TODO parts get elements with spread operator */
 ];

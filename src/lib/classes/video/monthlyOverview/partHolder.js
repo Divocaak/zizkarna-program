@@ -116,4 +116,6 @@ export class MonthlyOverviewPartHolder {
     getOutStart() {
         return this.#outStart.length;
     }
+
+    /* TODO add id prefix for parts */
 }

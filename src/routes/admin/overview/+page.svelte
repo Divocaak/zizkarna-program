@@ -238,7 +238,7 @@
 	</label><br />
 	{#if $testFrame}
 		<label for="testFrameNumber">
-			TODO
+			TODO write default times
 			<input
 				type="number"
 				step="0.1"
