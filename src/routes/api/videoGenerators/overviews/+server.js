@@ -1,3 +1,5 @@
+import { MonthlyOverviewEventText } from '$lib/classes/video/monthlyOverview/eventText.js';
+import { MonthlyOverviewPartHolder } from '$lib/classes/video/monthlyOverview/partHolder.js';
 import { renderTemplate } from '$lib/scripts/videoTemplateGenerator.js';
 
 const eventStartShift = .5;
@@ -19,53 +21,43 @@ export async function POST({ request }) {
         w: outputDimensions.w / 1080,
         h: outputDimensions.h / 1920
     }
-    
+
     // TODO rename
     const legalHalfSplit = data.splitForTwoSections && data.events.length > 1 && !isPoster;
-    
+
     const middleIndex = Math.floor(data.events.length / 2);
     const finalMiddleIndex = data.events.length % 2 === 0 ? middleIndex : middleIndex + 1;
-    const textParts = { first: { height: 0, texts: [] }, second: { height: 0, texts: [] } };
+    const textParts = { first: new MonthlyOverviewPartHolder(), second: new MonthlyOverviewPartHolder() };
     data.events.forEach((eventData, index) => {
-        const { date, label, past, tickets } = eventData;
-        const dateMaxWidth = isPoster ? 310 : 200;
-        const labelMaxWidth = isPoster ? 210 : 170;
+        const { date, label, tickets } = eventData;
         
+        /* const dateMaxWidth = isPoster ? 310 : 200;
         const dateLineHeight = 40 * scalingFactor.h;
-        const labelLineHeight = 60 * scalingFactor.h;
-
         const dateWrapped = getWrappedText(`${date}${tickets != null ? " (předprodej online)" : ""}`, dateMaxWidth, context, dateLineHeight);
-        const labelWrapped = getWrappedText(label, labelMaxWidth, context, labelLineHeight);
-        const height = (dateWrapped.length * dateLineHeight) + (labelWrapped.length * labelLineHeight);
+        
+        const labelMaxWidth = isPoster ? 210 : 170;
+        const labelLineHeight = 60 * scalingFactor.h;
+        const labelWrapped = getWrappedText(label, labelMaxWidth, context, labelLineHeight); */
 
         const textPart = !legalHalfSplit || (index < finalMiddleIndex && legalHalfSplit) ? textParts.first : textParts.second;
-        textPart.height += height;
-        textPart.texts.push({ date: dateWrapped, label: labelWrapped, height, past });
+        textPart.updateHeight(height);
+        textPart.pushText(new MonthlyOverviewEventText({ label: label, date: date, tickets: tickets }));
     });
 
-    // TODO if used without calculation, remove variable
-    const topBorder = padding.y;//250 * scalingFactor.h;
-    const usableVerticalSpace = outputDimensions.h - topBorder;
-    const eventBottomPadding = [
-        ((usableVerticalSpace - textParts.first.height) / textParts.first.texts.length),
-        legalHalfSplit ? ((usableVerticalSpace - textParts.second.height) / textParts.second.texts.length) : null
-    ];
+    const usableVerticalSpace = outputDimensions.h - (padding.y * 2 * scalingFactor.h);
+    textParts.first.calculateBottomPadding(usableVerticalSpace)
+    textParts.second.calculateBottomPadding(usableVerticalSpace);
 
     // calculations only for video, which means taht outputMediumOrVidLength is vidLength
-    const firstOutDuration = textParts.first.texts.length * eventEndShift;
-    const firstInDuration = textParts.first.texts.length * eventStartShift;
-    const firstHalfTimes = {
-        inStart: 0,
-        outStart: outputMediumOrVidLength - firstOutDuration
-    };
-
+    const firstOutDuration = textParts.first.getTextsCount() * eventEndShift;
+    const firstInDuration = textParts.first.getTextsCount() * eventStartShift;
+    textParts.first.setOutStart(outputMediumOrVidLength - firstOutDuration);
     if (legalHalfSplit) {
-        const contentLenPerSection = (outputMediumOrVidLength - firstInDuration - (textParts.second.texts.length * (eventEndShift + eventStartShift))) / 2;
-        firstHalfTimes.outStart = firstHalfTimes.inStart + firstInDuration + contentLenPerSection;
-        var secondHalfTimes = {
-            inStart: firstHalfTimes.outStart,
-            outStart: firstHalfTimes.outStart + firstOutDuration + contentLenPerSection,
-        };
+        const contentLenPerSection = (outputMediumOrVidLength - firstInDuration - (textParts.second.getTextsCount() * (eventEndShift + eventStartShift))) / 2;
+        const firstGetOutStartNew = textParts.first.getInStart() + firstInDuration + contentLenPerSection;
+        textParts.first.setOutStart(firstGetOutStartNew);
+        textParts.second.setInStart(firstGetOutStartNew);
+        textParts.second.setOutStart(firstGetOutStartNew + firstOutDuration + contentLenPerSection);
     }
 
     const testPage = true;
@@ -114,25 +106,9 @@ function renderAllTexts(context, time, w, dimPast, texts, topBorder, eventBottom
     const dateFontSize = 40 * dimensionScaleFactor.h;
     const labelFontSize = 50 * dimensionScaleFactor.h;
 
-    context.lineWidth = 3 * dimensionScaleFactor.h;
-
     texts.forEach(eventText => {
+        
         const lineY = currY - (40 * dimensionScaleFactor.h);
-
-        const textFadeInStart = currentTextFadeInStart;
-        const textFadeInEnd = textFadeInStart + 1;
-        const textFadeOutStart = currentTextFadeOutStart;
-        const textFadeOutEnd = textFadeOutStart + 1;
-
-        const lineFadeInStart = textFadeInStart + .35;
-        const lineFadeInEnd = lineFadeInStart + .4;
-        const lineFadeOutStart = textFadeOutStart;
-        const lineFadeOutEnd = lineFadeOutStart + .4;
-
-        const dateFadeInStart = textFadeInStart + .1;
-        const dateFadeInEnd = textFadeInEnd + .1;
-        const dateFadeOutStart = textFadeOutStart + .1;
-        const dateFadeOutEnd = textFadeOutEnd + .1;
 
         context.fillStyle = (eventText.past && dimPast) ? "#7f7f7f" : "#d4d4d4";
         context.strokeStyle = (eventText.past && dimPast) ? "#7f7f7f" : "#d4d4d4";

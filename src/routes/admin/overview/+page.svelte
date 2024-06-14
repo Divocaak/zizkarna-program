@@ -7,8 +7,8 @@
 	const isOfflineMedium = writable(false);
 	const changeOutputMediumPoster = (newVal) => isOfflineMedium.set(newVal);
 
-	const now = new Date();
-	/* const currentYear = now.getFullYear();
+	/* const now = new Date();
+	const currentYear = now.getFullYear();
 	const currentMonth = ('0' + (now.getMonth() + 1)).slice(-2);
 	const currentWeek = now.getFullYear() + '-W' + getWeekNumber(now).toString().padStart(2, '0'); */
 
@@ -47,15 +47,6 @@
 				: `/api/events/listOverviewWeek?year=${year}&week=${monthOrWeek}`;
 			const events = await fetch(apiPath);
 			let eventsData = await events.json();
-			eventsData.forEach((event) => {
-				const eventDate = new Date(event.date);
-				event.past = eventDate < now;
-				event.date = eventDate.toLocaleDateString('cs-CZ', {
-					month: 'numeric',
-					day: 'numeric',
-					weekday: 'long'
-				});
-			});
 
 			const label = isMonth
 				? new Date(2000, monthOrWeek - 1, 1)
