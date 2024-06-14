@@ -197,7 +197,7 @@
 			type="checkbox"
 			id="testFrame"
 			name="testFrame"
-			bind:value={$testFrame}
+			bind:checked={$testFrame}
 		/>
 		test frame
 	</label><br />

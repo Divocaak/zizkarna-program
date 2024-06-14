@@ -27,8 +27,8 @@
 		outputRange: 'month',
 		selectedDate: undefined,
 		outputMediumOrVidLength: '8',
-		dimPastEvents: undefined,
-		splitForTwoSections: undefined,
+		dimPastEvents: true,
+		splitForTwoSections: false,
 		testFrameNumber: 1
 	});
 
@@ -68,11 +68,8 @@
 			const requestBody = {
 				events: eventsData,
 				label: label,
-				// outputFormat: formData.outputFormat,
 				outputRange: $formData.outputRange,
-				// dimPast: formData.dimPast,
 				dimPastEvents: $formData.dimPastEvents,
-				// halfSplit: formData.halfSplit,
 				splitForTwoSections: $formData.splitForTwoSections,
 				// duration: formData.outputDuration,
 				outputMediumOrVidLength: $formData.outputMediumOrVidLength,
@@ -221,8 +218,7 @@
 				type="checkbox"
 				id="dimPastEvents"
 				name="dimPastEvents"
-				checked
-				bind:value={$formData.dimPastEvents}
+				bind:checked={$formData.dimPastEvents}
 			/>
 			zatmavit uplynulé akce
 		</label><br />
@@ -231,7 +227,7 @@
 				type="checkbox"
 				id="splitForTwoSections"
 				name="splitForTwoSections"
-				bind:value={$formData.splitForTwoSections}
+				bind:checked={$formData.splitForTwoSections}
 			/>
 			rozdělit v půlce na dvě části
 		</label>
@@ -245,7 +241,7 @@
 			type="checkbox"
 			id="testFrame"
 			name="testFrame"
-			bind:value={$testFrame}
+			bind:checked={$testFrame}
 		/>
 		test frame
 	</label><br />
