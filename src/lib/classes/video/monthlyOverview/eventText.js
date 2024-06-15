@@ -12,7 +12,7 @@ export class MonthlyOverviewEventText {
         * @param {string} id - id of elements for linking styles with html elements
         * @param {string} label - label of the event
         * @param {Date} date - date of the event
-        * @param {string?} tickets - tickets address
+        * @param {string?} tickets - tickets text
     */
     constructor({
         id,
@@ -58,6 +58,7 @@ export class MonthlyOverviewEventText {
 
     /**
         * returns array of complete VideoElements
+        * @param {Array<number>} scaleFactor - scale factor for size and position calculations
         * @param {boolean} userWantsToDimPast - user input from form, does he want to dim past events?
         * @param {number} timeInStart - current rows fadeInStart
         * @param {number} timeOutStart - current rows fadeOutStart
@@ -65,39 +66,43 @@ export class MonthlyOverviewEventText {
         * @returns {Array<VideoElement>} - array of ready to use VideoElements
     */
     getVideoElements({
+        scaleFactor = { w: 1, h: 1 },
         userWantsToDimPast = false,
         timeInStart = 0,
         timeOutStart = 0,
         isStatic = false
     }) {
         const color = (this.date < new Date() && userWantsToDimPast) ? "#7f7f7f" : "#d4d4d4";
+
         const dateLocalised = this.date.toLocaleDateString('cs-CZ', {
             month: 'numeric',
             day: 'numeric',
             weekday: 'long'
         });
 
-        const dateToLabelSpacer = 0;
+        const dateToLabelSpacer = 60;
+
         /* TODO where do i get this var */
+        // currY
         const currentYPosition = 0;
         /* TODO where do i get this var */
         /* and do i need it?? */
         const xPosition = 0;
-        let dateX = xPosition;
         let labelX = xPosition;
+        let dateX = xPosition;
         if (!isStatic) {
             const times = this.#calculateTimes(timeInStart, timeOutStart);
-            dateX = [
-                { time: times.date.inStart, value: 1300 },
-                { time: times.date.inEnd, value: xPosition },
-                { time: times.date.outStart, value: xPosition },
-                { time: times.date.outEnd, value: -1000 }
-            ];
             labelX = [
                 { time: times.label.inStart, value: 1300 },
                 { time: times.label.inEnd, value: xPosition },
                 { time: times.label.outStart, value: xPosition },
                 { time: times.label.outEnd, value: -1000 },
+            ];
+            dateX = [
+                { time: times.date.inStart, value: 1300 },
+                { time: times.date.inEnd, value: xPosition },
+                { time: times.date.outStart, value: xPosition },
+                { time: times.date.outEnd, value: -1000 }
             ];
         }
 
@@ -106,23 +111,25 @@ export class MonthlyOverviewEventText {
                 id: `${id}-label`,
                 content: this.label,
                 fontName: "Neue Machina Regular",
-                /* TODO fontSize */
+                fontSizePx: 50 * dimensionScaleFactor.h,
                 fontColor: color,
                 textAlign: "center",
                 easing: !isStatic ? "inOutBack" : null,
                 posX: labelX,
-                posY: currentYPosition + dateToLabelSpacer
+                posY: currentYPosition + (dateToLabelSpacer * dimensionScaleFactor.h),
+                lineHeight: 60 * scaleFactor.h
             }),
             new TextVideoElement({
                 id: `${id}-date`,
-                content: dateLocalised,
+                content: `${dateLocalised}${this.tickets != null ? " (předprodej online)" : ""}`,
                 fontName: "Karla Regular",
-                /* TODO fontSize */
+                fontSizePx: 40 * dimensionScaleFactor.h,
                 fontColor: color,
                 textAlign: "left",
                 easing: !isStatic ? "inOutBack" : null,
                 posX: dateX,
-                posY: currentYPosition
+                posY: currentYPosition,
+                lineHeight: 40 * scaleFactor.h
             }),
             /* TODO line */
         ];

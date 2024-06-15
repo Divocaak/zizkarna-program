@@ -16,6 +16,7 @@ export class TextVideoElement extends VideoElement {
         * @param {string} fontColor - text color in hex (including #) for css
         * @param {string} textAlign - text align for css
         * @param {string} easing - easing type from implemented (inOutBack, inOutQuint)
+        * @param {string | number} lineHeight - lineheight, default "normal" (= aprox. 1.2)
     */
     constructor({
         id,

@@ -32,15 +32,6 @@ export async function POST({ request }) {
     const textParts = { first: new MonthlyOverviewPartHolder(), second: new MonthlyOverviewPartHolder() };
     data.events.forEach((eventData, index) => {
         const { date, label, tickets } = eventData;
-
-        /* const dateMaxWidth = isPoster ? 310 : 200;
-        const dateLineHeight = 40 * scalingFactor.h;
-        const dateWrapped = getWrappedText(`${date}${tickets != null ? " (předprodej online)" : ""}`, dateMaxWidth, context, dateLineHeight);
-        
-        const labelMaxWidth = isPoster ? 210 : 170;
-        const labelLineHeight = 60 * scalingFactor.h;
-        const labelWrapped = getWrappedText(label, labelMaxWidth, context, labelLineHeight); */
-
         const textPart = !legalHalfSplit || (index < finalMiddleIndex && legalHalfSplit) ? textParts.first : textParts.second;
         textPart.updateHeight(height);
         textPart.pushText(new MonthlyOverviewEventText({ label: label, date: date, tickets: tickets }));
@@ -91,13 +82,9 @@ function renderAllTexts(context, time, w, dimPast, texts, topBorder, eventBottom
     let currentTextFadeOutStart = times.outStart;
 
     let currY = topBorder + (eventBottomPadding / 2);
-
-    const dateToLabelSpacer = 60 * dimensionScaleFactor.h;
+    
     const lineStartX = w / 2;
     const xPosition = 50 * dimensionScaleFactor.w;
-
-    const dateFontSize = 40 * dimensionScaleFactor.h;
-    const labelFontSize = 50 * dimensionScaleFactor.h;
 
     texts.forEach(eventText => {
 
@@ -121,20 +108,9 @@ function renderAllTexts(context, time, w, dimPast, texts, topBorder, eventBottom
         context.lineTo(lineLeftX, lineY);
         context.moveTo(lineStartX, lineY);
         context.lineTo(lineRightX, lineY);
-        context.stroke();
+        context.stroke()
 
-        /* const dateX = isPoster ? xPosition : interpolateKeyframes(, time, "inOutBack");
-        context.font = `${dateFontSize}px 'Karla Regular'`;
-        context.textAlign = "left";
-        eventText.date.forEach(function (item) {
-            context.fillText(item[0], dateX, currY + item[1]);
-        });
-
-        const labelX = isPoster ? xPosition : interpolateKeyframes(, time, "inOutBack");
-        context.font = `${labelFontSize}px 'Neue Machina Regular'`;
-        eventText.label.forEach(function (item) {
-            context.fillText(item[0], labelX, currY + dateToLabelSpacer + item[1]);
-        }); */
+        // label and date calcs and renders
 
         currY += eventBottomPadding + eventText.height;
         currentTextFadeInStart += eventStartShift;
