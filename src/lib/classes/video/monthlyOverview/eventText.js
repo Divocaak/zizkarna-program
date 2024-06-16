@@ -29,7 +29,6 @@ export class MonthlyOverviewEventText {
         /* const height = (dateWrapped.length * dateLineHeight) + (labelWrapped.length * labelLineHeight); */
     }
 
-    /* NOTE parameters upon usage: currentTextFadeInStart, currentTextFadeOutStart */
     /**
         * Calculates the fade in and out, start and end times for label, date and line
         * @param {number} inputInStart - current inputIn (relative to last row)
@@ -58,6 +57,8 @@ export class MonthlyOverviewEventText {
 
     /**
         * returns array of complete VideoElements
+        * @param {string} id - id prefix of partHolder (to recoginse two parts from each other)
+        * @param {number} currentYPosition - y position for row whole row
         * @param {Array<number>} scaleFactor - scale factor for size and position calculations
         * @param {boolean} userWantsToDimPast - user input from form, does he want to dim past events?
         * @param {number} timeInStart - current rows fadeInStart
@@ -66,6 +67,8 @@ export class MonthlyOverviewEventText {
         * @returns {Array<VideoElement>} - array of ready to use VideoElements
     */
     getVideoElements({
+        id,
+        currentYPosition = 0,
         scaleFactor = { w: 1, h: 1 },
         userWantsToDimPast = false,
         timeInStart = 0,
@@ -81,12 +84,7 @@ export class MonthlyOverviewEventText {
         });
 
         const dateToLabelSpacer = 60;
-
-        /* TODO where do i get this var */
-        // currY
-        const currentYPosition = 0;
-        /* TODO where do i get this var */
-        /* and do i need it?? */
+        /* NOTE do i need it?? */
         const xPosition = 0;
         let labelX = xPosition;
         let dateX = xPosition;

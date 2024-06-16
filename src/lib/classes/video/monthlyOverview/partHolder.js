@@ -1,4 +1,5 @@
 import { MonthlyOverviewEventText } from "$lib/classes/video/monthlyOverview/eventText";
+import { VideoElement } from "../videoElement";
 
 /**
     * Represents a holder for half/all texts in monthly overview
@@ -44,8 +45,10 @@ export class MonthlyOverviewPartHolder {
     /**
         * Create a texts holder
         * variables are meant to be assigned only through set methods
+        * @param {string} id - id of part holder to distinguish parts from each other
     */
-    constructor() {
+    constructor({id}) {
+        this.id = id;
         this.#height = 0;
         this.#texts = [];
         this.#bottomPadding = 0;
@@ -117,5 +120,54 @@ export class MonthlyOverviewPartHolder {
         return this.#outStart.length;
     }
 
-    /* TODO add id prefix for parts */
+    /** 
+        * returns array of ready to use video elements for all events in part
+        * @returns {Array<VideoElement>} the time when fade out starts
+    */
+    getAllVideoElements({
+        eventFadeInDelay = 0,
+        eventFadeOutDelay = 0,
+        rowsPadding = 0
+    }) {
+        let currentTextFadeInStart = this.#inStart;
+        let currentTextFadeOutStart = this.#outStart;
+
+        let currentRowYPosition = 0;
+        /* NOTE do i need this var?? */
+        //const xPosition = 50 * dimensionScaleFactor.w;
+        
+        /* const lineStartX = w / 2; */
+        this.#texts.forEach(eventText => {
+
+            /* const lineY = currentRowYPosition - (40 * dimensionScaleFactor.h);
+            const lineLeftX = isPoster ? xPosition : interpolateKeyframes([
+                { time: lineFadeInStart, value: lineStartX },
+                { time: lineFadeInEnd, value: xPosition },
+                { time: lineFadeOutStart, value: xPosition },
+                { time: lineFadeOutEnd, value: lineStartX }
+            ], time, "easeInOutQuint");
+            const rightLineEnd = w - xPosition;
+            const lineRightX = isPoster ? rightLineEnd : interpolateKeyframes([
+                { time: lineFadeInStart, value: lineStartX },
+                { time: lineFadeInEnd, value: rightLineEnd },
+                { time: lineFadeOutStart, value: rightLineEnd },
+                { time: lineFadeOutEnd, value: lineStartX }
+            ], time, "easeInOutQuint"); */
+
+            eventText.getVideoElements({
+                id: this.id,
+                currentYPosition: currentRowYPosition,
+                scaleFactor: scaleFactor,
+                userWantsToDimPast: userWantsToDimPast,
+                timeInStart: currentTextFadeInStart,
+                timeOutStart: currentTextFadeOutStart,
+                isStatic: isStatic
+            });
+
+            // BUG custom styles, position relative
+            currentRowYPosition += rowsPadding; // eventBottomPadding + eventText.height;
+            currentTextFadeInStart += eventFadeInDelay;
+            currentTextFadeOutStart += eventFadeOutDelay;
+        });
+    }
 }

@@ -29,7 +29,7 @@ export async function POST({ request }) {
 
     const middleIndex = Math.floor(data.events.length / 2);
     const finalMiddleIndex = data.events.length % 2 === 0 ? middleIndex : middleIndex + 1;
-    const textParts = { first: new MonthlyOverviewPartHolder(), second: new MonthlyOverviewPartHolder() };
+    const textParts = { first: new MonthlyOverviewPartHolder({id: "first"}), second: new MonthlyOverviewPartHolder({id: "second"}) };
     data.events.forEach((eventData, index) => {
         const { date, label, tickets } = eventData;
         const textPart = !legalHalfSplit || (index < finalMiddleIndex && legalHalfSplit) ? textParts.first : textParts.second;
@@ -39,13 +39,14 @@ export async function POST({ request }) {
 
     const usableVerticalSpace = outputDimensions.h - (padding.y * 2 * scalingFactor.h);
     textParts.first.calculateBottomPadding(usableVerticalSpace)
-    textParts.second.calculateBottomPadding(usableVerticalSpace);
-
+    
     // calculations only for video, which means taht outputMediumOrVidLength is vidLength
-    const firstOutDuration = textParts.first.getTextsCount() * eventEndShift;
     const firstInDuration = textParts.first.getTextsCount() * eventStartShift;
+    const firstOutDuration = textParts.first.getTextsCount() * eventEndShift;
     textParts.first.setOutStart(outputMediumOrVidLength - firstOutDuration);
     if (legalHalfSplit) {
+        textParts.second.calculateBottomPadding(usableVerticalSpace);
+
         const contentLenPerSection = (outputMediumOrVidLength - firstInDuration - (textParts.second.getTextsCount() * (eventEndShift + eventStartShift))) / 2;
         const firstGetOutStartNew = textParts.first.getInStart() + firstInDuration + contentLenPerSection;
         textParts.first.setOutStart(firstGetOutStartNew);
@@ -72,6 +73,7 @@ export async function POST({ request }) {
 
 function renderFrame(context, time, duration, dimensions, dimensionScaleFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, label, dimPast, firstTimes, secondTimes = null, isPoster = false) {
     renderAllTexts(context, time, dimensions.w, dimPast, eventsTexts[0], topBorder, eventBottomPadding[0], firstTimes, isPoster, dimensionScaleFactor);
+    
     if (secondTimes) {
         renderAllTexts(context, time, dimensions.w, dimPast, eventsTexts[1], topBorder, eventBottomPadding[1], secondTimes, isPoster, dimensionScaleFactor);
     }
@@ -135,5 +137,6 @@ const videoElements = (data, scaleFactor) => [
         fontColor: "#d4d4d4",
         textAlign: "center"
     }),
+    /* URGENT test part returns of elements! */
     /* TODO parts get elements with spread operator */
 ];
