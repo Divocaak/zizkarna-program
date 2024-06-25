@@ -17,6 +17,7 @@ export class TextVideoElement extends VideoElement {
         * @param {string} textAlign - text align for css
         * @param {string} easing - easing type from implemented (inOutBack, inOutQuint)
         * @param {string | number} lineHeight - lineheight, default "normal" (= aprox. 1.2)
+        * @param {string} styles - additional custom styles (add with !important)
     */
     constructor({
         id,
@@ -28,7 +29,8 @@ export class TextVideoElement extends VideoElement {
         fontColor = "#d4d4d4",
         textAlign = "left",
         easing = null,
-        lineHeight = "normal"
+        lineHeight = "normal",
+        styles = ""
     }) {
         super({
             id: id,
@@ -42,6 +44,7 @@ export class TextVideoElement extends VideoElement {
         this.fontColor = fontColor;
         this.textAlign = textAlign;
         this.lineHeight = lineHeight;
+        this.styles = styles;
     }
 
     /**
@@ -60,6 +63,7 @@ export class TextVideoElement extends VideoElement {
                 line-height: ${this.#getLineHeight()};
                 width:100%;
                 border: 1px solid magenta;
+                ${this.styles}
             `
         });
     }

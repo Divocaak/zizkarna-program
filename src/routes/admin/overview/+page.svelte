@@ -58,14 +58,14 @@
 			const requestPath = '/api/videoGenerators/overviews/';
 			// NOTE delete unsupported keys when done
 			const requestBody = {
+				testFrame: $testFrame ? $formData.testFrameNumber : null,
+				dimPastEvents: $formData.dimPastEvents,
+				splitForTwoSections: $formData.splitForTwoSections,
 				events: eventsData,
 				label: label,
 				outputRange: $formData.outputRange,
-				dimPastEvents: $formData.dimPastEvents,
-				splitForTwoSections: $formData.splitForTwoSections,
-				// duration: formData.outputDuration,
 				outputMediumOrVidLength: $formData.outputMediumOrVidLength,
-				testFrame: $testFrame ? $formData.testFrameNumber : null
+				// duration: formData.outputDuration,
 			};
 
 			// URGENT

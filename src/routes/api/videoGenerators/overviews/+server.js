@@ -1,5 +1,5 @@
 import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
-import { MonthlyOverviewEventText } from '$lib/classes/video/monthlyOverview/eventText.js';
+import { MonthlyOverviewEventRow } from '$lib/classes/video/monthlyOverview/eventRow.js';
 import { MonthlyOverviewPartHolder } from '$lib/classes/video/monthlyOverview/partHolder.js';
 import { TextVideoElement } from '$lib/classes/video/textVideoElement.js';
 import { renderTemplate } from '$lib/scripts/videoTemplateGenerator.js';
@@ -11,7 +11,7 @@ export async function POST({ request }) {
     const data = await request.json();
 
     // TODO dynamically by output medium
-    const padding = { x: 100, y: 300 };
+    const padding = { x: 50, y: 50 };
 
     const outputMediumOrVidLength = data.outputMediumOrVidLength;
     const isPoster = outputMediumOrVidLength == "a4" || outputMediumOrVidLength == "b0";
@@ -29,21 +29,31 @@ export async function POST({ request }) {
 
     const middleIndex = Math.floor(data.events.length / 2);
     const finalMiddleIndex = data.events.length % 2 === 0 ? middleIndex : middleIndex + 1;
-    const textParts = { first: new MonthlyOverviewPartHolder({ id: "first" }), second: new MonthlyOverviewPartHolder({ id: "second" }) };
+    const textParts = {
+        first: new MonthlyOverviewPartHolder({ id: "first" }),
+        second: new MonthlyOverviewPartHolder({ id: "second" })
+    };
     data.events.forEach((eventData, index) => {
         const { date, label, tickets } = eventData;
         const textPart = !legalHalfSplit || (index < finalMiddleIndex && legalHalfSplit) ? textParts.first : textParts.second;
         /* BUG */
-        textPart.updateHeight(10/* height */);
-        textPart.pushText(new MonthlyOverviewEventText({ label: label, date: date, tickets: tickets }));
+        textPart.updateHeight(1/* height */);
+        textPart.pushRow(new MonthlyOverviewEventRow({
+            label: label,
+            date: date,
+            tickets: tickets,
+            scaleFactor: scalingFactor,
+            userWantsToDimPast: data.userWantsToDimPast,
+            isStatic: isPoster
+        }));
     });
 
     const usableVerticalSpace = outputDimensions.h - (padding.y * 2 * scalingFactor.h);
     textParts.first.calculateBottomPadding(usableVerticalSpace)
 
     // calculations only for video, which means taht outputMediumOrVidLength is vidLength
-    const firstInDuration = textParts.first.getTextsCount() * eventStartShift;
-    const firstOutDuration = textParts.first.getTextsCount() * eventEndShift;
+    const firstInDuration = textParts.first.getRowsCount() * eventStartShift;
+    const firstOutDuration = textParts.first.getRowsCount() * eventEndShift;
     textParts.first.setOutStart(outputMediumOrVidLength - firstOutDuration);
     if (legalHalfSplit) {
         textParts.second.calculateBottomPadding(usableVerticalSpace);
@@ -113,12 +123,13 @@ function renderAllTexts(context, time, w, dimPast, texts, topBorder, eventBottom
 }
 
 const videoElements = ({ data, scaleFactor, textParts }) => [
-    new ImageVideoElement({
+    /* TODO logo */
+    /* new ImageVideoElement({
         id: "zz-logo",
         content: "./vidGenAssets/logo_transparent.png",
         posX: 0,
         posY: 0
-    }),
+    }), */
     new TextVideoElement({
         id: "poster-label",
         content: data.label,
@@ -127,8 +138,9 @@ const videoElements = ({ data, scaleFactor, textParts }) => [
         fontName: "Neue Machina Regular",
         fontSizePx: 80 * scaleFactor.h,
         fontColor: "#d4d4d4",
-        textAlign: "center"
+        textAlign: "center",
+        styles: "position: relative;"
     }),
-    ...textParts.first.getAllVideoElements({ scaleFactor: scaleFactor, eventFadeInDelay: 0, eventFadeOutDelay: 0, rowsPadding: 0 }),
-    ...textParts.second.getAllVideoElements({ scaleFactor: scaleFactor, eventFadeInDelay: 0, eventFadeOutDelay: 0, rowsPadding: 0 })
+    ...textParts.first.getAllVideoElements({ eventFadeInDelay: 0, eventFadeOutDelay: 0 }),
+    ...textParts.second.getAllVideoElements({ eventFadeInDelay: 0, eventFadeOutDelay: 0 })
 ];

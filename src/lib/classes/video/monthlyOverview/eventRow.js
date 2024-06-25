@@ -6,24 +6,33 @@ import { VideoElement } from "$lib/classes/video/videoElement";
     * with all necessary data to create video elements
     * @class
 */
-export class MonthlyOverviewEventText {
+export class MonthlyOverviewEventRow {
     /**
         * Create a texts holder
         * @param {string} id - id of elements for linking styles with html elements
         * @param {string} label - label of the event
         * @param {Date} date - date of the event
         * @param {string?} tickets - tickets text
+        * @param {Array<number>} scaleFactor - scale factor for size and position calculations
+        * @param {boolean} userWantsToDimPast - user input from form, does he want to dim past events?
+        * @param {boolean} isStatic - static without movement and easing, used for posters and other still graphics
     */
     constructor({
         id,
         label,
         date,
-        tickets = null
+        tickets = null,
+        scaleFactor = { w: 1, h: 1 },
+        userWantsToDimPast = false,
+        isStatic = false
     }) {
         this.id = id
         this.label = label;
         this.date = new Date(date);
         this.tickets = tickets
+        this.scaleFactor = scaleFactor;
+        this.isStatic = isStatic;
+        this.userWantsToDimPast = userWantsToDimPast;
         // calc if needed, otherwise delete
         /* this.#height = 0; */
         /* const height = (dateWrapped.length * dateLineHeight) + (labelWrapped.length * labelLineHeight); */
@@ -59,23 +68,21 @@ export class MonthlyOverviewEventText {
         * returns array of complete VideoElements
         * @param {string} id - id prefix of partHolder (to recoginse two parts from each other)
         * @param {number} currentYPosition - y position for row whole row
-        * @param {Array<number>} scaleFactor - scale factor for size and position calculations
-        * @param {boolean} userWantsToDimPast - user input from form, does he want to dim past events?
         * @param {number} timeInStart - current rows fadeInStart
         * @param {number} timeOutStart - current rows fadeOutStart
-        * @param {boolean} isStatic - static without movement and easing, used for posters and other still graphics
+        * @param {number} bottomPadding - current rows bottom padding
         * @returns {Array<VideoElement>} - array of ready to use VideoElements
     */
     getVideoElements({
         id,
-        currentYPosition = 0,
-        scaleFactor = { w: 1, h: 1 },
-        userWantsToDimPast = false,
         timeInStart = 0,
         timeOutStart = 0,
-        isStatic = false
+        /* NOTE mby delete, not using since positions are relative */
+        //currentYPosition = 0,
+        bottomPadding = 0
+
     }) {
-        const color = (this.date < new Date() && userWantsToDimPast) ? "#7f7f7f" : "#d4d4d4";
+        const color = (this.date < new Date() && this.userWantsToDimPast) ? "#7f7f7f" : "#d4d4d4";
 
         const dateLocalised = this.date.toLocaleDateString('cs-CZ', {
             month: 'numeric',
@@ -83,12 +90,11 @@ export class MonthlyOverviewEventText {
             weekday: 'long'
         });
 
-        const dateToLabelSpacer = 60;
         /* NOTE do i need it?? */
         const xPosition = 0;
         let labelX = xPosition;
         let dateX = xPosition;
-        if (!isStatic) {
+        if (!this.isStatic) {
             const times = this.#calculateTimes(timeInStart, timeOutStart);
             labelX = [
                 { time: times.label.inStart, value: 1300 },
@@ -104,32 +110,44 @@ export class MonthlyOverviewEventText {
             ];
         }
 
+        //const dateToLabelSpacer = 0;//(currentYPosition + 0) * this.scaleFactor.h;
+        //const dateToLabelSpacer = (currentYPosition + 60) * this.scaleFactor.h;
         return [
-            new TextVideoElement({
-                id: `${id}-label`,
-                content: this.label,
-                fontName: "Neue Machina Regular",
-                fontSizePx: 50 * dimensionScaleFactor.h,
-                fontColor: color,
-                textAlign: "center",
-                easing: !isStatic ? "inOutBack" : null,
-                posX: labelX,
-                posY: currentYPosition + (dateToLabelSpacer * dimensionScaleFactor.h),
-                lineHeight: 60 * scaleFactor.h
-            }),
+            /* TODO line */
             new TextVideoElement({
                 id: `${id}-date`,
                 content: `${dateLocalised}${this.tickets != null ? " (předprodej online)" : ""}`,
                 fontName: "Karla Regular",
-                fontSizePx: 40 * dimensionScaleFactor.h,
+                fontSizePx: 40 * this.scaleFactor.h,
                 fontColor: color,
                 textAlign: "left",
-                easing: !isStatic ? "inOutBack" : null,
+                easing: !this.isStatic ? "inOutBack" : null,
                 posX: dateX,
-                posY: currentYPosition,
-                lineHeight: 40 * scaleFactor.h
+                //posY: currentYPosition,
+                //lineHeight: 40 * this.scaleFactor.h
+                styles: `
+                    position: relative;
+                `
             }),
-            /* TODO line */
+            new TextVideoElement({
+                id: `${id}-label`,
+                content: this.label,
+                fontName: "Neue Machina Regular",
+                fontSizePx: 50 * this.scaleFactor.h,
+                fontColor: color,
+                textAlign: "left",
+                easing: !this.isStatic ? "inOutBack" : null,
+                posX: labelX,
+                //posY: dateToLabelSpacer,
+                //lineHeight: 60 * this.scaleFactor.h
+                styles: `
+                    position: relative;
+                    padding-bottom: ${bottomPadding}px !important;
+                    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+                `
+            })
         ];
     }
 }

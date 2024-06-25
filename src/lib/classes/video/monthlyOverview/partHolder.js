@@ -1,4 +1,4 @@
-import { MonthlyOverviewEventText } from "$lib/classes/video/monthlyOverview/eventText";
+import { MonthlyOverviewEventRow } from "$lib/classes/video/monthlyOverview/eventRow.js";
 import { VideoElement } from "../videoElement";
 
 /**
@@ -16,10 +16,10 @@ export class MonthlyOverviewPartHolder {
 
     /**
         * Texts to render
-        * @type {Array<MonthlyOverviewEventText>}
+        * @type {Array<MonthlyOverviewEventRow>}
         * @private
     */
-    #texts;
+    #rows;
 
     /**
         * Bottom padding of texts
@@ -50,7 +50,7 @@ export class MonthlyOverviewPartHolder {
     constructor({ id }) {
         this.id = id;
         this.#height = 0;
-        this.#texts = [];
+        this.#rows = [];
         this.#bottomPadding = 0;
         this.#inStart = 0;
         this.#outStart = 0;
@@ -69,23 +69,23 @@ export class MonthlyOverviewPartHolder {
         * @param {number} usableVerticalSpace - usable vertical space for the render
     */
     calculateBottomPadding(usableVerticalSpace) {
-        this.#bottomPadding = (usableVerticalSpace - this.#height) / this.#texts.length;
+        this.#bottomPadding = (usableVerticalSpace - this.#height) / this.#rows.length;
     }
 
     /**
-        * Pushes to texts
-        * @param {MonthlyOverviewEventText} newText - text to be pushed
+        * Pushes to rows
+        * @param {MonthlyOverviewEventRow} newRow - row to be pushed
     */
-    pushText(newText) {
-        this.#texts.push(newText);
+    pushRow(newRow) {
+        this.#rows.push(newRow);
     }
 
     /**
-        * returns texts count
-        * @returns {number} the count of the texts
+        * returns rows count
+        * @returns {number} the count of the rows
     */
-    getTextsCount() {
-        return this.#texts.length;
+    getRowsCount() {
+        return this.#rows.length;
     }
 
     /**
@@ -126,12 +126,10 @@ export class MonthlyOverviewPartHolder {
     */
     getAllVideoElements({
         eventFadeInDelay = 0,
-        eventFadeOutDelay = 0,
-        rowsPadding = 0,
-        scaleFactor = { w: 1, h: 1 }
+        eventFadeOutDelay = 0
     }) {
-        let currentTextFadeInStart = this.#inStart;
-        let currentTextFadeOutStart = this.#outStart;
+        let currentRowFadeInStart = this.#inStart;
+        let currentRowFadeOutStart = this.#outStart;
 
         let currentRowYPosition = 0;
         /* NOTE do i need this var?? */
@@ -139,7 +137,8 @@ export class MonthlyOverviewPartHolder {
 
         /* const lineStartX = w / 2; */
         const toRet = [];
-        this.#texts.forEach(eventText => {
+        /* TODO return immediately */
+        this.#rows.forEach(eventRow => {
 
             /* const lineY = currentRowYPosition - (40 * dimensionScaleFactor.h);
             const lineLeftX = isPoster ? xPosition : interpolateKeyframes([
@@ -156,20 +155,19 @@ export class MonthlyOverviewPartHolder {
                 { time: lineFadeOutEnd, value: lineStartX }
             ], time, "easeInOutQuint"); */
 
-            toRet.push(...eventText.getVideoElements({
+            toRet.push(...eventRow.getVideoElements({
                 id: this.id,
                 currentYPosition: currentRowYPosition,
-                scaleFactor: scaleFactor,
-                userWantsToDimPast: userWantsToDimPast,
-                timeInStart: currentTextFadeInStart,
-                timeOutStart: currentTextFadeOutStart,
-                isStatic: isStatic
+                timeInStart: currentRowFadeInStart,
+                timeOutStart: currentRowFadeOutStart,
+                bottomPadding: this.#bottomPadding
             }));
 
-            // BUG custom styles, position relative
-            currentRowYPosition += rowsPadding; // eventBottomPadding + eventText.height;
-            currentTextFadeInStart += eventFadeInDelay;
-            currentTextFadeOutStart += eventFadeOutDelay;
+            //currentRowYPosition += 0; // rowsPadding; // eventBottomPadding + eventRow.height;
+            currentRowFadeInStart += eventFadeInDelay;
+            currentRowFadeOutStart += eventFadeOutDelay;
         });
+
+        return toRet;
     }
 }
