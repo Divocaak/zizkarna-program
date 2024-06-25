@@ -29,17 +29,18 @@ export async function POST({ request }) {
 
     const middleIndex = Math.floor(data.events.length / 2);
     const finalMiddleIndex = data.events.length % 2 === 0 ? middleIndex : middleIndex + 1;
-    const textParts = { first: new MonthlyOverviewPartHolder({id: "first"}), second: new MonthlyOverviewPartHolder({id: "second"}) };
+    const textParts = { first: new MonthlyOverviewPartHolder({ id: "first" }), second: new MonthlyOverviewPartHolder({ id: "second" }) };
     data.events.forEach((eventData, index) => {
         const { date, label, tickets } = eventData;
         const textPart = !legalHalfSplit || (index < finalMiddleIndex && legalHalfSplit) ? textParts.first : textParts.second;
-        textPart.updateHeight(height);
+        /* BUG */
+        textPart.updateHeight(10/* height */);
         textPart.pushText(new MonthlyOverviewEventText({ label: label, date: date, tickets: tickets }));
     });
 
     const usableVerticalSpace = outputDimensions.h - (padding.y * 2 * scalingFactor.h);
     textParts.first.calculateBottomPadding(usableVerticalSpace)
-    
+
     // calculations only for video, which means taht outputMediumOrVidLength is vidLength
     const firstInDuration = textParts.first.getTextsCount() * eventStartShift;
     const firstOutDuration = textParts.first.getTextsCount() * eventEndShift;
@@ -54,29 +55,20 @@ export async function POST({ request }) {
         textParts.second.setOutStart(firstGetOutStartNew + firstOutDuration + contentLenPerSection);
     }
 
-    const testPage = true;
-    const testFrame = false;
     const response = await renderTemplate({
-        testPage: testPage,
+        onlyFrame: data.testFrame,
         duration: outputMediumOrVidLength,
         outputDimensions: outputDimensions,
         scalingFactor: scalingFactor,
         paddingPx: padding,
-        videoElements: videoElements(data)
+        videoElements: videoElements({ data: data, scaleFactor: scalingFactor, textParts: textParts })
     });
 
     return new Response(JSON.stringify({
         output: response,
-        format: (testPage ? "html" : (testFrame ? "image" : "video"))
+        /* TODO */
+        format: (data.testFrame ? "html" : (true ? "image" : "video"))
     }, { status: 200 }));
-}
-
-function renderFrame(context, time, duration, dimensions, dimensionScaleFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, label, dimPast, firstTimes, secondTimes = null, isPoster = false) {
-    renderAllTexts(context, time, dimensions.w, dimPast, eventsTexts[0], topBorder, eventBottomPadding[0], firstTimes, isPoster, dimensionScaleFactor);
-    
-    if (secondTimes) {
-        renderAllTexts(context, time, dimensions.w, dimPast, eventsTexts[1], topBorder, eventBottomPadding[1], secondTimes, isPoster, dimensionScaleFactor);
-    }
 }
 
 function renderAllTexts(context, time, w, dimPast, texts, topBorder, eventBottomPadding, times, isPoster, dimensionScaleFactor) {
@@ -84,7 +76,7 @@ function renderAllTexts(context, time, w, dimPast, texts, topBorder, eventBottom
     let currentTextFadeOutStart = times.outStart;
 
     let currY = topBorder + (eventBottomPadding / 2);
-    
+
     const lineStartX = w / 2;
     const xPosition = 50 * dimensionScaleFactor.w;
 
@@ -120,7 +112,7 @@ function renderAllTexts(context, time, w, dimPast, texts, topBorder, eventBottom
     });
 }
 
-const videoElements = (data, scaleFactor) => [
+const videoElements = ({ data, scaleFactor, textParts }) => [
     new ImageVideoElement({
         id: "zz-logo",
         content: "./vidGenAssets/logo_transparent.png",
@@ -137,6 +129,6 @@ const videoElements = (data, scaleFactor) => [
         fontColor: "#d4d4d4",
         textAlign: "center"
     }),
-    /* URGENT test part returns of elements! */
-    /* TODO parts get elements with spread operator */
+    ...textParts.first.getAllVideoElements({ scaleFactor: scaleFactor, eventFadeInDelay: 0, eventFadeOutDelay: 0, rowsPadding: 0 }),
+    ...textParts.second.getAllVideoElements({ scaleFactor: scaleFactor, eventFadeInDelay: 0, eventFadeOutDelay: 0, rowsPadding: 0 })
 ];

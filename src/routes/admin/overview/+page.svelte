@@ -25,6 +25,7 @@
 
 	const formData = writable({
 		outputRange: 'month',
+		/* TODO default value */
 		selectedDate: undefined,
 		outputMediumOrVidLength: '8',
 		dimPastEvents: true,
@@ -70,7 +71,7 @@
 			// URGENT
 			console.log(requestBody);
 
-			/* if ($testFrame) {
+			if ($testFrame) {
 				window.open(
 					`/admin/videoPreview?data=${encodeURIComponent(
 						JSON.stringify({ requestBody: requestBody, requestPath: requestPath })
@@ -86,7 +87,7 @@
 				body: JSON.stringify(requestBody)
 			});
 
-			const result = await response.json(); */
+			const result = await response.json();
 			isLoading.set(false);
 			//isImage.set(result.format == 'image');
 			return;

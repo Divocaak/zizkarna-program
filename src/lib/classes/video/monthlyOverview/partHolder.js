@@ -47,7 +47,7 @@ export class MonthlyOverviewPartHolder {
         * variables are meant to be assigned only through set methods
         * @param {string} id - id of part holder to distinguish parts from each other
     */
-    constructor({id}) {
+    constructor({ id }) {
         this.id = id;
         this.#height = 0;
         this.#texts = [];
@@ -127,7 +127,8 @@ export class MonthlyOverviewPartHolder {
     getAllVideoElements({
         eventFadeInDelay = 0,
         eventFadeOutDelay = 0,
-        rowsPadding = 0
+        rowsPadding = 0,
+        scaleFactor = { w: 1, h: 1 }
     }) {
         let currentTextFadeInStart = this.#inStart;
         let currentTextFadeOutStart = this.#outStart;
@@ -135,8 +136,9 @@ export class MonthlyOverviewPartHolder {
         let currentRowYPosition = 0;
         /* NOTE do i need this var?? */
         //const xPosition = 50 * dimensionScaleFactor.w;
-        
+
         /* const lineStartX = w / 2; */
+        const toRet = [];
         this.#texts.forEach(eventText => {
 
             /* const lineY = currentRowYPosition - (40 * dimensionScaleFactor.h);
@@ -154,7 +156,7 @@ export class MonthlyOverviewPartHolder {
                 { time: lineFadeOutEnd, value: lineStartX }
             ], time, "easeInOutQuint"); */
 
-            eventText.getVideoElements({
+            toRet.push(...eventText.getVideoElements({
                 id: this.id,
                 currentYPosition: currentRowYPosition,
                 scaleFactor: scaleFactor,
@@ -162,7 +164,7 @@ export class MonthlyOverviewPartHolder {
                 timeInStart: currentTextFadeInStart,
                 timeOutStart: currentTextFadeOutStart,
                 isStatic: isStatic
-            });
+            }));
 
             // BUG custom styles, position relative
             currentRowYPosition += rowsPadding; // eventBottomPadding + eventText.height;
