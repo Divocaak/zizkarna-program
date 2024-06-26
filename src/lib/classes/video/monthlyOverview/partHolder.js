@@ -8,11 +8,11 @@ import { VideoElement } from "../videoElement";
 */
 export class MonthlyOverviewPartHolder {
     /**
-        * Total height of the texts
+        * Total height of all the rows (line, date, label)
         * @type {number}
         * @private
     */
-    #height;
+    #rowsHeightSum;
 
     /**
         * Texts to render
@@ -20,13 +20,6 @@ export class MonthlyOverviewPartHolder {
         * @private
     */
     #rows;
-
-    /**
-        * Bottom padding of texts
-        * @type {number}
-        * @private
-    */
-    #bottomPadding;
 
     /**
         * Fade-in start time
@@ -46,37 +39,24 @@ export class MonthlyOverviewPartHolder {
         * Create a texts holder
         * variables are meant to be assigned only through set methods
         * @param {string} id - id of part holder to distinguish parts from each other
+        * @param {Array<*>} usableSpace - usable space for the texts
     */
-    constructor({ id }) {
+    constructor({ id, usableSpace }) {
         this.id = id;
-        this.#height = 0;
+        this.usableSpace = usableSpace;
+        this.#rowsHeightSum = 0;
         this.#rows = [];
-        this.#bottomPadding = 0;
         this.#inStart = 0;
         this.#outStart = 0;
     }
 
     /**
-        * Adds to height
-        * @param {number} valToUpdate - The value to add/subtract to/from height
-    */
-    updateHeight(valToUpdate) {
-        this.#height += valToUpdate;
-    }
-
-    /**
-        * Calculates the bottom padding based on given usableVerticalSpace
-        * @param {number} usableVerticalSpace - usable vertical space for the render
-    */
-    calculateBottomPadding(usableVerticalSpace) {
-        this.#bottomPadding = (usableVerticalSpace - this.#height) / this.#rows.length;
-    }
-
-    /**
         * Pushes to rows
+        * Recalculates the total height of the rows with default font sizes and padding
         * @param {MonthlyOverviewEventRow} newRow - row to be pushed
     */
-    pushRow(newRow) {
+    pushRow({ newRow, usableWidth = 1080 }) {
+        this.#rowsHeightSum += newRow.calculateRowHeight(usableWidth);
         this.#rows.push(newRow);
     }
 
@@ -120,54 +100,38 @@ export class MonthlyOverviewPartHolder {
         return this.#outStart.length;
     }
 
+    /**
+        * Calculates the scale factor for Y axis (font sizes, paddings, ...)
+    */
+    #calculateBottomPadding() {
+        return (this.usableSpace.h / this.#rowsHeightSum)
+    }
+
     /** 
         * returns array of ready to use video elements for all events in part
         * @returns {Array<VideoElement>} the time when fade out starts
     */
     getAllVideoElements({
+        /* NOTE document parameters */
         eventFadeInDelay = 0,
-        eventFadeOutDelay = 0
+        eventFadeOutDelay = 0,
     }) {
         let currentRowFadeInStart = this.#inStart;
         let currentRowFadeOutStart = this.#outStart;
-
         let currentRowYPosition = 0;
-        /* NOTE do i need this var?? */
-        //const xPosition = 50 * dimensionScaleFactor.w;
 
-        /* const lineStartX = w / 2; */
-        const toRet = [];
-        /* TODO return immediately */
-        this.#rows.forEach(eventRow => {
-
-            /* const lineY = currentRowYPosition - (40 * dimensionScaleFactor.h);
-            const lineLeftX = isPoster ? xPosition : interpolateKeyframes([
-                { time: lineFadeInStart, value: lineStartX },
-                { time: lineFadeInEnd, value: xPosition },
-                { time: lineFadeOutStart, value: xPosition },
-                { time: lineFadeOutEnd, value: lineStartX }
-            ], time, "easeInOutQuint");
-            const rightLineEnd = w - xPosition;
-            const lineRightX = isPoster ? rightLineEnd : interpolateKeyframes([
-                { time: lineFadeInStart, value: lineStartX },
-                { time: lineFadeInEnd, value: rightLineEnd },
-                { time: lineFadeOutStart, value: rightLineEnd },
-                { time: lineFadeOutEnd, value: lineStartX }
-            ], time, "easeInOutQuint"); */
-
-            toRet.push(...eventRow.getVideoElements({
-                id: this.id,
+        return this.#rows.flatMap(eventRow => {
+            const videoElements = eventRow.getVideoElements({
+                parentId: this.id,
                 currentYPosition: currentRowYPosition,
                 timeInStart: currentRowFadeInStart,
                 timeOutStart: currentRowFadeOutStart,
-                bottomPadding: this.#bottomPadding
-            }));
+                yMultiplier: this.#calculateBottomPadding()
+            });
 
-            //currentRowYPosition += 0; // rowsPadding; // eventBottomPadding + eventRow.height;
             currentRowFadeInStart += eventFadeInDelay;
             currentRowFadeOutStart += eventFadeOutDelay;
+            return videoElements
         });
-
-        return toRet;
     }
 }

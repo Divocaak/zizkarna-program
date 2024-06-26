@@ -7,7 +7,7 @@ import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
 import { PassThrough } from 'stream';
 
 const outputPath = "dynamic/generator/";
-// NOTE 30
+// NOTE _perfornance 30
 const frameRate = 2;
 
 export async function renderTemplate({
@@ -58,7 +58,7 @@ export async function renderTemplate({
         gradientMiddleTimeOffset++;
     }
 
-    // NOTE mby call getHtml only once and save to var, then reuse?
+    // NOTE _perfornance mby call getHtml only once and save to var, then reuse?
 
     // not null, which means that a number of wanted test frame is passed
     if (onlyFrame !== null) {
@@ -71,9 +71,9 @@ export async function renderTemplate({
         });
     }
 
-    // TODO rewrite "all data at once" to use for monthly overview for posters
+    // URGENT rewrite "all data at once" to use for monthly overview for posters
     if (onlyStaticMiddleFrame) {
-        // NOTE test frame and/or static poster
+        // test frame and/or static poster
         //renderFrame(context, 6, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes, isPoster);
         // return
         renderFrame({
@@ -101,8 +101,8 @@ export async function renderTemplate({
     // return new Response(JSON.stringify({ path: "outputFile", format: "video" }, { status: 200 }));
 }
 
-// NOTE performance https://github.com/frinyvonnick/node-html-to-image/issues/80
-// NOTE quality: 100? default is 80
+// NOTE _performance https://github.com/frinyvonnick/node-html-to-image/issues/80
+// NOTE _perfornance quality: 100? default is 80
 const renderFrame = ({ html, isBufferFrame = false }) => nodeHtmlToImage({
     html: html,
     type: 'jpeg',

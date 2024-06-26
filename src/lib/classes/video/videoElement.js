@@ -62,6 +62,8 @@ export class VideoElement {
     #getXInTime(time) { return Array.isArray(this.posX) ? this.#interpolateKeyframes({ keyframes: this.posX, time: time, easing: this.easing }) : this.posX; }
 
     #getYInTime(time) { return Array.isArray(this.posY) ? this.#interpolateKeyframes({ keyframes: this.posY, time: time, easing: this.easing }) : this.posY; }
+    
+    getWidthInTime(time, width) { return Array.isArray(this.width) ? this.#interpolateKeyframes({ keyframes: this.width, time: time, easing: this.easing }) : this.width; }
 
     #interpolateKeyframes({ keyframes = [], time = 0, easing = null }) {
 

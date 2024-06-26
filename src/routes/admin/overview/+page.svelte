@@ -25,7 +25,7 @@
 
 	const formData = writable({
 		outputRange: 'month',
-		/* TODO default value */
+		/* TODO _final default value */
 		selectedDate: undefined,
 		outputMediumOrVidLength: '8',
 		dimPastEvents: true,
@@ -56,7 +56,7 @@
 				: 'TENTO TÝDEN';
 
 			const requestPath = '/api/videoGenerators/overviews/';
-			// NOTE delete unsupported keys when done
+			// NOTE _final delete unsupported keys when done
 			const requestBody = {
 				testFrame: $testFrame ? $formData.testFrameNumber : null,
 				dimPastEvents: $formData.dimPastEvents,
@@ -68,7 +68,7 @@
 				// duration: formData.outputDuration,
 			};
 
-			// URGENT
+			// TODO _final test all options
 			console.log(requestBody);
 
 			if ($testFrame) {
@@ -239,7 +239,7 @@
 	</label><br />
 	{#if $testFrame}
 		<label for="testFrameNumber">
-			TODO write default times
+			TODO _final write default times
 			<input
 				type="number"
 				step="0.1"
@@ -257,7 +257,6 @@
 	ʕ•ᴥ•ʔ (generuju, sorry, trvá mi to, vydrž pls)
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
-	<!-- TODO rew same -->
 {:else}
 	<!-- prettier-ignore -->
 	{#if $isImage === null}

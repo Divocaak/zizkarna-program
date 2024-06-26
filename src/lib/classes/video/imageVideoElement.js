@@ -21,8 +21,8 @@ export class ImageVideoElement extends VideoElement {
         content,
         posX = 0,
         posY = 0,
-        wPx = 100,
-        hPx = 100,
+        wPx = null,
+        hPx = null,
         easing = null
     }) {
         super({
@@ -45,13 +45,14 @@ export class ImageVideoElement extends VideoElement {
         return super.getStyles({
             time: time,
             additionalStyles: `
-                min-width: 100%;
-                aspect-ratio: 16/9;
                 background-image: url('${super.getContent()}');
                 background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
                 border: 1px solid cyan;
+                ${this.#getWPx() != null && this.#getHPx() != null
+                    ? `width: ${this.#getWPx()}px; height: ${this.#getHPx()}px;`
+                    : `min-width: 100%; aspect-ratio: 16/9;`} 
             `
         });
     }
