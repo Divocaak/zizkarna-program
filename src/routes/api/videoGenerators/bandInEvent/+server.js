@@ -1,9 +1,10 @@
 import { renderTemplate } from '$lib/scripts/videoTemplateGenerator.js';
 import { TextVideoElement } from '$lib/classes/video/textVideoElement.js';
 import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
+import { PaddingElement } from '$lib/classes/video/paddingHolder.js';
 
 const outputDimensions = { w: 1080, h: 1920 };
-const padding = { x: 100, y: 250 };
+const padding = PaddingElement({ x: 100, y: 250 });
 
 const crossfadeTime = .1;
 const fadeTime = .8;
@@ -58,7 +59,7 @@ export async function POST({ request }) {
         onlyFrame: data.testFrame,
         duration: duration,
         outputDimensions: outputDimensions,
-        paddingPx: padding,
+        padding: padding,
         videoElements: videoElements(data),
     });
 
@@ -196,7 +197,7 @@ const videoElements = (data) => [
         posX: 0,
         posY: [
             { time: zzIn + .2, value: -outputDimensions.w },
-            { time: zzContent, value: padding.y }
+            { time: zzContent, value: padding.getTop() }
         ],
         easing: "inOutBack"
     }),

@@ -101,10 +101,37 @@ export class MonthlyOverviewPartHolder {
     }
 
     /**
-        * Calculates the scale factor for Y axis (font sizes, paddings, ...)
+        * Calculates the bottom padding for rows, multiplier for font sizes and optional top shift of all rows to position list in vertical center
+        * @returns {{padding: number, multiplier: number, topShift: number}} already multiplied padding, number to multiply texts and topShift (to center texts vertically)
     */
-    #calculateBottomPadding() {
-        return (this.usableSpace.h / this.#rowsHeightSum)
+    #calculatePaddingAndMultiplierAndShift() {
+        const minPadding = 10; // minimum padding
+        const maxPadding = 100; // maximum padding
+
+        const toRet = { padding: minPadding, multiplier: 1, topShift: 0 };
+
+        /* TODO minus one padding for last this.#rows, which does not need padding, as its already padded by pages padding bottom */
+        const minPaddingSpaceNeeded = this.getRowsCount() * minPadding; // total minimum padding needed for all rows
+        toRet.multiplier = (minPaddingSpaceNeeded <= (this.usableSpace.h - this.#rowsHeightSum))
+            // min space for all paddings smaller then the available space after rows
+            ? toRet.multiplier = (this.usableSpace.h - minPaddingSpaceNeeded) / this.#rowsHeightSum // calculate multiplier to scale down texts, so minimum padding fits
+            // space left with default font sizes and minimum paddings, calculate multiplier
+            : this.usableSpace.h / (this.#rowsHeightSum + minPaddingSpaceNeeded); // space left with default font sizes and minimum paddings, calculate multiplier
+
+        const multipliedPadding = toRet.padding * toRet.multiplier;
+        // a lot of free space, large paddings
+        // use the freed up space to move content to the center of the y axis
+        if (multipliedPadding > maxPadding) {
+            toRet.topShift = multipliedPadding - (maxPadding * this.getRowsCount());
+        }
+
+        toRet.padding = (multipliedPadding > maxPadding)
+            // a lot of free space, large paddings
+            ? maxPadding // set to maxPadding, to preserve text readable list
+            : multipliedPadding
+
+        console.log(toRet);
+        return toRet;
     }
 
     /** 
@@ -126,7 +153,7 @@ export class MonthlyOverviewPartHolder {
                 currentYPosition: currentRowYPosition,
                 timeInStart: currentRowFadeInStart,
                 timeOutStart: currentRowFadeOutStart,
-                yMultiplier: this.#calculateBottomPadding()
+                paddingAndMultiplierAndShift: this.#calculatePaddingAndMultiplierAndShift()
             });
 
             currentRowFadeInStart += eventFadeInDelay;

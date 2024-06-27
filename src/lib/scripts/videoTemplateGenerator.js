@@ -5,6 +5,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
 import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
 import { PassThrough } from 'stream';
+import { PaddingElement } from '$lib/classes/video/paddingHolder';
 
 const outputPath = "dynamic/generator/";
 // NOTE _perfornance 30
@@ -15,7 +16,7 @@ export async function renderTemplate({
     duration,
     outputDimensions = { w: 1080, h: 1920 },
     scalingFactor = { w: 1, h: 1 },
-    paddingPx = { x: 0, y: 0 },
+    padding = PaddingElement({ x: 0, y: 0 }),
     onlyStaticMiddleFrame = false,
     videoElements = []
 }) {
@@ -66,7 +67,7 @@ export async function renderTemplate({
             time: onlyFrame,
             outputDimensions: outputDimensions,
             gradients: gradients,
-            padding: paddingPx,
+            padding: padding,
             videoElements: videoElements
         });
     }
@@ -81,7 +82,7 @@ export async function renderTemplate({
                 time: 1,
                 outputDimensions: outputDimensions,
                 gradients: gradients,
-                padding: paddingPx,
+                padding: padding,
                 videoElements: videoElements
             })
         });
@@ -93,7 +94,7 @@ export async function renderTemplate({
         duration: duration,
         outputDimensions: outputDimensions,
         gradients: gradients,
-        padding: paddingPx,
+        padding: padding,
         videoElements: videoElements
     });
 
@@ -176,7 +177,7 @@ function getHtml({
     time,
     outputDimensions = { w: 1080, h: 1920 },
     gradients = [],
-    padding = { x: 0, y: 0 },
+    padding = PaddingElement({ x: 0, y: 0 }),
     videoElements = []
 }) {
     let gradientsStyles = '';
@@ -242,10 +243,10 @@ function getHtml({
                             position: absolute;
                             top: 0;
                             left: 0;
-                            width: calc(100% - (2 * ${padding.x}px));
-                            height: calc(100% - (2 * ${padding.y}px));
+                            width: calc(100% - (${padding.getX()}px));
+                            height: calc(100% - (${padding.getY()}px));
                             margin: 0;
-                            padding: ${padding.y}px ${padding.x}px;
+                            padding: ${padding.getTop()}px ${padding.getRight()}px ${padding.getBottom()}px ${padding.getLeft()}px;
                             
                             background:rgba(255,0,0,.1);
                             border: 1px solid red;

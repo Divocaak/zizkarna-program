@@ -1,6 +1,7 @@
 import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
 import { MonthlyOverviewEventRow } from '$lib/classes/video/monthlyOverview/eventRow.js';
 import { MonthlyOverviewPartHolder } from '$lib/classes/video/monthlyOverview/partHolder.js';
+import { PaddingElement } from '$lib/classes/video/paddingHolder.js';
 import { TextVideoElement } from '$lib/classes/video/textVideoElement.js';
 import { renderTemplate } from '$lib/scripts/videoTemplateGenerator.js';
 
@@ -22,16 +23,19 @@ export async function POST({ request }) {
         h: outputDimensions.h / 1920
     }
 
-    const padding = isPoster
-        ? { x: 100, y: 100 }
+    const padding = !isPoster
+        ? outputMediumOrVidLength < 10
+            ? new PaddingElement({ x: 100, y: 250 }) // story
+            : new PaddingElement({ x: 50, y: { top: 220, bottom: 420 } }) // reel
         : outputMediumOrVidLength == "a4"
-            ? { x: 100, y: 100 }
-            : { x: 100, y: 100 };
+            ? new PaddingElement({ x: 178, y: 178 }) // a4
+            : new PaddingElement({ x: 590, y: 590 }); // b0
 
     const usableDimensions = {
+        // NOTE is this right?
         // subtract only one padded side, as the other one is already padded
-        w: outputDimensions.w - (padding.x * scalingFactor.w),
-        h: outputDimensions.h - (padding.y * scalingFactor.h)
+        w: outputDimensions.w - (padding.getX() * scalingFactor.w),
+        h: outputDimensions.h - (padding.getY() * scalingFactor.h)
     }
 
     const twoSections = data.splitForTwoSections && data.events.length > 1 && !isPoster;
@@ -75,13 +79,13 @@ export async function POST({ request }) {
         duration: outputMediumOrVidLength,
         outputDimensions: outputDimensions,
         scalingFactor: scalingFactor,
-        paddingPx: padding,
+        padding: padding,
         videoElements: videoElements({
             data: data,
             scaleFactor: scalingFactor,
             textParts: textParts,
             outputDimensions: outputDimensions,
-            usableSpace: usableDimensions
+            padding: padding
         })
     });
 
@@ -92,15 +96,15 @@ export async function POST({ request }) {
     }, { status: 200 }));
 }
 
-const videoElements = ({ data, scaleFactor, textParts, outputDimensions, usableSpace }) => {
+const videoElements = ({ data, scaleFactor, textParts, outputDimensions, padding }) => {
     const logoScale = 150
     const logoW = logoScale * scaleFactor.w;
     return [
         new ImageVideoElement({
             id: "zz-logo",
             content: "./vidGenAssets/logo_transparent.png",
-            posX: usableSpace.w - logoW,
-            posY: outputDimensions.h - usableSpace.h,
+            posX: outputDimensions.w - padding.getRight() - logoW,
+            posY: padding.getTop(),
             wPx: logoW,
             hPx: logoScale * scaleFactor.h
         }),

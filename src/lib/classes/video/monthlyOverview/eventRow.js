@@ -37,13 +37,6 @@ export class MonthlyOverviewEventRow {
     #dateBottomPadding;
 
     /**
-        * Bottom padding of label
-        * @type {number}
-        * @private
-    */
-    #labelBottomPadding;
-
-    /**
         * Create a texts holder
         * @param {string} id - id of elements for linking styles with html elements
         * @param {string} label - label of the event
@@ -66,11 +59,10 @@ export class MonthlyOverviewEventRow {
         this.tickets = tickets
         this.isStatic = isStatic;
         this.userWantsToDimPast = userWantsToDimPast;
-        this.#dateFontSize = 27;
-        this.#labelFontSize = 40;
+        this.#dateFontSize = .675 * 2;
+        this.#labelFontSize = 2;
         this.#topLineHeight = 1;
-        this.#labelBottomPadding = 40;
-        this.#dateBottomPadding = 10;
+        this.#dateBottomPadding = 1;
     }
 
     /**
@@ -78,6 +70,7 @@ export class MonthlyOverviewEventRow {
         * @param {number} usableWidth - max width of row
         * @returns {number} - rows default height
     */
+    /* URGENT rewrite */
     calculateRowHeight(usableWidth) {
         const averageCharWidthFactor = 0.6;
 
@@ -100,7 +93,7 @@ export class MonthlyOverviewEventRow {
         lines.push(currentLine.trim());
 
         const defaultLineHeight = 1.2;
-        const labelHeight = (lines.length * this.#labelFontSize * defaultLineHeight) + this.#labelBottomPadding;
+        const labelHeight = (lines.length * this.#labelFontSize * defaultLineHeight);//+ this.#labelBottomPadding;
         const dateHeight = (this.#dateFontSize * defaultLineHeight) + this.#dateBottomPadding;
         return labelHeight + dateHeight + this.#topLineHeight;
     }
@@ -136,14 +129,14 @@ export class MonthlyOverviewEventRow {
         * @param {string} parentId - id prefix of partHolder (to recoginse two parts from each other)
         * @param {number} timeInStart - current rows fadeInStart
         * @param {number} timeOutStart - current rows fadeOutStart
-        * @param {number} yMultiplier - calculated value used to fit everything in container, multiply everything ywise with it
+        * @param {padding: number, multiplier: number, topShift: number} paddingAndMultiplierAndShift - already multiplied padding, number to multiply texts and topShift
         * @returns {Array<VideoElement>} - array of ready to use VideoElements
     */
     getVideoElements({
         parentId,
         timeInStart = 0,
         timeOutStart = 0,
-        yMultiplier = 1
+        paddingAndMultiplierAndShift
     }) {
         const color = (this.date < new Date() && this.userWantsToDimPast) ? "#7f7f7f" : "#d4d4d4";
 
@@ -178,6 +171,7 @@ export class MonthlyOverviewEventRow {
             ];
         }
 
+        /* TODO last row without bottom padding */
         return [
             new LineVideoElement({
                 id: `${parentId}-line-${this.id}`,
@@ -190,28 +184,29 @@ export class MonthlyOverviewEventRow {
                 id: `${parentId}-date-${this.id}`,
                 content: `${dateLocalised}${this.tickets != null ? " (předprodej online)" : ""}`,
                 fontName: "Karla Regular",
-                fontSizePx: this.#dateFontSize * yMultiplier,
+                fontSizePx: this.#dateFontSize * paddingAndMultiplierAndShift.multiplier,
                 fontColor: color,
                 textAlign: "left",
                 easing: !this.isStatic ? "inOutBack" : null,
                 posX: dateX,
+                /* BUG */
                 styles: `
                     position: relative;
-                    padding-bottom: ${this.#dateBottomPadding * yMultiplier}px !important;
+                    padding-bottom: ${this.#dateBottomPadding * paddingAndMultiplierAndShift.multiplier}px !important;
                 `
             }),
             new TextVideoElement({
                 id: `${parentId}-label-${this.id}`,
                 content: this.label,
                 fontName: "Neue Machina Regular",
-                fontSizePx: this.#labelFontSize * yMultiplier,
+                fontSizePx: this.#labelFontSize * paddingAndMultiplierAndShift.multiplier,
                 fontColor: color,
                 textAlign: "left",
                 easing: !this.isStatic ? "inOutBack" : null,
                 posX: labelX,
                 styles: `
                     position: relative;
-                    padding-bottom: ${this.#labelBottomPadding * yMultiplier}px !important;
+                    padding-bottom: ${paddingAndMultiplierAndShift.padding}px !important;
                 `
             })
         ];

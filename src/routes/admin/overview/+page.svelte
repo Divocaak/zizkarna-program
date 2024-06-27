@@ -59,12 +59,12 @@
 			// NOTE _final delete unsupported keys when done
 			const requestBody = {
 				testFrame: $testFrame ? $formData.testFrameNumber : null,
+				outputMediumOrVidLength: $formData.outputMediumOrVidLength,
 				dimPastEvents: $formData.dimPastEvents,
 				splitForTwoSections: $formData.splitForTwoSections,
 				events: eventsData,
 				label: label,
 				outputRange: $formData.outputRange,
-				outputMediumOrVidLength: $formData.outputMediumOrVidLength,
 				// duration: formData.outputDuration,
 			};
 
