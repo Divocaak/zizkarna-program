@@ -77,7 +77,6 @@ export async function renderTemplate({
     // TODO rename to somethign like "all data at once" to use for monthly overview for posters
     if (onlyStaticMiddleFrame) {
         // test frame and/or static poster
-        //renderFrame(context, 6, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes, isPoster);
         // return
         renderFrame({
             html: getHtml({
@@ -91,7 +90,6 @@ export async function renderTemplate({
         });
         return `${outputPath}/output.jpg`;
     }
-
 
     const imageBuffers = await generateImages({
         duration: duration,
