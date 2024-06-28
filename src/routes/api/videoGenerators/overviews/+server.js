@@ -32,8 +32,6 @@ export async function POST({ request }) {
             : new PaddingElement({ x: 590, y: 590 }); // b0
 
     const usableDimensions = {
-        // NOTE is this right?
-        // subtract only one padded side, as the other one is already padded
         w: outputDimensions.w - (padding.getX() * scalingFactor.w),
         h: outputDimensions.h - (padding.getY() * scalingFactor.h)
     }
@@ -43,23 +41,22 @@ export async function POST({ request }) {
     const middleIndex = Math.floor(data.events.length / 2);
     const finalMiddleIndex = data.events.length % 2 === 0 ? middleIndex : middleIndex + 1;
     const textParts = {
-        first: new MonthlyOverviewPartHolder({ id: "first", usableSpace: usableDimensions }),
-        second: new MonthlyOverviewPartHolder({ id: "second", usableSpace: usableDimensions })
+        first: new MonthlyOverviewPartHolder({ id: "first" }),
+        second: new MonthlyOverviewPartHolder({ id: "second" })
     };
     data.events.forEach((eventData, index) => {
         const { date, label, tickets } = eventData;
         const textPart = !twoSections || (index < finalMiddleIndex && twoSections) ? textParts.first : textParts.second;
-        textPart.pushRow({
-            newRow: new MonthlyOverviewEventRow({
-                id: index,
-                label: label,
-                date: date,
-                tickets: tickets,
-                userWantsToDimPast: data.userWantsToDimPast,
-                isStatic: isPoster
-            }),
-            usableWidth: usableDimensions.w
-        });
+        textPart.pushRow(new MonthlyOverviewEventRow({
+            id: index,
+            label: label,
+            date: date,
+            tickets: tickets,
+            userWantsToDimPast: data.userWantsToDimPast,
+            isStatic: isPoster,
+            isFirst: index === 0,
+            isLast: index === data.events.length - 1
+        }));
     });
 
     // calculations only for video, which means taht outputMediumOrVidLength is vidLength
@@ -74,6 +71,7 @@ export async function POST({ request }) {
         textParts.second.setOutStart(firstGetOutStartNew + firstOutDuration + contentLenPerSection);
     }
 
+    const labelFontSize = 80 * scalingFactor.h;
     const response = await renderTemplate({
         onlyFrame: data.testFrame,
         duration: outputMediumOrVidLength,
@@ -85,8 +83,16 @@ export async function POST({ request }) {
             scaleFactor: scalingFactor,
             textParts: textParts,
             outputDimensions: outputDimensions,
-            padding: padding
-        })
+            padding: padding,
+            usableDimensions: usableDimensions,
+            labelFontSize: labelFontSize
+        }),
+        additionalInnerContainerStyles: `
+            padding-top: ${labelFontSize}px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        `
     });
 
     return new Response(JSON.stringify({
@@ -96,17 +102,18 @@ export async function POST({ request }) {
     }, { status: 200 }));
 }
 
-const videoElements = ({ data, scaleFactor, textParts, outputDimensions, padding }) => {
+const videoElements = ({ data, scaleFactor, textParts, outputDimensions, padding, usableDimensions, labelFontSize }) => {
     const logoScale = 150
     const logoW = logoScale * scaleFactor.w;
+    const logoH = logoScale * scaleFactor.h;
     return [
         new ImageVideoElement({
             id: "zz-logo",
             content: "./vidGenAssets/logo_transparent.png",
             posX: outputDimensions.w - padding.getRight() - logoW,
-            posY: padding.getTop(),
+            posY: padding.getTop() - labelFontSize,
             wPx: logoW,
-            hPx: logoScale * scaleFactor.h
+            hPx: logoH
         }),
         new TextVideoElement({
             id: "poster-label",
@@ -114,16 +121,17 @@ const videoElements = ({ data, scaleFactor, textParts, outputDimensions, padding
             posX: 0,
             posY: 0,
             fontName: "Neue Machina Regular",
-            fontSizePx: 80 * scaleFactor.h,
+            fontSizePx: labelFontSize,
             fontColor: "#d4d4d4",
-            textAlign: "center",
-            styles: "position: relative;"
+            textAlign: "center"
         }),
         ...textParts.first.getAllVideoElements({
+            usableSpace: usableDimensions,
             eventFadeInDelay: 0,
             eventFadeOutDelay: 0
         }),
         ...textParts.second.getAllVideoElements({
+            usableSpace: usableDimensions,
             eventFadeInDelay: 0,
             eventFadeOutDelay: 0
         })

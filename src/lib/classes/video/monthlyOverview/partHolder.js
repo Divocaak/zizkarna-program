@@ -8,13 +8,6 @@ import { VideoElement } from "../videoElement";
 */
 export class MonthlyOverviewPartHolder {
     /**
-        * Total height of all the rows (line, date, label)
-        * @type {number}
-        * @private
-    */
-    #rowsHeightSum;
-
-    /**
         * Texts to render
         * @type {Array<MonthlyOverviewEventRow>}
         * @private
@@ -39,24 +32,19 @@ export class MonthlyOverviewPartHolder {
         * Create a texts holder
         * variables are meant to be assigned only through set methods
         * @param {string} id - id of part holder to distinguish parts from each other
-        * @param {Array<*>} usableSpace - usable space for the texts
     */
-    constructor({ id, usableSpace }) {
+    constructor({ id }) {
         this.id = id;
-        this.usableSpace = usableSpace;
-        this.#rowsHeightSum = 0;
         this.#rows = [];
         this.#inStart = 0;
         this.#outStart = 0;
     }
 
     /**
-        * Pushes to rows
-        * Recalculates the total height of the rows with default font sizes and padding
+        * Pushes new row to rows
         * @param {MonthlyOverviewEventRow} newRow - row to be pushed
     */
-    pushRow({ newRow, usableWidth = 1080 }) {
-        this.#rowsHeightSum += newRow.calculateRowHeight(usableWidth);
+    pushRow(newRow) {
         this.#rows.push(newRow);
     }
 
@@ -101,45 +89,66 @@ export class MonthlyOverviewPartHolder {
     }
 
     /**
-        * Calculates the bottom padding for rows, multiplier for font sizes and optional top shift of all rows to position list in vertical center
-        * @returns {{padding: number, multiplier: number, topShift: number}} already multiplied padding, number to multiply texts and topShift (to center texts vertically)
+        * Calculates the padding and font sizes for dates and labels and top lines line width
+        * @param {Array<*>} usableSpace - usable space for the texts
+        * @returns {{date: {fontSize: number, padding: number}, labe: {fontSize: number, padding: number}, topLineLineWidth: number}} final dimensions for dates and labels padding and font size and top lines line width
     */
-    #calculatePaddingAndMultiplierAndShift() {
-        const minPadding = 10; // minimum padding
-        const maxPadding = 100; // maximum padding
+    #calculateDynamicStyles({ usableSpace }) {
+        const minPadding = 10;
+        const maxPadding = 200;
 
-        const toRet = { padding: minPadding, multiplier: 1, topShift: 0 };
+        const topLineDefaultLineWidth = 5;
+        const topLineMinLineWidth = 1;
+        const topLineMaxLineWidth = 3;
 
-        /* TODO minus one padding for last this.#rows, which does not need padding, as its already padded by pages padding bottom */
-        const minPaddingSpaceNeeded = this.getRowsCount() * minPadding; // total minimum padding needed for all rows
-        toRet.multiplier = (minPaddingSpaceNeeded <= (this.usableSpace.h - this.#rowsHeightSum))
-            // min space for all paddings smaller then the available space after rows
-            ? toRet.multiplier = (this.usableSpace.h - minPaddingSpaceNeeded) / this.#rowsHeightSum // calculate multiplier to scale down texts, so minimum padding fits
-            // space left with default font sizes and minimum paddings, calculate multiplier
-            : this.usableSpace.h / (this.#rowsHeightSum + minPaddingSpaceNeeded); // space left with default font sizes and minimum paddings, calculate multiplier
+        const ratios = { dateFontSize: .7, datePadding: 0.5, lineHeight: 1.2 };
+        const availableHeightPerElement = usableSpace.h / this.getRowsCount();
 
-        const multipliedPadding = toRet.padding * toRet.multiplier;
-        // a lot of free space, large paddings
-        // use the freed up space to move content to the center of the y axis
-        if (multipliedPadding > maxPadding) {
-            toRet.topShift = multipliedPadding - (maxPadding * this.getRowsCount());
-        }
+        let maxLabelHeight = 0;
+        let labelFontSize = availableHeightPerElement / (1 + ratios.lineHeight);
+        let labelPadding = Math.max(minPadding, Math.min(availableHeightPerElement * 0.1, maxPadding));
 
-        toRet.padding = (multipliedPadding > maxPadding)
-            // a lot of free space, large paddings
-            ? maxPadding // set to maxPadding, to preserve text readable list
-            : multipliedPadding
+        let maxDateHeight = 0;
+        let dateFontSize = labelFontSize * ratios.dateFontSize;
+        let datePadding = labelPadding * ratios.datePadding;
 
-        console.log(toRet);
-        return toRet;
+        this.#rows.forEach(row => {
+            const values = row.calculateRowHeight({
+                labelFontSize: labelFontSize,
+                dateFontSize: dateFontSize,
+                labelPadding: labelPadding,
+                datePadding: datePadding,
+                usableWidth: usableSpace.w,
+                lineHeight: ratios.lineHeight
+            });
+            maxLabelHeight = Math.max(maxLabelHeight, values.labelHeight);
+            maxDateHeight = Math.max(maxDateHeight, values.dateHeight);
+        });
+
+        const maxHeight = Math.max(maxLabelHeight, maxDateHeight);
+        const scaleRatio = maxHeight > availableHeightPerElement ? availableHeightPerElement / maxHeight : 1;
+        labelFontSize *= scaleRatio;
+        dateFontSize *= scaleRatio;
+        labelPadding = Math.min(labelPadding/*  * scaleRatio */, maxPadding);
+        datePadding = Math.min(datePadding/*  * scaleRatio */, maxPadding);
+
+        const topLineLineWidth = Math.max(topLineMinLineWidth, Math.min(topLineMaxLineWidth, (topLineDefaultLineWidth * scaleRatio)));
+
+        return {
+            date: { fontSize: dateFontSize, padding: datePadding },
+            label: { fontSize: labelFontSize, padding: labelPadding },
+            topLineLineWidth: topLineLineWidth
+        };
     }
 
     /** 
         * returns array of ready to use video elements for all events in part
+        * @param {Array<*>} usableSpace - usable space for the texts
         * @returns {Array<VideoElement>} the time when fade out starts
     */
+    /* TODO _final document parameters */
     getAllVideoElements({
-        /* NOTE document parameters */
+        usableSpace,
         eventFadeInDelay = 0,
         eventFadeOutDelay = 0,
     }) {
@@ -153,7 +162,7 @@ export class MonthlyOverviewPartHolder {
                 currentYPosition: currentRowYPosition,
                 timeInStart: currentRowFadeInStart,
                 timeOutStart: currentRowFadeOutStart,
-                paddingAndMultiplierAndShift: this.#calculatePaddingAndMultiplierAndShift()
+                dynamicStyles: this.#calculateDynamicStyles({ usableSpace: usableSpace })
             });
 
             currentRowFadeInStart += eventFadeInDelay;

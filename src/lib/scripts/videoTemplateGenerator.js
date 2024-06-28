@@ -9,7 +9,7 @@ import { PaddingElement } from '$lib/classes/video/paddingHolder';
 
 const outputPath = "dynamic/generator/";
 // NOTE _perfornance 30
-const frameRate = 2;
+const frameRate = 1;
 
 export async function renderTemplate({
     onlyFrame = null,
@@ -18,7 +18,8 @@ export async function renderTemplate({
     scalingFactor = { w: 1, h: 1 },
     padding = PaddingElement({ x: 0, y: 0 }),
     onlyStaticMiddleFrame = false,
-    videoElements = []
+    videoElements = [],
+    additionalInnerContainerStyles = ""
 }) {
     ffmpeg.setFfmpegPath(ffmpegStatic);
 
@@ -68,11 +69,12 @@ export async function renderTemplate({
             outputDimensions: outputDimensions,
             gradients: gradients,
             padding: padding,
-            videoElements: videoElements
+            videoElements: videoElements,
+            additionalInnerContainerStyles: additionalInnerContainerStyles
         });
     }
 
-    // URGENT rewrite "all data at once" to use for monthly overview for posters
+    // TODO rename to somethign like "all data at once" to use for monthly overview for posters
     if (onlyStaticMiddleFrame) {
         // test frame and/or static poster
         //renderFrame(context, 6, duration, outputDimensions, scalingFactor, eventsTexts, topBorder, eventBottomPadding, gradients, noise, logo, data.label, data.dimPast, firstHalfTimes, secondHalfTimes, isPoster);
@@ -83,7 +85,8 @@ export async function renderTemplate({
                 outputDimensions: outputDimensions,
                 gradients: gradients,
                 padding: padding,
-                videoElements: videoElements
+                videoElements: videoElements,
+                additionalInnerContainerStyles: additionalInnerContainerStyles
             })
         });
         return `${outputPath}/output.jpg`;
@@ -130,7 +133,8 @@ const generateImages = async ({ duration, outputDimensions, gradients, padding, 
                 outputDimensions: outputDimensions,
                 gradients: gradients,
                 padding: padding,
-                videoElements: videoElements
+                videoElements: videoElements,
+                additionalInnerContainerStyles: additionalInnerContainerStyles
             }),
             isBufferFrame: true
         });
@@ -178,7 +182,8 @@ function getHtml({
     outputDimensions = { w: 1080, h: 1920 },
     gradients = [],
     padding = PaddingElement({ x: 0, y: 0 }),
-    videoElements = []
+    videoElements = [],
+    additionalInnerContainerStyles = ""
 }) {
     let gradientsStyles = '';
     let gradientsHtml = '';
@@ -257,6 +262,8 @@ function getHtml({
                             width:100%;
                             height:100%;
                             background: rgba(255,255,255,.1);
+                            
+                            ${additionalInnerContainerStyles}
                         }
 
                         ${gradientsStyles}
