@@ -6,7 +6,7 @@ import { VideoElement } from "../videoElement";
     * with all necessary data to control section times and padding
     * @class
 */
-export class MonthlyOverviewPartHolder {
+export class MonthlyOverviewPartHolder extends VideoElement {
     /**
         * Texts to render
         * @type {Array<MonthlyOverviewEventRow>}
@@ -34,7 +34,7 @@ export class MonthlyOverviewPartHolder {
         * @param {string} id - id of part holder to distinguish parts from each other
     */
     constructor({ id }) {
-        this.id = id;
+        super({ id });
         this.#rows = [];
         this.#inStart = 0;
         this.#outStart = 0;
@@ -69,7 +69,7 @@ export class MonthlyOverviewPartHolder {
         * @returns {number} the time when fade in starts
     */
     getInStart() {
-        return this.#inStart.length;
+        return this.#inStart;
     }
 
     /**
@@ -85,7 +85,7 @@ export class MonthlyOverviewPartHolder {
         * @returns {number} the time when fade out starts
     */
     getOutStart() {
-        return this.#outStart.length;
+        return this.#outStart;
     }
 
     /**
@@ -146,28 +146,56 @@ export class MonthlyOverviewPartHolder {
         * @param {Array<*>} usableSpace - usable space for the texts
         * @returns {Array<VideoElement>} the time when fade out starts
     */
-    /* TODO _final document parameters */
-    getAllVideoElements({
+    /* DOC */
+    createRowsVideoObjectsAndReturnDynamicStyles({
         usableSpace,
         eventFadeInDelay = 0,
         eventFadeOutDelay = 0,
+        dynamicStyles = this.#calculateDynamicStyles({ usableSpace: usableSpace })
     }) {
         let currentRowFadeInStart = this.#inStart;
         let currentRowFadeOutStart = this.#outStart;
-        let currentRowYPosition = 0;
 
-        return this.#rows.flatMap(eventRow => {
-            const videoElements = eventRow.getVideoElements({
+        this.#rows.forEach(eventRow => {
+            eventRow.createVideoObjects({
                 parentId: this.id,
-                currentYPosition: currentRowYPosition,
                 timeInStart: currentRowFadeInStart,
                 timeOutStart: currentRowFadeOutStart,
-                dynamicStyles: this.#calculateDynamicStyles({ usableSpace: usableSpace })
+                dynamicStyles: dynamicStyles
             });
 
             currentRowFadeInStart += eventFadeInDelay;
             currentRowFadeOutStart += eventFadeOutDelay;
-            return videoElements
         });
+
+        return dynamicStyles;
+    }
+
+    /**
+        * Get the css for html template, including all its rows
+        * @param {number} time - time for calculations based on keyframes
+        * @returns {string} The css of the element
+    */
+    getStyles(time) {
+        return `
+            ${super.getStyles({
+                time: time,
+                additionalStyles: `
+                    display: flex;
+                    justify-content: center;
+                    flex-direction: column;
+                    height:100%;
+                `})
+            }
+            ${this.#rows.map(eventRow => eventRow.getStyles(time)).join('')}
+        `
+    }
+
+    /**
+        * Get the parts html code, including all its rows
+        * @returns {string} The html code to be used in video generator template
+    */
+    getHtml() {
+        return `<div id="${super.getId()}">${this.#rows.map(eventRow => eventRow.getHtml()).join('')}</div>`;
     }
 }

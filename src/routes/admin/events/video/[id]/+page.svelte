@@ -221,7 +221,7 @@
 	ʕ•ᴥ•ʔ (generuju, sorry, trvá mi to, vydrž pls)
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
-	<!-- TODO rew same -->
+	<!-- MERGE rewrite-->
 {:else}
 		<a href="/dynamic/generator/video.mp4" target="_blank" download="video.mp4">stáhnout video</a><br />
 		<!-- svelte-ignore a11y-media-has-caption -->

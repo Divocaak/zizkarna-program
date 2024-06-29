@@ -17,7 +17,7 @@ export async function renderTemplate({
     outputDimensions = { w: 1080, h: 1920 },
     scalingFactor = { w: 1, h: 1 },
     padding = PaddingElement({ x: 0, y: 0 }),
-    onlyStaticMiddleFrame = false,
+    overviewPoster = false,
     videoElements = [],
     additionalInnerContainerStyles = ""
 }) {
@@ -29,13 +29,15 @@ export async function renderTemplate({
         await fs.promises.mkdir(path, { recursive: true });
     }
 
-    const logo = "./vidGenAssets/logo_transparent.png";
+    // duration value is a4 or b0 (posters from overviewGenerators)
+    if( typeof duration === 'string') duration = 2;
+
     const gradients = [];
     let gradientMiddleTimeOffset = -2;
     for (let i = 0; i < 4; i++) {
-        const sizeFactor = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
-        const gradW = 512 * sizeFactor * scalingFactor.w;
-        const gradH = 384 * sizeFactor * scalingFactor.h;
+        const sizeFactor = Math.floor(Math.random() * (2 - 1 + 1)) + 1;
+        const gradW = outputDimensions.w * sizeFactor;
+        const gradH = outputDimensions.h * sizeFactor;
         const posStart = ImageVideoElement.getImagePositionInRange(gradW, gradH, outputDimensions.w, outputDimensions.h);
         const posMid = ImageVideoElement.getImagePositionInRange(gradW, gradH, outputDimensions.w, outputDimensions.h);
         const posEnd = ImageVideoElement.getImagePositionInRange(gradW, gradH, outputDimensions.w, outputDimensions.h);
@@ -62,6 +64,22 @@ export async function renderTemplate({
 
     // NOTE _perfornance mby call getHtml only once and save to var, then reuse?
 
+    if (overviewPoster) {
+        const html = getHtml({
+            time: 1,
+            outputDimensions: outputDimensions,
+            gradients: gradients,
+            padding: padding,
+            videoElements: videoElements,
+            additionalInnerContainerStyles: additionalInnerContainerStyles
+        });
+
+        if (onlyFrame) return html;
+
+        renderFrame({ html: html });
+        return `${outputPath}/output.jpg`;
+    }
+
     // not null, which means that a number of wanted test frame is passed
     if (onlyFrame !== null) {
         return getHtml({
@@ -72,23 +90,6 @@ export async function renderTemplate({
             videoElements: videoElements,
             additionalInnerContainerStyles: additionalInnerContainerStyles
         });
-    }
-
-    // TODO rename to somethign like "all data at once" to use for monthly overview for posters
-    if (onlyStaticMiddleFrame) {
-        // test frame and/or static poster
-        // return
-        renderFrame({
-            html: getHtml({
-                time: 1,
-                outputDimensions: outputDimensions,
-                gradients: gradients,
-                padding: padding,
-                videoElements: videoElements,
-                additionalInnerContainerStyles: additionalInnerContainerStyles
-            })
-        });
-        return `${outputPath}/output.jpg`;
     }
 
     const imageBuffers = await generateImages({
@@ -196,7 +197,7 @@ function getHtml({
     videoElements.forEach(element => {
         if (element === null) return;
         elementStyles += `${element.getStyles(time)}\n`;
-        
+
         if (element instanceof ImageVideoElement) {
             elementHtmlImgs += `${element.getHtml()}\n`;
             return;
@@ -225,7 +226,6 @@ function getHtml({
                             position: absolute;
                             width: ${outputDimensions.w}px;
                             height: ${outputDimensions.h}px;
-                            overflow-x: hidden;
                         }
                     
                         .bg-holder, .noise{

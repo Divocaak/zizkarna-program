@@ -7,7 +7,29 @@ import { LineVideoElement } from "$lib/classes/video/monthlyOverview/lineVideoEl
     * with all necessary data to create video elements
     * @class
 */
-export class MonthlyOverviewEventRow {
+export class MonthlyOverviewEventRow extends VideoElement {
+
+    /**
+        * Video Element of the line object
+        * @type {LineVideoElement}
+        * @private
+    */
+    #lineVideoObject;
+
+    /**
+        * Video Element of the label object
+        * @type {TextVideoElement}
+        * @private
+    */
+    #labelVideoObject;
+
+    /**
+        * Video Element of the date object
+        * @type {TextVideoElement}
+        * @private
+    */
+    #dateVideoObject;
+
     /**
         * Create a texts holder
         * @param {string} id - id of elements for linking styles with html elements
@@ -29,14 +51,15 @@ export class MonthlyOverviewEventRow {
         isFirst = false,
         isLast = false
     }) {
-        this.id = id
+        super({ id });
         this.label = label;
         this.isStatic = isStatic;
         this.userWantsToDimPast = userWantsToDimPast;
         this.isFirst = isFirst;
         this.isLast = isLast;
 
-        const dateLocalised = new Date(date).toLocaleDateString('cs-CZ', {
+        this.date = new Date(date);
+        const dateLocalised = this.date.toLocaleDateString('cs-CZ', {
             month: 'numeric',
             day: 'numeric',
             weekday: 'long'
@@ -95,7 +118,7 @@ export class MonthlyOverviewEventRow {
             outEnd: outStart + delay + length,
         });
 
-        var lineTimes = null
+        var lineTimes = null;
         if (!this.isFirst) lineTimes = createTimes(inputInStart, inputOutStart, lineDelay, lineAnimationLength);
 
         return {
@@ -113,7 +136,9 @@ export class MonthlyOverviewEventRow {
         * @param {{date: {fontSize: number, padding: number}, labe: {fontSize: number, padding: number}, topLineLineWidth: number}} dynamicStyles - padding and height for dates and labels and top lines line width
         * @returns {Array<VideoElement>} - array of ready to use VideoElements
     */
-    getVideoElements({
+    /* DOC  */
+    /* TODO rework ids */
+    createVideoObjects({
         parentId,
         timeInStart = 0,
         timeOutStart = 0,
@@ -148,14 +173,30 @@ export class MonthlyOverviewEventRow {
                 { time: times.date.outStart, value: 0 },
                 { time: times.date.outEnd, value: -1000 }
             ];
+
+            /* console.log(`\n\n+ ${this.label}, ${this.dateText}`);
+            if (!this.isFirst) {
+                lineW.forEach((keyframe) => {
+                    console.log(`| line: ${keyframe.time} - ${keyframe.value}`);
+                });
+            }
+            console.log(`+------------------------------------`);
+            labelX.forEach((keyframe) => {
+                console.log(`| label: ${keyframe.time} - ${keyframe.value}`);
+            });
+            console.log(`+------------------------------------`);
+            dateX.forEach((keyframe) => {
+                console.log(`| date: ${keyframe.time} - ${keyframe.value}`);
+            });
+            console.log(`+------------------------------------`); */
         }
 
         let labelStyles = "position: relative;";
         if (!this.isLast) labelStyles += `padding-bottom: ${dynamicStyles.label.padding}px !important;`;
 
-        const toRet = [
+        this.#dateVideoObject =
             new TextVideoElement({
-                id: `${parentId}-date-${this.id}`,
+                id: `${parentId}-date-${super.getId()}`,
                 content: this.dateText,
                 fontName: "Karla Regular",
                 fontSizePx: dynamicStyles.date.fontSize,
@@ -167,31 +208,51 @@ export class MonthlyOverviewEventRow {
                     position: relative;
                     padding-bottom: ${dynamicStyles.date.padding}px !important;
                 `
-            }),
-            new TextVideoElement({
-                id: `${parentId}-label-${this.id}`,
-                content: this.label,
-                fontName: "Neue Machina Regular",
-                fontSizePx: dynamicStyles.label.fontSize,
-                fontColor: color,
-                textAlign: "left",
-                easing: !this.isStatic ? "inOutBack" : null,
-                posX: labelX,
-                styles: labelStyles
-            })
-        ];
+            });
+
+        this.#labelVideoObject = new TextVideoElement({
+            id: `${parentId}-label-${super.getId()}`,
+            content: this.label,
+            fontName: "Neue Machina Regular",
+            fontSizePx: dynamicStyles.label.fontSize,
+            fontColor: color,
+            textAlign: "left",
+            easing: !this.isStatic ? "inOutBack" : null,
+            posX: labelX,
+            styles: labelStyles
+        });
 
         if (!this.isFirst) {
-            toRet.unshift(
-                new LineVideoElement({
-                    id: `${parentId}-line-${this.id}`,
-                    posX: 0,
-                    width: lineW,
-                    height: dynamicStyles.topLineLineWidth,
-                    color: color
-                }));
+            this.#lineVideoObject = new LineVideoElement({
+                id: `${parentId}-line-${super.getId()}`,
+                posX: 0,
+                width: lineW,
+                height: dynamicStyles.topLineLineWidth,
+                color: color
+            });
         }
+    }
 
+    /**
+        * Get the css for html template, including all rows elements
+        * @param {number} time - time for calculations based on keyframes
+        * @returns {string} The css of the element
+    */
+    getStyles(time) {
+        let toRet = !this.isFirst ? this.#lineVideoObject.getStyles(time) : "";
+        toRet += this.#dateVideoObject.getStyles(time);
+        toRet += this.#labelVideoObject.getStyles(time);
+        return toRet;
+    }
+
+    /**
+        * Get the rows html code, including all its elements
+        * @returns {string} The html code to be used in video generator template
+    */
+    getHtml() {
+        let toRet = !this.isFirst ? this.#lineVideoObject.getHtml() : "";
+        toRet += this.#dateVideoObject.getHtml();
+        toRet += this.#labelVideoObject.getHtml();
         return toRet;
     }
 }

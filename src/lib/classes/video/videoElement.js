@@ -63,7 +63,7 @@ export class VideoElement {
 
     #getYInTime(time) { return Array.isArray(this.posY) ? this.#interpolateKeyframes({ keyframes: this.posY, time: time, easing: this.easing }) : this.posY; }
     
-    getWidthInTime(time, width) { return Array.isArray(this.width) ? this.#interpolateKeyframes({ keyframes: this.width, time: time, easing: this.easing }) : this.width; }
+    getWidthInTime(time) { return Array.isArray(this.width) ? this.#interpolateKeyframes({ keyframes: this.width, time: time, easing: this.easing }) : this.width; }
 
     #interpolateKeyframes({ keyframes = [], time = 0, easing = null }) {
 
@@ -80,7 +80,6 @@ export class VideoElement {
 
         const keyframe1 = keyframes[index];
         const keyframe2 = keyframes[index + 1];
-
         let t = (time - keyframe1.time) / (keyframe2.time - keyframe1.time);
         if (easing === "inOutBack") t = this.#easeInOutBack(t);
         else if (easing === "inOutQuint") t = this.#easeInOutQuint(t);

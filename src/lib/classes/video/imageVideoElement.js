@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { VideoElement } from "$lib/classes/video/videoElement.js"
 
+/* REFACTOR create gradient object */
 /**
     * Represents a video element of type image
     * @class
@@ -69,7 +70,7 @@ export class ImageVideoElement extends VideoElement {
                 width: ${this.#getWPx()}px;
                 height: ${this.#getHPx()}px;
                 background-image: url('${super.getContent()}');
-                background-size: cover;
+                background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
                 border: 1px solid cyan;

@@ -40,7 +40,7 @@ export class LineVideoElement extends VideoElement {
             time: time,
             additionalStyles: `
                 background-color: ${this.color};
-                width: ${super.getWidthInTime(time, this.width)}%;
+                width: ${super.getWidthInTime(time)}%;
                 height: ${this.height}px;
                 position: relative;
             `

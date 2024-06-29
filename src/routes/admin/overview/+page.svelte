@@ -7,25 +7,11 @@
 	const isOfflineMedium = writable(false);
 	const changeOutputMediumPoster = (newVal) => isOfflineMedium.set(newVal);
 
-	/* const now = new Date();
-	const currentYear = now.getFullYear();
-	const currentMonth = ('0' + (now.getMonth() + 1)).slice(-2);
-	const currentWeek = now.getFullYear() + '-W' + getWeekNumber(now).toString().padStart(2, '0'); */
-
-	function getWeekNumber(d) {
-		d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-		d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-		var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-		var weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-		return weekNo;
-	}
-
 	const testFrame = writable(false);
 	const changeTestFrame = () => testFrame.set(!$testFrame);
 
 	const formData = writable({
 		outputRange: 'month',
-		/* TODO _final default value */
 		selectedDate: undefined,
 		outputMediumOrVidLength: '8',
 		dimPastEvents: true,
@@ -55,21 +41,20 @@
 						.toUpperCase()
 				: 'TENTO TÝDEN';
 
+			const isPoster =
+				$formData.outputMediumOrVidLength == 'a4' || $formData.outputMediumOrVidLength == 'b0';
+
 			const requestPath = '/api/videoGenerators/overviews/';
-			// NOTE _final delete unsupported keys when done
 			const requestBody = {
 				testFrame: $testFrame ? $formData.testFrameNumber : null,
 				outputMediumOrVidLength: $formData.outputMediumOrVidLength,
-				dimPastEvents: $formData.dimPastEvents,
-				splitForTwoSections: $formData.splitForTwoSections,
+				dimPastEvents: isPoster ? false : $formData.dimPastEvents,
+				splitForTwoSections: isPoster ? false : $formData.splitForTwoSections,
 				events: eventsData,
 				label: label,
 				outputRange: $formData.outputRange,
-				// duration: formData.outputDuration,
+				isPoster: isPoster
 			};
-
-			// TODO _final test all options
-			console.log(requestBody);
 
 			if ($testFrame) {
 				window.open(
@@ -239,7 +224,7 @@
 	</label><br />
 	{#if $testFrame}
 		<label for="testFrameNumber">
-			TODO _final write default times
+			NOTE write default times
 			<input
 				type="number"
 				step="0.1"
@@ -257,6 +242,7 @@
 	ʕ•ᴥ•ʔ (generuju, sorry, trvá mi to, vydrž pls)
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
+	<!-- MERGE rewrite -->
 {:else}
 	<!-- prettier-ignore -->
 	{#if $isImage === null}
