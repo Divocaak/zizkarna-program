@@ -30,7 +30,7 @@ export async function POST({ request }) {
             ? new PaddingElement({ x: 178, y: 178 }) // a4
             : new PaddingElement({ x: 590, y: 590 }); // b0
 
-    const usableDimensions = {
+    const usableSpace = {
         w: outputDimensions.w - (padding.getX() * scalingFactor.w),
         h: outputDimensions.h - (padding.getY() * scalingFactor.h)
     }
@@ -85,7 +85,6 @@ export async function POST({ request }) {
             textParts: textParts,
             outputDimensions: outputDimensions,
             padding: padding,
-            usableDimensions: usableDimensions,
             labelFontSize: labelFontSize
         }),
         additionalInnerContainerStyles: `
@@ -99,17 +98,12 @@ export async function POST({ request }) {
     }, { status: 200 }));
 }
 
-const videoElements = ({ data, scaleFactor, twoSections, textParts, outputDimensions, padding, usableDimensions, labelFontSize }) => {
+const videoElements = ({ data, scaleFactor, twoSections, textParts, outputDimensions, padding, labelFontSize }) => {
     const logoScale = 150
     const logoW = logoScale * scaleFactor.w;
     const logoH = logoScale * scaleFactor.h;
 
-    const dynamicStyles = textParts.first.createRowsVideoObjectsAndReturnDynamicStyles({
-        usableSpace: usableDimensions,
-        eventFadeInDelay: 0,
-        eventFadeOutDelay: 0
-    });
-
+    const dynamicStyles = textParts.first.createPartVideoObjects({ eventFadeInDelay: 0, eventFadeOutDelay: 0 });
     const toRet = [
         new ImageVideoElement({
             id: "zz-logo",
@@ -133,8 +127,7 @@ const videoElements = ({ data, scaleFactor, twoSections, textParts, outputDimens
     ];
 
     if (twoSections) {
-        textParts.second.createRowsVideoObjectsAndReturnDynamicStyles({
-            usableSpace: usableDimensions,
+        textParts.second.createPartVideoObjects({
             eventFadeInDelay: 0,
             eventFadeOutDelay: 0,
             dynamicStyles: dynamicStyles
@@ -144,3 +137,5 @@ const videoElements = ({ data, scaleFactor, twoSections, textParts, outputDimens
 
     return toRet;
 };
+
+/* TODO remove usableSpace where not needed */

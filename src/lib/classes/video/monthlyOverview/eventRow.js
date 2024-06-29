@@ -1,6 +1,8 @@
 import { TextVideoElement } from "$lib/classes/video/textVideoElement";
 import { VideoElement } from "$lib/classes/video/videoElement";
 import { LineVideoElement } from "$lib/classes/video/monthlyOverview/lineVideoElement";
+/* TODO imports */
+import { TextDynamicStyles } from "./dynamicStyles/textDynamicStyles";
 
 /**
     * Represents a holder for single event, date + presale and line
@@ -70,33 +72,31 @@ export class MonthlyOverviewEventRow extends VideoElement {
 
     /**
         * Calculates rows total height with default font sizes and padding
-        * @param {number} labelFontSize - default label font size
-        * @param {number} dateFontSize - default date font size
-        * @param {number} labelPadding - default label padding
-        * @param {number} datePadding - default date padding
+        * @param {TextDynamicStyles} labelDynamicStyles - label dynamic styles
+        * @param {TextDynamicStyles} dateDynamicStyles - date dynamic styles
         * @param {number} usableWidth - width to fit object into
         * @param {number} lineHeight - line height ratio
         * @returns {number} - rows default height
     */
-    calculateRowHeight({ labelFontSize, dateFontSize, labelPadding, datePadding, usableWidth, lineHeight }) {
+   /* DOC */
+    calculateRowHeight({ labelDynamicStyles, dateDynamicStyles, usableWidth, lineHeight }) {
         return {
-            labelHeight: this.#calculateElementHeight(this.label, labelFontSize, labelPadding, usableWidth, lineHeight),
-            dateHeight: this.#calculateElementHeight(this.dateText, dateFontSize, datePadding, usableWidth, lineHeight)
+            labelHeight: this.#calculateElementHeight(this.label, labelDynamicStyles, usableWidth, lineHeight),
+            dateHeight: this.#calculateElementHeight(this.dateText, dateDynamicStyles, usableWidth, lineHeight)
         };
     }
 
     /**
         * Calculates elements height
         * @param {string} text - text to compute
-        * @param {number} fontSize - fontSize to calculate with
-        * @param {number} padding - assigned padding
+        * @param {TextDynamicStyles} elementStyles - elements computed styles
         * @param {number} containerWidth - width to fit object into
         * @param {number} lineHeightRatio - line height ratio
         * @returns {number} - elements height
     */
-    #calculateElementHeight(text, fontSize, padding, containerWidth, lineHeightRatio) {
-        const lines = Math.ceil(text.length / (containerWidth / (fontSize / 2)));
-        return lines * fontSize * lineHeightRatio + padding;
+    #calculateElementHeight(text, elementStyles, containerWidth, lineHeightRatio) {
+        const lines = Math.ceil(text.length / (containerWidth / (elementStyles.fontSize / 2)));
+        return lines * elementStyles.fontSize * lineHeightRatio + elementStyles.padding;
     }
 
     /**

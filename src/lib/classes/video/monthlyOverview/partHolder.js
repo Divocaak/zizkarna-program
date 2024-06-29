@@ -1,5 +1,8 @@
 import { MonthlyOverviewEventRow } from "$lib/classes/video/monthlyOverview/eventRow.js";
+/* TODO imports */
 import { VideoElement } from "../videoElement";
+import { RowDynamicStyles } from "./dynamicStyles/rowDynamicStyles";
+import { TextDynamicStyles } from "./dynamicStyles/textDynamicStyles";
 
 /**
     * Represents a holder for half/all texts in monthly overview
@@ -28,24 +31,26 @@ export class MonthlyOverviewPartHolder extends VideoElement {
     */
     #outStart;
 
+    /* DOC */
+    #dynamicStyles
+
     /**
         * Create a texts holder
         * variables are meant to be assigned only through set methods
         * @param {string} id - id of part holder to distinguish parts from each other
     */
-    constructor({ id }) {
+    /* DOC */
+    /* TODO get rows count in foreach method when pushing new row content */
+    constructor({ id, usableSpace, rowsCount }) {
         super({ id });
         this.#rows = [];
         this.#inStart = 0;
         this.#outStart = 0;
-    }
 
-    /**
-        * Pushes new row to rows
-        * @param {MonthlyOverviewEventRow} newRow - row to be pushed
-    */
-    pushRow(newRow) {
-        this.#rows.push(newRow);
+        this.#dynamicStyles = new RowDynamicStyles({
+            usableSpace: usableSpace,
+            rowsCount: rowsCount
+        });
     }
 
     /**
@@ -89,56 +94,31 @@ export class MonthlyOverviewPartHolder extends VideoElement {
     }
 
     /**
+        * Pushes new row to rows
         * Calculates the padding and font sizes for dates and labels and top lines line width
         * @param {Array<*>} usableSpace - usable space for the texts
-        * @returns {{date: {fontSize: number, padding: number}, labe: {fontSize: number, padding: number}, topLineLineWidth: number}} final dimensions for dates and labels padding and font size and top lines line width
+        * @param {MonthlyOverviewEventRow} newRow - row to be pushed
     */
-    #calculateDynamicStyles({ usableSpace }) {
-        const minPadding = 10;
-        const maxPadding = 200;
+    /* DOC */
+    pushRow({ newRow, isSecondPart, isLast }) {
+        // second part will inherit dynamic styles from first part
+        if(isSecondPart){
+            this.#rows.push(newRow);
+            return;
+        }
 
-        const topLineDefaultLineWidth = 5;
-        const topLineMinLineWidth = 1;
-        const topLineMaxLineWidth = 3;
-
-        const ratios = { dateFontSize: .7, datePadding: 0.5, lineHeight: 1.2 };
-        const availableHeightPerElement = usableSpace.h / this.getRowsCount();
-
-        let maxLabelHeight = 0;
-        let labelFontSize = availableHeightPerElement / (1 + ratios.lineHeight);
-        let labelPadding = Math.max(minPadding, Math.min(availableHeightPerElement * 0.1, maxPadding));
-
-        let maxDateHeight = 0;
-        let dateFontSize = labelFontSize * ratios.dateFontSize;
-        let datePadding = labelPadding * ratios.datePadding;
-
-        this.#rows.forEach(row => {
-            const values = row.calculateRowHeight({
-                labelFontSize: labelFontSize,
-                dateFontSize: dateFontSize,
-                labelPadding: labelPadding,
-                datePadding: datePadding,
-                usableWidth: usableSpace.w,
-                lineHeight: ratios.lineHeight
-            });
-            maxLabelHeight = Math.max(maxLabelHeight, values.labelHeight);
-            maxDateHeight = Math.max(maxDateHeight, values.dateHeight);
+        const values = newRow.calculateRowHeight({
+            labelDynamicStyles: this.#dynamicStyles.getTextStyle("label"),
+            dateDynamicStyles: this.#dynamicStyles.getTextStyle("date"),
+            usableWidth: this.usableSpace.w,
+            lineHeight: ratios.lineHeight
         });
-
-        const maxHeight = Math.max(maxLabelHeight, maxDateHeight);
-        const scaleRatio = maxHeight > availableHeightPerElement ? availableHeightPerElement / maxHeight : 1;
-        labelFontSize *= scaleRatio;
-        dateFontSize *= scaleRatio;
-        labelPadding = Math.min(labelPadding/*  * scaleRatio */, maxPadding);
-        datePadding = Math.min(datePadding/*  * scaleRatio */, maxPadding);
-
-        const topLineLineWidth = Math.max(topLineMinLineWidth, Math.min(topLineMaxLineWidth, (topLineDefaultLineWidth * scaleRatio)));
-
-        return {
-            date: { fontSize: dateFontSize, padding: datePadding },
-            label: { fontSize: labelFontSize, padding: labelPadding },
-            topLineLineWidth: topLineLineWidth
-        };
+        this.#dynamicStyles.updateToGreaterHeight("date", values.dateHeight)
+        this.#dynamicStyles.updateToGreaterHeight("label", values.labelHeight)
+        
+        this.#rows.push(newRow);
+        
+        if (isLast) this.#dynamicStyles.finalizeProperties();
     }
 
     /** 
@@ -147,11 +127,10 @@ export class MonthlyOverviewPartHolder extends VideoElement {
         * @returns {Array<VideoElement>} the time when fade out starts
     */
     /* DOC */
-    createRowsVideoObjectsAndReturnDynamicStyles({
-        usableSpace,
+    createPartVideoObjects({
         eventFadeInDelay = 0,
         eventFadeOutDelay = 0,
-        dynamicStyles = this.#calculateDynamicStyles({ usableSpace: usableSpace })
+        dynamicStyles = this.#dynamicStyles
     }) {
         let currentRowFadeInStart = this.#inStart;
         let currentRowFadeOutStart = this.#outStart;
@@ -179,8 +158,8 @@ export class MonthlyOverviewPartHolder extends VideoElement {
     getStyles(time) {
         return `
             ${super.getStyles({
-                time: time,
-                additionalStyles: `
+            time: time,
+            additionalStyles: `
                     display: flex;
                     justify-content: center;
                     flex-direction: column;
@@ -188,7 +167,7 @@ export class MonthlyOverviewPartHolder extends VideoElement {
                 `})
             }
             ${this.#rows.map(eventRow => eventRow.getStyles(time)).join('')}
-        `
+        `;
     }
 
     /**
