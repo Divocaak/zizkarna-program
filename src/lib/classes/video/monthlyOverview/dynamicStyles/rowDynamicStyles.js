@@ -156,4 +156,12 @@ export class RowDynamicStyles {
     getTopLineLineWidth() {
         return this.#line.getLineWidth();
     }
+
+    /**
+        * Get usableSpace for elements
+        * @returns {{h: number, w: number}} usable spaces for elements
+    */
+    getUsableSpace() {
+        return this.#usableSpace;
+    }
 }

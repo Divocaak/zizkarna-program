@@ -18,6 +18,7 @@
 ## opraveno
 - fonty u videogenerátorů
 - padding-y u generovaných videí formátu ig story
+- paddingy měsíčních přehledů se určijí podle výstupního formátu (b0, a4, videa)
 
 
 # 13. 5. 25

@@ -97,26 +97,20 @@ export class MonthlyOverviewEventRow extends VideoElement {
         };
     }
 
-    /**
-        * returns array of complete VideoElements
-        * @param {string} parentId - id prefix of partHolder (to recoginse two parts from each other)
-        * @param {number} timeInStart - current rows fadeInStart
-        * @param {number} timeOutStart - current rows fadeOutStart
-        * @param {{date: {fontSize: number, padding: number}, labe: {fontSize: number, padding: number}, topLineLineWidth: number}} dynamicStyles - padding and height for dates and labels and top lines line width
-        * @returns {Array<VideoElement>} - array of ready to use VideoElements
-    */
     /** 
         * Creates the VideoObjects of this row
-        * @param {number} timeInStart - ???
-        * @param {number} timeOutStart - ???
-        * @param {RowDynamicStyles} dynamicStyles - DynamicStyles to use
-    */
-    /* DOC times */
+         * @param {string} parentId - id prefix of partHolder (to recoginse two parts from each other)
+         * @param {number} timeInStart - row animation in start time
+         * @param {number} timeOutStart - row animation out start time
+         * @param {RowDynamicStyles} dynamicStyles - DynamicStyles to use
+         * @param {number} outputWidth - canvases width
+     */
     createVideoObjects({
         parentId,
         timeInStart = 0,
         timeOutStart = 0,
-        dynamicStyles
+        dynamicStyles,
+        outputWidth
     }) {
         const color = (this.date < new Date() && this.userWantsToDimPast) ? "#7f7f7f" : "#d4d4d4";
 
@@ -136,19 +130,19 @@ export class MonthlyOverviewEventRow extends VideoElement {
             }
 
             labelX = [
-                { time: times.label.inStart, value: 1300 },
+                { time: times.label.inStart, value: outputWidth },
                 { time: times.label.inEnd, value: 0 },
                 { time: times.label.outStart, value: 0 },
                 { time: times.label.outEnd, value: -1000 },
             ];
             dateX = [
-                { time: times.date.inStart, value: 1300 },
+                { time: times.date.inStart, value: outputWidth },
                 { time: times.date.inEnd, value: 0 },
                 { time: times.date.outStart, value: 0 },
                 { time: times.date.outEnd, value: -1000 }
             ];
 
-            /* console.log(`\n\n+ ${this.label}, ${this.dateText}`);
+            console.log(`\n\n+ ${this.label}, ${this.dateText}`);
             if (!this.isFirst) {
                 lineW.forEach((keyframe) => {
                     console.log(`| line: ${keyframe.time} - ${keyframe.value}`);
@@ -162,7 +156,7 @@ export class MonthlyOverviewEventRow extends VideoElement {
             dateX.forEach((keyframe) => {
                 console.log(`| date: ${keyframe.time} - ${keyframe.value}`);
             });
-            console.log(`+------------------------------------`); */
+            console.log(`+------------------------------------`);
         }
 
         let labelStyles = "position: relative;";

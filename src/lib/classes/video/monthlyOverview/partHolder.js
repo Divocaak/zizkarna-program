@@ -131,16 +131,17 @@ export class MonthlyOverviewPartHolder extends VideoElement {
     /** 
         * Creates the VideoObjects for all rows in this part
         * Returns DynamicStyles used for this part to be reused in another part
-        * @param {number} eventFadeInDelay - ???
-        * @param {number} eventFadeOutDelay - ???
+        * @param {number} eventFadeInDelay - i + 1 row fade in delay according to row i
+        * @param {number} eventFadeOutDelay - i + 1 row fade out delay according to row i
         * @param {RowDynamicStyles} dynamicStyles - DynamicStyles to use for this part (use this parameter in second part)
+        * @param {number} outputWidth - canvases width
         * @returns {RowDynamicStyles} DynamicStyles used for this part
     */
-    /* DOC times */
     createPartVideoObjects({
         eventFadeInDelay = 0,
         eventFadeOutDelay = 0,
-        dynamicStyles = this.#dynamicStyles
+        dynamicStyles = this.#dynamicStyles,
+        outputWidth
     }) {
         let currentRowFadeInStart = this.#inStart;
         let currentRowFadeOutStart = this.#outStart;
@@ -150,7 +151,8 @@ export class MonthlyOverviewPartHolder extends VideoElement {
                 parentId: this.id,
                 timeInStart: currentRowFadeInStart,
                 timeOutStart: currentRowFadeOutStart,
-                dynamicStyles: dynamicStyles
+                dynamicStyles: dynamicStyles,
+                outputWidth: outputWidth
             });
 
             currentRowFadeInStart += eventFadeInDelay;

@@ -1,7 +1,6 @@
 import fs from 'fs';
 import { VideoElement } from "$lib/classes/video/videoElement.js"
 
-/* REFACTOR create gradient object */
 /**
     * Represents a video element of type image
     * @class

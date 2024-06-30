@@ -54,7 +54,7 @@ export async function POST({ request }) {
     };
     data.events.forEach((eventData, index) => {
         const { date, label, tickets } = eventData;
-        
+
         const textPart = !twoSections || (index < finalMiddleIndex && twoSections) ? textParts.first : textParts.second;
 
         const isLast = index === data.events.length - 1 || (twoSections && index === finalMiddleIndex - 1);
@@ -94,13 +94,13 @@ export async function POST({ request }) {
         padding: padding,
         overviewPoster: data.isPoster,
         videoElements: videoElements({
-            data: data,
+            label: data.label,
+            labelFontSize: labelFontSize,
             scaleFactor: scalingFactor,
             twoSections: twoSections,
             textParts: textParts,
             outputDimensions: outputDimensions,
             padding: padding,
-            labelFontSize: labelFontSize
         }),
         additionalInnerContainerStyles: `
             padding-top: ${labelFontSize}px;
@@ -113,14 +113,26 @@ export async function POST({ request }) {
     }, { status: 200 }));
 }
 
-const videoElements = ({ data, scaleFactor, twoSections, textParts, outputDimensions, padding, labelFontSize }) => {
+const videoElements = ({
+    label,
+    labelFontSize,
+    scaleFactor,
+    twoSections,
+    textParts,
+    outputDimensions,
+    padding,
+}) => {
     const logoScale = 150
     const logoW = logoScale * scaleFactor.w;
     const logoH = logoScale * scaleFactor.h;
 
+    const eventFadeInDelay = .25;
+    const eventFadeOutDelay = .1;
+    const outputWidth = outputDimensions.w - padding.x;
     const dynamicStyles = textParts.first.createPartVideoObjects({
-        eventFadeInDelay: .1,
-        eventFadeOutDelay: .1
+        eventFadeInDelay: eventFadeInDelay,
+        eventFadeOutDelay: eventFadeOutDelay,
+        outputWidth: outputWidth
     });
     const toRet = [
         new ImageVideoElement({
@@ -133,7 +145,7 @@ const videoElements = ({ data, scaleFactor, twoSections, textParts, outputDimens
         }),
         new TextVideoElement({
             id: "poster-label",
-            content: data.label,
+            content: label,
             posX: 0,
             posY: 0,
             fontName: "Neue Machina Regular",
@@ -146,8 +158,9 @@ const videoElements = ({ data, scaleFactor, twoSections, textParts, outputDimens
 
     if (twoSections) {
         textParts.second.createPartVideoObjects({
-            eventFadeInDelay: 0,
-            eventFadeOutDelay: 0,
+            eventFadeInDelay: eventFadeInDelay,
+            eventFadeOutDelay: eventFadeOutDelay,
+            outputWidth: outputWidth,
             dynamicStyles: dynamicStyles
         });
         toRet.push(textParts.second);
