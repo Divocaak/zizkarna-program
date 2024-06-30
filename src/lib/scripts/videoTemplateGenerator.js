@@ -6,16 +6,17 @@ import ffmpegStatic from 'ffmpeg-static';
 import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
 import { PassThrough } from 'stream';
 import { PaddingElement } from '$lib/classes/video/paddingHolder';
+import { Cluster } from 'puppeteer-cluster';
+import { puppeteerCore } from 'puppeteer-core';
 
 const outputPath = "dynamic/generator/";
 // NOTE _perfornance 30
-const frameRate = 1;
+const frameRate = 2;
 
 export async function renderTemplate({
     onlyFrame = null,
     duration,
     outputDimensions = { w: 1080, h: 1920 },
-    scalingFactor = { w: 1, h: 1 },
     padding = PaddingElement({ x: 0, y: 0 }),
     overviewPoster = false,
     videoElements = [],
@@ -30,8 +31,11 @@ export async function renderTemplate({
     }
 
     // duration value is a4 or b0 (posters from overviewGenerators)
-    if( typeof duration === 'string') duration = 2;
+    if (typeof duration === 'string') duration = 2;
 
+    console.log(`\n ${new Date()}`)
+    console.log(`frameRate: ${frameRate}, duration: ${duration}`);
+    console.time("gradients_creations");
     const gradients = [];
     let gradientMiddleTimeOffset = -2;
     for (let i = 0; i < 4; i++) {
@@ -61,6 +65,7 @@ export async function renderTemplate({
         }));
         gradientMiddleTimeOffset++;
     }
+    console.timeEnd("gradients_creations");
 
     // NOTE _perfornance mby call getHtml only once and save to var, then reuse?
 
@@ -97,11 +102,15 @@ export async function renderTemplate({
         outputDimensions: outputDimensions,
         gradients: gradients,
         padding: padding,
-        videoElements: videoElements
+        videoElements: videoElements,
+        additionalInnerContainerStyles: additionalInnerContainerStyles
     });
 
+    console.time("create_video_from_buffers");
     await createVideoFromBuffers(imageBuffers);
-    // return new Response(JSON.stringify({ path: "outputFile", format: "video" }, { status: 200 }));
+    console.timeEnd("create_video_from_buffers");
+    /* BUG path?? */
+    return new Response(JSON.stringify({ path: "outputFile", format: "video" }, { status: 200 }));
 }
 
 // NOTE _performance https://github.com/frinyvonnick/node-html-to-image/issues/80
@@ -111,21 +120,31 @@ const renderFrame = ({ html, isBufferFrame = false }) => nodeHtmlToImage({
     type: 'jpeg',
     quality: 80,
     encoding: isBufferFrame ? "buffer" : "binary",
-    output: isBufferFrame ? undefined : `${outputPath}output.jpg`
-    /* puppeteerArgs: {
-        // concurrency: Cluster.CONCURRENCY_CONTEXT,
-        maxConcurrency: 10,
-        puppeteerOptions: { args: [['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-accelerated-2d-canvas', '--no-first-run', '--no-zygote']] }
-    } */
+    output: isBufferFrame ? undefined : `${outputPath}output.jpg`,
+    puppeteer: puppeteerCore,
+    puppeteerArgs: {
+        concurrency: Cluster.CONCURRENCY_PAGE,
+        maxConcurrency: 4, // or higher if your system can handle it
+        args: [
+            '--headless',
+            '--disable-gpu',
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote'
+        ]
+    }
 });
 
-const generateImages = async ({ duration, outputDimensions, gradients, padding, videoElements }) => {
+const generateImages = async ({ duration, outputDimensions, gradients, padding, videoElements, additionalInnerContainerStyles }) => {
     const imageBuffers = [];
     const frameCount = Math.floor(duration * frameRate);
+    console.time("render_all_frames");
     for (let i = 0; i < frameCount; i++) {
-        console.time(`render frame ${i}`);
-
         const time = i / frameRate;
+        console.time(`+- render_frame_${i}`);
         const buffer = await renderFrame({
             html: getHtml({
                 time: time,
@@ -137,10 +156,12 @@ const generateImages = async ({ duration, outputDimensions, gradients, padding, 
             }),
             isBufferFrame: true
         });
+        console.timeEnd(`+- render_frame_${i}`);
+        console.log("\n");
 
         imageBuffers.push(buffer);
-        console.timeEnd(`render frame ${i}`);
     }
+    console.timeEnd("render_all_frames");
     return imageBuffers;
 };
 
@@ -184,13 +205,16 @@ function getHtml({
     videoElements = [],
     additionalInnerContainerStyles = ""
 }) {
+    console.time("+-- get_gradients_styles_and_html");
     let gradientsStyles = '';
     let gradientsHtml = '';
     gradients.forEach(gradient => {
         gradientsStyles += `${gradient.getGradientStyles(time)}\n`;
-        gradientsHtml += `${gradient.getHtml()}\n`;
+        //gradientsHtml += `${gradient.getHtml()}\n`;
     });
+    console.timeEnd("+-- get_gradients_styles_and_html");
 
+    console.time("+-- get_elements_styles_and_html");
     let elementStyles = '';
     let elementHtml = '';
     let elementHtmlImgs = "";
@@ -199,15 +223,20 @@ function getHtml({
         elementStyles += `${element.getStyles(time)}\n`;
 
         if (element instanceof ImageVideoElement) {
-            elementHtmlImgs += `${element.getHtml()}\n`;
+            //elementHtmlImgs += `${element.getHtml()}\n`;
             return;
         }
         elementHtml += `${element.getHtml()}\n`;
     });
+    console.timeEnd("+-- get_elements_styles_and_html");
+
+    console.time("+-- get_fonts_data");
     const fontDataNeue = font2base64.encodeToDataUrlSync('./vidGenAssets/neue.otf')
     const fontDataKarla = font2base64.encodeToDataUrlSync('./vidGenAssets/karla.ttf')
+    console.timeEnd("+-- get_fonts_data");
 
-    return `<html>
+    console.time("+-- create_html_code");
+    const html = `<html>
                 <head>
                     <style>
                         @font-face {
@@ -282,4 +311,7 @@ function getHtml({
                     </div>
                 </body>
             </html>`;
+
+    console.timeEnd("+-- create_html_code");
+    return html;
 }

@@ -90,7 +90,6 @@ export async function POST({ request }) {
         onlyFrame: data.testFrame,
         duration: outputMediumOrVidLength,
         outputDimensions: outputDimensions,
-        scalingFactor: scalingFactor,
         padding: padding,
         overviewPoster: data.isPoster,
         videoElements: videoElements({

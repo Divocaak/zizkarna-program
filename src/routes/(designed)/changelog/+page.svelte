@@ -14,6 +14,7 @@
 - gradienty ve video generátorech u kapel v rámci eventu
 - html stránka jako preview generovaného videa, frame skrz GET parametr
 - console log času renderování jednotlivých framů
+- GitHub repo odkaz na changelog stránce
 
 ## opraveno
 - fonty u videogenerátorů
@@ -335,5 +336,6 @@
 		content="Nejnovější aktualizace programu na jednom místě. Aby Tě žádná změna nepřekvapila"
 	/>
 </svelte:head>
-  
-  <SvelteMarkdown {source} />
+
+<a href="https://github.com/Divocaak/zizkarna-program" class="text-muted karla" target="_blank"><i class="bi bi-github pe-1"></i>GitHub repo</a>
+<SvelteMarkdown {source} />

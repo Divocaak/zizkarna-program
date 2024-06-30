@@ -141,22 +141,6 @@ export class MonthlyOverviewEventRow extends VideoElement {
                 { time: times.date.outStart, value: 0 },
                 { time: times.date.outEnd, value: -1000 }
             ];
-
-            console.log(`\n\n+ ${this.label}, ${this.dateText}`);
-            if (!this.isFirst) {
-                lineW.forEach((keyframe) => {
-                    console.log(`| line: ${keyframe.time} - ${keyframe.value}`);
-                });
-            }
-            console.log(`+------------------------------------`);
-            labelX.forEach((keyframe) => {
-                console.log(`| label: ${keyframe.time} - ${keyframe.value}`);
-            });
-            console.log(`+------------------------------------`);
-            dateX.forEach((keyframe) => {
-                console.log(`| date: ${keyframe.time} - ${keyframe.value}`);
-            });
-            console.log(`+------------------------------------`);
         }
 
         let labelStyles = "position: relative;";
