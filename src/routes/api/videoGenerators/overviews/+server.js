@@ -40,22 +40,37 @@ export async function POST({ request }) {
     const middleIndex = Math.floor(data.events.length / 2);
     const finalMiddleIndex = data.events.length % 2 === 0 ? middleIndex : middleIndex + 1;
     const textParts = {
-        first: new MonthlyOverviewPartHolder({ id: "first" }),
-        second: new MonthlyOverviewPartHolder({ id: "second" })
+        first: new MonthlyOverviewPartHolder({
+            id: "first",
+            usableSpace: usableSpace,
+            rowsCount: twoSections ? finalMiddleIndex : data.events.length
+        }),
+        second: new MonthlyOverviewPartHolder({
+            id: "second",
+            usableSpace: usableSpace,
+            rowsCount: data.events.length - finalMiddleIndex,
+            isSecondPart: true
+        })
     };
     data.events.forEach((eventData, index) => {
         const { date, label, tickets } = eventData;
+        
         const textPart = !twoSections || (index < finalMiddleIndex && twoSections) ? textParts.first : textParts.second;
-        textPart.pushRow(new MonthlyOverviewEventRow({
-            id: index,
-            label: label,
-            date: date,
-            tickets: tickets,
-            userWantsToDimPast: data.dimPastEvents,
-            isStatic: data.isPoster,
-            isFirst: index === 0 || (twoSections && index === finalMiddleIndex),
-            isLast: index === data.events.length - 1 || (twoSections && index === finalMiddleIndex - 1)
-        }));
+
+        const isLast = index === data.events.length - 1 || (twoSections && index === finalMiddleIndex - 1);
+        textPart.pushRow({
+            newRow: new MonthlyOverviewEventRow({
+                id: index,
+                label: label,
+                date: date,
+                tickets: tickets,
+                userWantsToDimPast: data.dimPastEvents,
+                isStatic: data.isPoster,
+                isFirst: index === 0 || (twoSections && index === finalMiddleIndex),
+                isLast: isLast
+            }),
+            isLast: isLast
+        });
     });
 
     // calculations only for video, which means taht outputMediumOrVidLength is vidLength
@@ -103,7 +118,10 @@ const videoElements = ({ data, scaleFactor, twoSections, textParts, outputDimens
     const logoW = logoScale * scaleFactor.w;
     const logoH = logoScale * scaleFactor.h;
 
-    const dynamicStyles = textParts.first.createPartVideoObjects({ eventFadeInDelay: 0, eventFadeOutDelay: 0 });
+    const dynamicStyles = textParts.first.createPartVideoObjects({
+        eventFadeInDelay: .1,
+        eventFadeOutDelay: .1
+    });
     const toRet = [
         new ImageVideoElement({
             id: "zz-logo",
@@ -137,5 +155,3 @@ const videoElements = ({ data, scaleFactor, twoSections, textParts, outputDimens
 
     return toRet;
 };
-
-/* TODO remove usableSpace where not needed */

@@ -1,8 +1,6 @@
 import { MonthlyOverviewEventRow } from "$lib/classes/video/monthlyOverview/eventRow.js";
-/* TODO imports */
-import { VideoElement } from "../videoElement";
-import { RowDynamicStyles } from "./dynamicStyles/rowDynamicStyles";
-import { TextDynamicStyles } from "./dynamicStyles/textDynamicStyles";
+import { VideoElement } from "$lib/classes/video/videoElement";
+import { RowDynamicStyles } from "$lib/classes/video/monthlyOverview/dynamicStyles/rowDynamicStyles";
 
 /**
     * Represents a holder for half/all texts in monthly overview
@@ -31,21 +29,39 @@ export class MonthlyOverviewPartHolder extends VideoElement {
     */
     #outStart;
 
-    /* DOC */
+    /**
+        * DynamicStyles holder for this part
+        * @type {RowDynamicStyles}
+        * @private
+    */
     #dynamicStyles
+
+    /**
+        * is this part the second part
+        * @type {boolean}
+        * @private
+    */
+    #isSecondPart
 
     /**
         * Create a texts holder
         * variables are meant to be assigned only through set methods
         * @param {string} id - id of part holder to distinguish parts from each other
+        * @param {{w: number, h: number}} usableSpace - computed usableSpace for this part, width and height
+        * @param {number} rowsCount - sum of rows count for this part
+        * @param {boolean} isSecondPart - is this part the second part (default false)
     */
-    /* DOC */
-    /* TODO get rows count in foreach method when pushing new row content */
-    constructor({ id, usableSpace, rowsCount }) {
+    constructor({
+        id,
+        usableSpace,
+        rowsCount,
+        isSecondPart = false
+    }) {
         super({ id });
         this.#rows = [];
         this.#inStart = 0;
         this.#outStart = 0;
+        this.#isSecondPart = isSecondPart;
 
         this.#dynamicStyles = new RowDynamicStyles({
             usableSpace: usableSpace,
@@ -94,39 +110,33 @@ export class MonthlyOverviewPartHolder extends VideoElement {
     }
 
     /**
-        * Pushes new row to rows
-        * Calculates the padding and font sizes for dates and labels and top lines line width
-        * @param {Array<*>} usableSpace - usable space for the texts
+        * Pushes new row to rows.
+        * Calculates the padding and font sizes for dates and labels and top lines line width.
+        * If this is the second part, only push newRow to rows and return, as the dynamic styles are inherited from first part (skip calculations)
         * @param {MonthlyOverviewEventRow} newRow - row to be pushed
+        * @param {boolean} isLast - is this row the last one, if so, finalize dynamic style properties
     */
-    /* DOC */
-    pushRow({ newRow, isSecondPart, isLast }) {
-        // second part will inherit dynamic styles from first part
-        if(isSecondPart){
+    pushRow({ newRow, isLast }) {
+        if (this.#isSecondPart) {
             this.#rows.push(newRow);
             return;
         }
 
-        const values = newRow.calculateRowHeight({
-            labelDynamicStyles: this.#dynamicStyles.getTextStyle("label"),
-            dateDynamicStyles: this.#dynamicStyles.getTextStyle("date"),
-            usableWidth: this.usableSpace.w,
-            lineHeight: ratios.lineHeight
-        });
-        this.#dynamicStyles.updateToGreaterHeight("date", values.dateHeight)
-        this.#dynamicStyles.updateToGreaterHeight("label", values.labelHeight)
-        
+        this.#dynamicStyles.calculateRowHeight({ date: newRow.dateText, label: newRow.label });
         this.#rows.push(newRow);
-        
+
         if (isLast) this.#dynamicStyles.finalizeProperties();
     }
 
     /** 
-        * returns array of ready to use video elements for all events in part
-        * @param {Array<*>} usableSpace - usable space for the texts
-        * @returns {Array<VideoElement>} the time when fade out starts
+        * Creates the VideoObjects for all rows in this part
+        * Returns DynamicStyles used for this part to be reused in another part
+        * @param {number} eventFadeInDelay - ???
+        * @param {number} eventFadeOutDelay - ???
+        * @param {RowDynamicStyles} dynamicStyles - DynamicStyles to use for this part (use this parameter in second part)
+        * @returns {RowDynamicStyles} DynamicStyles used for this part
     */
-    /* DOC */
+    /* DOC times */
     createPartVideoObjects({
         eventFadeInDelay = 0,
         eventFadeOutDelay = 0,

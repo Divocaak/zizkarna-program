@@ -1,8 +1,6 @@
 import { TextVideoElement } from "$lib/classes/video/textVideoElement";
 import { VideoElement } from "$lib/classes/video/videoElement";
-import { LineVideoElement } from "$lib/classes/video/monthlyOverview/lineVideoElement";
-/* TODO imports */
-import { TextDynamicStyles } from "./dynamicStyles/textDynamicStyles";
+import { LineVideoElement } from "$lib/classes/video/monthlyOverview/lineVideoElement";;
 
 /**
     * Represents a holder for single event, date + presale and line
@@ -71,35 +69,6 @@ export class MonthlyOverviewEventRow extends VideoElement {
     }
 
     /**
-        * Calculates rows total height with default font sizes and padding
-        * @param {TextDynamicStyles} labelDynamicStyles - label dynamic styles
-        * @param {TextDynamicStyles} dateDynamicStyles - date dynamic styles
-        * @param {number} usableWidth - width to fit object into
-        * @param {number} lineHeight - line height ratio
-        * @returns {number} - rows default height
-    */
-   /* DOC */
-    calculateRowHeight({ labelDynamicStyles, dateDynamicStyles, usableWidth, lineHeight }) {
-        return {
-            labelHeight: this.#calculateElementHeight(this.label, labelDynamicStyles, usableWidth, lineHeight),
-            dateHeight: this.#calculateElementHeight(this.dateText, dateDynamicStyles, usableWidth, lineHeight)
-        };
-    }
-
-    /**
-        * Calculates elements height
-        * @param {string} text - text to compute
-        * @param {TextDynamicStyles} elementStyles - elements computed styles
-        * @param {number} containerWidth - width to fit object into
-        * @param {number} lineHeightRatio - line height ratio
-        * @returns {number} - elements height
-    */
-    #calculateElementHeight(text, elementStyles, containerWidth, lineHeightRatio) {
-        const lines = Math.ceil(text.length / (containerWidth / (elementStyles.fontSize / 2)));
-        return lines * elementStyles.fontSize * lineHeightRatio + elementStyles.padding;
-    }
-
-    /**
         * Calculates the fade in and out, start and end times for label, date and line
         * @param {number} inputInStart - current inputIn (relative to last row)
         * @param {number} inputOutStart - current inputOut (relative to last row)
@@ -136,8 +105,13 @@ export class MonthlyOverviewEventRow extends VideoElement {
         * @param {{date: {fontSize: number, padding: number}, labe: {fontSize: number, padding: number}, topLineLineWidth: number}} dynamicStyles - padding and height for dates and labels and top lines line width
         * @returns {Array<VideoElement>} - array of ready to use VideoElements
     */
-    /* DOC  */
-    /* TODO rework ids */
+    /** 
+        * Creates the VideoObjects of this row
+        * @param {number} timeInStart - ???
+        * @param {number} timeOutStart - ???
+        * @param {RowDynamicStyles} dynamicStyles - DynamicStyles to use
+    */
+    /* DOC times */
     createVideoObjects({
         parentId,
         timeInStart = 0,
@@ -192,21 +166,21 @@ export class MonthlyOverviewEventRow extends VideoElement {
         }
 
         let labelStyles = "position: relative;";
-        if (!this.isLast) labelStyles += `padding-bottom: ${dynamicStyles.label.padding}px !important;`;
+        if (!this.isLast) labelStyles += `padding-bottom: ${dynamicStyles.getPadding("label")}px !important;`;
 
         this.#dateVideoObject =
             new TextVideoElement({
                 id: `${parentId}-date-${super.getId()}`,
                 content: this.dateText,
                 fontName: "Karla Regular",
-                fontSizePx: dynamicStyles.date.fontSize,
+                fontSizePx: dynamicStyles.getFontSize("date"),
                 fontColor: color,
                 textAlign: "left",
                 easing: !this.isStatic ? "inOutBack" : null,
                 posX: dateX,
                 styles: `
                     position: relative;
-                    padding-bottom: ${dynamicStyles.date.padding}px !important;
+                    padding-bottom: ${dynamicStyles.getPadding("date")}px !important;
                 `
             });
 
@@ -214,7 +188,7 @@ export class MonthlyOverviewEventRow extends VideoElement {
             id: `${parentId}-label-${super.getId()}`,
             content: this.label,
             fontName: "Neue Machina Regular",
-            fontSizePx: dynamicStyles.label.fontSize,
+            fontSizePx: dynamicStyles.getFontSize("label"),
             fontColor: color,
             textAlign: "left",
             easing: !this.isStatic ? "inOutBack" : null,
@@ -227,7 +201,7 @@ export class MonthlyOverviewEventRow extends VideoElement {
                 id: `${parentId}-line-${super.getId()}`,
                 posX: 0,
                 width: lineW,
-                height: dynamicStyles.topLineLineWidth,
+                height: dynamicStyles.getTopLineLineWidth(),
                 color: color
             });
         }
