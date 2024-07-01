@@ -85,7 +85,7 @@ export async function renderTemplate({
     const fontDataNeue = font2base64.encodeToDataUrlSync('./vidGenAssets/neue.otf')
     const fontDataKarla = font2base64.encodeToDataUrlSync('./vidGenAssets/karla.ttf')
 
-    const browser = await initPuppeteer();
+    const browser = await puppeteer.launch(puppeteerLaunchOptions);
     const page = await browser.newPage();
     await page.setViewport({ width: outputDimensions.w, height: outputDimensions.h });
 
@@ -102,7 +102,33 @@ export async function renderTemplate({
 
         if (onlyFrame) return html;
 
-        await renderFrame({ page: page, html: html });
+        const viewportHeight = 1080;
+        await page.setViewport({ width: outputDimensions.w, height: viewportHeight });
+
+
+        /* TODO simplify */
+        const stackedBuffer = Buffer.allocUnsafe(outputDimensions.w * outputDimensions.h);
+        let offset = 0;
+
+        const numScreenshots = Math.ceil(outputDimensions.h / viewportHeight);
+        const buffers = [];
+        for (let i = 0; i < numScreenshots; i++) {
+            const offsetY = i * viewportHeight;
+            await page.evaluate(_offsetY => window.scrollTo(0, _offsetY), offsetY);
+            const buffer = await renderFrame({ page: page, html: html });
+            buffer.copy(stackedBuffer, offset);
+            offset += buffer.length;
+            buffers.push(buffer);
+        }
+
+        await page.close();
+        await browser.close();
+
+        /* const buffer1 = Buffer.from("./vidGenAssets/grads/grad0.png");
+        const buffer2 = Buffer.from("./vidGenAssets/grads/grad1.png");
+        const buffers = [buffer1, buffer2]; */
+
+        await createPosterFromBuffers(buffers, stackedBuffer);
         return new Response(JSON.stringify({ path: `${outputPath}output.jpg`, format: "image" }, { status: 200 }));
     }
 
@@ -137,17 +163,12 @@ export async function renderTemplate({
     return new Response(JSON.stringify({ path: `${outputPath}output.mp4`, format: "video" }, { status: 200 }));
 }
 
-async function initPuppeteer() {
-    return await puppeteer.launch(puppeteerLaunchOptions);
-}
-
-async function renderFrame({ page, html, isBufferFrame = false }) {
+async function renderFrame({ page, html }) {
     page.setContent(html);
     return await page.screenshot({
         type: 'jpeg',
         quality: 100,
-        encoding: isBufferFrame ? 'buffer' : 'binary',
-        path: isBufferFrame ? undefined : `${outputPath}output.jpg`
+        encoding: 'buffer'
     });
 }
 
@@ -170,8 +191,7 @@ async function generateImages({ page, duration, outputDimensions, gradients, pad
                 videoElements: videoElements,
                 additionalInnerContainerStyles: additionalInnerContainerStyles,
                 fonts: fonts
-            }),
-            isBufferFrame: true
+            })
         });
         imageBuffers.push(buffer);
 
@@ -213,6 +233,69 @@ const createVideoFromBuffers = (buffers) => {
         inputStream.end();
     });
 };
+
+async function createPosterFromBuffers(buffers, bufferImage) {
+
+    /* .complexFilter([
+        `${filter} vstack=inputs=${buffers.length}:v=1:a=0,format=yuvj420p[v]`
+        ], ['v']) */
+
+    return new Promise((resolve, reject) => {
+        const posterOutputPath = `${outputPath}/output.jpg`;
+
+        const inputStream = new PassThrough();
+        buffers.forEach(buffer => { inputStream.write(buffer); });
+        inputStream.end();
+
+        let filter = '';
+        buffers.forEach((buffer, index) => {
+            filter += `[${index}:v]scale=iw:ih[v${index}];`;
+        });
+        filter += `vstack=${buffers.length}`;
+
+        console.log(filter);
+
+        ffmpeg(inputStream)
+            .inputFormat('image2pipe')
+            .complexFilter(filter)
+            .outputOptions(['-frames:v 1', '-pix_fmt yuv420p'])
+            .output(posterOutputPath)
+            .on('end', () => {
+                console.log('Images concatenated successfully');
+                resolve(posterOutputPath);
+            })
+            .on('error', (err, stdout, stderr) => {
+                console.error('Error concatenating images:', err);
+                console.log("ffmpeg stdout:", stdout);
+                console.log("ffmpeg stderr:", stderr);
+                reject(err);
+            })
+            .run();
+
+        /* const inputs = buffers.map((buffer, index) => {
+            console.log(buffer);
+            return `[${index}]`;
+        }).join('');
+        const filter = `${inputs}vstack=inputs=${buffers.length}`;
+
+        ffmpeg(inputStream)
+            .inputFormat('image2pipe')
+            .complexFilter(filter)
+            .outputOptions(['-frames:v 1', '-pix_fmt yuv420p']) // Output only 1 frame (single JPEG)
+            .output(posterOutputPath)
+            .on('end', () => {
+                console.log('Images concatenated successfully');
+                resolve(posterOutputPath);
+            })
+            .on('error', (err, stdout, stderr) => {
+                console.error('Error concatenating images:', err);
+                console.log("ffmpeg stdout:", stdout);
+                console.log("ffmpeg stderr:", stderr);
+                reject(err);
+            })
+            .run(); */
+    });
+}
 
 function getHtml({
     time,
