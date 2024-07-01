@@ -1,13 +1,10 @@
 import fs from 'fs';
-/* TODO unins */
-import nodeHtmlToImage from 'node-html-to-image';
 import font2base64 from 'node-font2base64';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
 import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
 import { PassThrough } from 'stream';
 import { PaddingElement } from '$lib/classes/video/paddingHolder';
-import { Cluster } from 'puppeteer-cluster';
 import puppeteer from 'puppeteer';
 
 const outputPath = "dynamic/generator/";
@@ -15,7 +12,7 @@ const frameRate = 30;
 
 const puppeteerLaunchOptions = {
     headless: "new",
-    concurrency: Cluster.CONCURRENCY_CONTEXT,
+    /* concurrency: Cluster.CONCURRENCY_CONTEXT, */
     maxConcurrency: 4, // or higher if your system can handle it
     args: [
         '--headless',
@@ -52,7 +49,7 @@ export async function renderTemplate({
     }
 
     // duration value is a4 or b0 (posters from overviewGenerators)
-    if (typeof duration === 'string') duration = 2;
+    if (duration === 'a4' || duration == "b0") duration = 2;
 
     const gradients = [];
     let gradientMiddleTimeOffset = -2;
@@ -99,7 +96,7 @@ export async function renderTemplate({
             padding: padding,
             videoElements: videoElements,
             additionalInnerContainerStyles: additionalInnerContainerStyles,
-            fonts: {neue: fontDataNeue, karla: fontDataKarla}
+            fonts: { neue: fontDataNeue, karla: fontDataKarla }
         });
 
         if (onlyFrame) return html;
@@ -117,7 +114,7 @@ export async function renderTemplate({
             padding: padding,
             videoElements: videoElements,
             additionalInnerContainerStyles: additionalInnerContainerStyles,
-            fonts: {neue: fontDataNeue, karla: fontDataKarla}
+            fonts: { neue: fontDataNeue, karla: fontDataKarla }
         });
     }
 
@@ -129,7 +126,7 @@ export async function renderTemplate({
         padding: padding,
         videoElements: videoElements,
         additionalInnerContainerStyles: additionalInnerContainerStyles,
-        fonts: {neue: fontDataNeue, karla: fontDataKarla}
+        fonts: { neue: fontDataNeue, karla: fontDataKarla }
     });
 
     await page.close();
@@ -148,7 +145,7 @@ async function renderFrame({ page, html, isBufferFrame = false }) {
     page.setContent(html);
     return await page.screenshot({
         type: 'jpeg',
-        quality: 80,
+        quality: 100,
         encoding: isBufferFrame ? 'buffer' : 'binary',
         path: isBufferFrame ? undefined : `${outputPath}output.jpg`
     });
@@ -158,10 +155,10 @@ async function generateImages({ page, duration, outputDimensions, gradients, pad
     const imageBuffers = [];
     const frameCount = Math.floor(duration * frameRate);
     console.time("render_all_frames");
-    
+
     for (let i = 0; i < frameCount; i++) {
         console.time(`+- render_frame_${i}`);
-        
+
         const time = i / frameRate;
         const buffer = await renderFrame({
             page: page,
@@ -177,10 +174,10 @@ async function generateImages({ page, duration, outputDimensions, gradients, pad
             isBufferFrame: true
         });
         imageBuffers.push(buffer);
-        
+
         console.timeEnd(`+- render_frame_${i}`);
     }
-    
+
     console.timeEnd("render_all_frames");
     return imageBuffers;
 };

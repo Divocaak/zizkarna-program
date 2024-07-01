@@ -12,9 +12,9 @@
 
 	const formData = writable({
 		outputRange: 'month',
+		/* TODO def val */
 		selectedDate: undefined,
-		/* TODO change default value back to 8 */
-		outputMediumOrVidLength: '2',
+		outputMediumOrVidLength: '8',
 		dimPastEvents: true,
 		splitForTwoSections: false,
 		testFrameNumber: 1
@@ -168,13 +168,12 @@
 			type="radio"
 			id="outputDurationStory"
 			name="outputDuration"
-			value="2"
+			value="8"
 			required
 			checked
 			bind:group={$formData.outputMediumOrVidLength}
 		/>
 		8 sekund (story, 1080x1920px)
-		<!-- TODO change value back to 8 -->
 	</label><br />
 	<label for="outputDurationReel">
 		<input
