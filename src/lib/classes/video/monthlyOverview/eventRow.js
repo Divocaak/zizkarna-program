@@ -133,13 +133,13 @@ export class MonthlyOverviewEventRow extends VideoElement {
                 { time: times.label.inStart, value: outputWidth },
                 { time: times.label.inEnd, value: 0 },
                 { time: times.label.outStart, value: 0 },
-                { time: times.label.outEnd, value: -1000 },
+                { time: times.label.outEnd, value: -1500 },
             ];
             dateX = [
                 { time: times.date.inStart, value: outputWidth },
                 { time: times.date.inEnd, value: 0 },
                 { time: times.date.outStart, value: 0 },
-                { time: times.date.outEnd, value: -1000 }
+                { time: times.date.outEnd, value: -1500 }
             ];
         }
 

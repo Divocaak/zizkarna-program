@@ -13,7 +13,7 @@ const frameRate = 30;
 const puppeteerLaunchOptions = {
     headless: "new",
     /* concurrency: Cluster.CONCURRENCY_CONTEXT, */
-    maxConcurrency: 4, // or higher if your system can handle it
+    maxConcurrency: 10, // or higher if your system can handle it
     args: [
         '--headless',
         '--disable-gpu',
@@ -27,7 +27,8 @@ const puppeteerLaunchOptions = {
         '--disable-background-networking',
         '--disable-background-timer-throttling',
         '--disable-backgrounding-occluded-windows',
-        '--disable-renderer-backgrounding'
+        '--disable-renderer-backgrounding',
+        /* '--window-size=3508,16701', */
     ]
 };
 
@@ -101,8 +102,8 @@ export async function renderTemplate({
 
         if (onlyFrame) return html;
 
-        renderFrame({ html: html });
-        return `${outputPath}/output.jpg`;
+        await renderFrame({ page: page, html: html });
+        return new Response(JSON.stringify({ path: `${outputPath}output.jpg`, format: "image" }, { status: 200 }));
     }
 
     // not null, which means that a number of wanted test frame is passed
@@ -133,8 +134,7 @@ export async function renderTemplate({
     await browser.close();
 
     await createVideoFromBuffers(imageBuffers);
-    /* BUG path?? */
-    return new Response(JSON.stringify({ path: "outputFile", format: "video" }, { status: 200 }));
+    return new Response(JSON.stringify({ path: `${outputPath}output.mp4`, format: "video" }, { status: 200 }));
 }
 
 async function initPuppeteer() {

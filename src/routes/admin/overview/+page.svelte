@@ -75,7 +75,7 @@
 
 			const result = await response.json();
 			isLoading.set(false);
-			//isImage.set(result.format == 'image');
+			isImage.set(result.format == 'image');
 			return;
 		} catch (error) {
 			console.error('Error:', error);
@@ -243,24 +243,25 @@
 	ʕ•ᴥ•ʔ (generuju, sorry, trvá mi to, vydrž pls)
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
-	<!-- MERGE rewrite -->
 {:else}
 	<!-- prettier-ignore -->
 	{#if $isImage === null}
-		<a href="/dynamic/generator/video.mp4" target="_blank" download="video.mp4">stáhnout video</a><br />
+		<a href="/dynamic/generator/output.mp4" target="_blank" download="output.mp4">stáhnout video</a><br />
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video width="342" height="607" autoplay loop>
-			<source src="/dynamic/generator/video.mp4" type="video/mp4" />
+			<source src="/dynamic/generator/output.mp4" type="video/mp4" />
 		</video><br />
 	{:else}
-		{#if $isOfflineMedium}
-			<a href="/dynamic/generator/output.png" target="_blank" download="output.png">stáhnout grafiku</a><br />
-		{/if}
-		<img src="/dynamic/generator/output.png" alt="test frame" width="342" height="607"/>
+		<a href="/dynamic/generator/output.jpg" target="_blank" download="output.jpg">stáhnout grafiku</a><br />
+		<img src="/dynamic/generator/output.jpg" alt="test frame" width="342" height="607"/>
 	{/if}
 {/if}
 
 <style>
+	video {
+		border: 2px solid green;
+	}
+
 	img {
 		border: 2px solid red;
 	}
