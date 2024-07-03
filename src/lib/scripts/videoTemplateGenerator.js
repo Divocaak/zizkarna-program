@@ -12,8 +12,7 @@ const frameRate = 30;
 
 const puppeteerLaunchOptions = {
     headless: "new",
-    /* concurrency: Cluster.CONCURRENCY_CONTEXT, */
-    maxConcurrency: 10, // or higher if your system can handle it
+    maxConcurrency: 10,
     args: [
         '--headless',
         '--disable-gpu',
@@ -28,7 +27,6 @@ const puppeteerLaunchOptions = {
         '--disable-background-timer-throttling',
         '--disable-backgrounding-occluded-windows',
         '--disable-renderer-backgrounding',
-        /* '--window-size=3508,16701', */
     ]
 };
 
@@ -102,33 +100,25 @@ export async function renderTemplate({
 
         if (onlyFrame) return html;
 
-        const viewportHeight = 1080;
+        /* BUG */
+        /* URGENT */
+        let viewportHeight = 540;
+        const remainder = outputDimensions.h % viewportHeight;
+        if (remainder !== 0) viewportHeight = viewportHeight - remainder;
+        console.log(`output h: ${outputDimensions.h}, viewportHeight: ${viewportHeight}`);
         await page.setViewport({ width: outputDimensions.w, height: viewportHeight });
-
-
-        /* TODO simplify */
-        const stackedBuffer = Buffer.allocUnsafe(outputDimensions.w * outputDimensions.h);
-        let offset = 0;
 
         const numScreenshots = Math.ceil(outputDimensions.h / viewportHeight);
         const buffers = [];
         for (let i = 0; i < numScreenshots; i++) {
             const offsetY = i * viewportHeight;
             await page.evaluate(_offsetY => window.scrollTo(0, _offsetY), offsetY);
-            const buffer = await renderFrame({ page: page, html: html });
-            buffer.copy(stackedBuffer, offset);
-            offset += buffer.length;
-            buffers.push(buffer);
+            buffers.push(await renderFrame({ page: page, html: html }));
         }
 
         await page.close();
         await browser.close();
-
-        /* const buffer1 = Buffer.from("./vidGenAssets/grads/grad0.png");
-        const buffer2 = Buffer.from("./vidGenAssets/grads/grad1.png");
-        const buffers = [buffer1, buffer2]; */
-
-        await createPosterFromBuffers(buffers, stackedBuffer);
+        await createPosterFromBuffers(buffers);
         return new Response(JSON.stringify({ path: `${outputPath}output.jpg`, format: "image" }, { status: 200 }));
     }
 
@@ -158,7 +148,6 @@ export async function renderTemplate({
 
     await page.close();
     await browser.close();
-
     await createVideoFromBuffers(imageBuffers);
     return new Response(JSON.stringify({ path: `${outputPath}output.mp4`, format: "video" }, { status: 200 }));
 }
@@ -205,7 +194,10 @@ async function generateImages({ page, duration, outputDimensions, gradients, pad
 const createVideoFromBuffers = (buffers) => {
     return new Promise((resolve, reject) => {
         const videoOutputPath = `${outputPath}output.mp4`;
+
         const inputStream = new PassThrough();
+        buffers.forEach(buffer => { inputStream.write(buffer); });
+        inputStream.end();
 
         ffmpeg(inputStream)
             .inputFormat('image2pipe')
@@ -223,23 +215,10 @@ const createVideoFromBuffers = (buffers) => {
                 reject(err);
             })
             .save(videoOutputPath);
-
-        // Write each buffer to the input stream
-        buffers.forEach(buffer => {
-            inputStream.write(buffer);
-        });
-
-        // End the input stream once all buffers are written
-        inputStream.end();
     });
 };
 
-async function createPosterFromBuffers(buffers, bufferImage) {
-
-    /* .complexFilter([
-        `${filter} vstack=inputs=${buffers.length}:v=1:a=0,format=yuvj420p[v]`
-        ], ['v']) */
-
+const createPosterFromBuffers = (buffers) => {
     return new Promise((resolve, reject) => {
         const posterOutputPath = `${outputPath}/output.jpg`;
 
@@ -247,53 +226,22 @@ async function createPosterFromBuffers(buffers, bufferImage) {
         buffers.forEach(buffer => { inputStream.write(buffer); });
         inputStream.end();
 
-        let filter = '';
-        buffers.forEach((buffer, index) => {
-            filter += `[${index}:v]scale=iw:ih[v${index}];`;
-        });
-        filter += `vstack=${buffers.length}`;
-
-        console.log(filter);
-
         ffmpeg(inputStream)
             .inputFormat('image2pipe')
-            .complexFilter(filter)
-            .outputOptions(['-frames:v 1', '-pix_fmt yuv420p'])
-            .output(posterOutputPath)
+            .outputOptions('-vf', `tile=layout=1x${buffers.length}`)
+            .frames(1)
+            .outputOptions('-pix_fmt', 'yuv420p')
             .on('end', () => {
-                console.log('Images concatenated successfully');
+                console.log('Processing finished!');
                 resolve(posterOutputPath);
             })
-            .on('error', (err, stdout, stderr) => {
-                console.error('Error concatenating images:', err);
-                console.log("ffmpeg stdout:", stdout);
-                console.log("ffmpeg stderr:", stderr);
+            .on('error', (err) => {
+                console.error('Error creating video:', err);
+                console.log("stdout:\n" + stdout);
+                console.log("stderr:\n" + stderr);
                 reject(err);
             })
-            .run();
-
-        /* const inputs = buffers.map((buffer, index) => {
-            console.log(buffer);
-            return `[${index}]`;
-        }).join('');
-        const filter = `${inputs}vstack=inputs=${buffers.length}`;
-
-        ffmpeg(inputStream)
-            .inputFormat('image2pipe')
-            .complexFilter(filter)
-            .outputOptions(['-frames:v 1', '-pix_fmt yuv420p']) // Output only 1 frame (single JPEG)
-            .output(posterOutputPath)
-            .on('end', () => {
-                console.log('Images concatenated successfully');
-                resolve(posterOutputPath);
-            })
-            .on('error', (err, stdout, stderr) => {
-                console.error('Error concatenating images:', err);
-                console.log("ffmpeg stdout:", stdout);
-                console.log("ffmpeg stderr:", stderr);
-                reject(err);
-            })
-            .run(); */
+            .save(posterOutputPath)
     });
 }
 
