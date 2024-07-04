@@ -16,6 +16,7 @@
 - html stránka jako preview generovaného videa, frame skrz GET parametr
 - console log času renderování jednotlivých framů
 - GitHub repo odkaz na changelog stránce
+- genertátor thumbnailu pro generátor měsíčních přehledů
 
 ## opraveno
 - fonty u videogenerátorů

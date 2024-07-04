@@ -48,7 +48,7 @@ export async function renderTemplate({
     }
 
     // duration value is a4 or b0 (posters from overviewGenerators)
-    if (duration === 'a4' || duration == "b0") duration = 2;
+    if (duration === 'a4' || duration == "b0" || duration == "thumbnail") duration = 2;
 
     const gradients = [];
     let gradientMiddleTimeOffset = -2;
@@ -100,12 +100,9 @@ export async function renderTemplate({
 
         if (onlyFrame) return html;
 
-        /* BUG */
-        /* URGENT */
         let viewportHeight = 540;
         const remainder = outputDimensions.h % viewportHeight;
         if (remainder !== 0) viewportHeight = viewportHeight - remainder;
-        console.log(`output h: ${outputDimensions.h}, viewportHeight: ${viewportHeight}`);
         await page.setViewport({ width: outputDimensions.w, height: viewportHeight });
 
         const numScreenshots = Math.ceil(outputDimensions.h / viewportHeight);

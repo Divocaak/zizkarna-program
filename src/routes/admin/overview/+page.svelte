@@ -30,11 +30,6 @@
 			const selectedDate = $formData.selectedDate;
 			const monthOrWeek = selectedDate.substring(selectedDate.length - 2, selectedDate.length);
 			const year = selectedDate.substring(0, 4);
-			const apiPath = isMonth
-				? `/api/events/listOverviewMonth?year=${year}&month=${monthOrWeek}`
-				: `/api/events/listOverviewWeek?year=${year}&week=${monthOrWeek}`;
-			const events = await fetch(apiPath);
-			let eventsData = await events.json();
 
 			const label = isMonth
 				? new Date(2000, monthOrWeek - 1, 1)
@@ -42,20 +37,37 @@
 						.toUpperCase()
 				: 'TENTO TÝDEN';
 
-			const isPoster =
-				$formData.outputMediumOrVidLength == 'a4' || $formData.outputMediumOrVidLength == 'b0';
+			const isPoster = $isOfflineMedium;
 
-			const requestPath = '/api/videoGenerators/overviews/';
-			const requestBody = {
+			let requestPath = '/api/videoGenerators/';
+			let pathEndpoint = 'overviewsThumbnails';
+			let requestBody = {
 				testFrame: $testFrame ? $formData.testFrameNumber : null,
-				outputMediumOrVidLength: $formData.outputMediumOrVidLength,
-				dimPastEvents: isPoster ? false : $formData.dimPastEvents,
-				splitForTwoSections: isPoster ? false : $formData.splitForTwoSections,
-				events: eventsData,
-				label: label,
-				outputRange: $formData.outputRange,
-				isPoster: isPoster
+				label: label
 			};
+
+			if ($formData.outputMediumOrVidLength === 'thumbnail') {
+				requestBody.label += ` ${year}`;
+			} else {
+				pathEndpoint = 'overviews';
+				const apiPath = isMonth
+					? `/api/events/listOverviewMonth?year=${year}&month=${monthOrWeek}`
+					: `/api/events/listOverviewWeek?year=${year}&week=${monthOrWeek}`;
+				const events = await fetch(apiPath);
+				const eventsData = await events.json();
+
+				requestBody = {
+					...requestBody,
+					...{
+						outputMediumOrVidLength: $formData.outputMediumOrVidLength,
+						dimPastEvents: isPoster ? false : $formData.dimPastEvents,
+						splitForTwoSections: isPoster ? false : $formData.splitForTwoSections,
+						events: eventsData,
+						isPoster: isPoster
+					}
+				};
+			}
+			requestPath += `${pathEndpoint}/`;
 
 			if ($testFrame) {
 				window.open(
@@ -138,6 +150,18 @@
 
 	<br /><br />
 
+	<label for="outputDurationThumbnail">
+		<input
+			on:change={() => changeOutputMediumPoster(true)}
+			type="radio"
+			id="outputDurationThumbnail"
+			name="outputDuration"
+			value="thumbnail"
+			required
+			bind:group={$formData.outputMediumOrVidLength}
+		/>
+		0 sekund (reel thumbnail, 1080x1920px)
+	</label><br />
 	<label for="outputDurationPoster">
 		<input
 			on:change={() => changeOutputMediumPoster(true)}
