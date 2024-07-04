@@ -26,7 +26,7 @@ export class PaddingElement {
         * Return the total y padding, 2 * y for top and bottom or sum of top and bottom
         * @returns {number} total y padding in pixels
     */
-    getY() { return typeof this.y === 'number' ? (2 * this.y) : (this.y.top + this.y.bottom); }
+    getY() { return (typeof this.y === 'number' ? (2 * this.y) : (this.y.top + this.y.bottom)); }
 
     /**
          * Return the left padding
@@ -44,5 +44,5 @@ export class PaddingElement {
         * Return the total x padding, 2 * x for left and right or sum of left and right
         * @returns {number} total x padding in pixels
     */
-    getX() { return typeof this.x === 'number' ? (2 * this.x) : (this.x.left + this.x.right); }
+    getX() { return (typeof this.x === 'number' ? (2 * this.x) : (this.x.left + this.x.right)); }
 }

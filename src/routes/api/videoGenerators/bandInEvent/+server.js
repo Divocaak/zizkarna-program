@@ -4,7 +4,7 @@ import { ImageVideoElement } from '$lib/classes/video/imageVideoElement.js';
 import { PaddingElement } from '$lib/classes/video/paddingHolder.js';
 
 const outputDimensions = { w: 1080, h: 1920 };
-const padding = PaddingElement({ x: 100, y: 250 });
+const padding = new PaddingElement({ x: 100, y: 250 });
 
 const crossfadeTime = .1;
 const fadeTime = .8;

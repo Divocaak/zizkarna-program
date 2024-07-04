@@ -85,7 +85,6 @@ export async function POST({ request }) {
         textParts.second.setOutStart(firstGetOutStartNew + firstOutDuration + contentLenPerSection);
     }
 
-    const labelFontSize = 80 * scalingFactor.h;
     const response = await renderTemplate({
         onlyFrame: data.testFrame,
         duration: outputMediumOrVidLength,
@@ -94,16 +93,13 @@ export async function POST({ request }) {
         overviewPoster: data.isPoster,
         videoElements: videoElements({
             label: data.label,
-            labelFontSize: labelFontSize,
+            labelFontSize: 80 * scalingFactor.h,
             scaleFactor: scalingFactor,
             twoSections: twoSections,
             textParts: textParts,
             outputDimensions: outputDimensions,
             padding: padding,
-        }),
-        additionalInnerContainerStyles: `
-            padding-top: ${labelFontSize}px;
-        `
+        })
     });
 
     return new Response(JSON.stringify({
@@ -138,7 +134,7 @@ const videoElements = ({
             id: "zz-logo",
             content: "./vidGenAssets/logo_transparent.png",
             posX: outputDimensions.w - padding.getRight() - logoW,
-            posY: padding.getTop() - labelFontSize,
+            posY: padding.getTop() - logoH * .25,
             wPx: logoW,
             hPx: logoH
         }),
