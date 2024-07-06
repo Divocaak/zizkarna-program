@@ -203,7 +203,7 @@
 	</label><br />
 	{#if $testFrame}
 		<label for="testFrameNumber">
-			test frame <i>(<b>0.8</b> event, <b>3.7</b> band)</i>
+			test frame in seconds <i>(<b>0.8</b> event, <b>3.7</b> band)</i>
 			<input
 				type="number"
 				step="0.1"

@@ -52,6 +52,7 @@ export class TextVideoElement extends VideoElement {
         * @param {number} time - time for calculations based on keyframes
         * @returns {string} The css of the element
     */
+   /* TODO remove borders from all possible elenents */
     getStyles(time) {
         return super.getStyles({
             time: time,

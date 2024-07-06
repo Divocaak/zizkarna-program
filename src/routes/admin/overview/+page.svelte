@@ -249,7 +249,7 @@
 	</label><br />
 	{#if $testFrame}
 		<label for="testFrameNumber">
-			NOTE write default times
+			test frame in seconds
 			<input
 				type="number"
 				step="0.1"
