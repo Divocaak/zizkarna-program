@@ -1,8 +1,32 @@
 <script>
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
+# 7. 7. 24
 
-# 13. 5. 25
+## upraveno
+- video generátory sjednoceny, použito OOP
+- video generátory běží na html kódu, ne na Canvas
+- video generátor kapel v rámci eventu:
+  - obrázek kapely kliknutelný
+  - console log časů (kdy co)
+- video se skládá z obrázků uložených v paměti (jednotlivé snímky už se nukládají jako fotky na disk)
+- video generátory bez skrz puppeteer (1 frame za .65 sekundy)
+
+## přidáno
+- gradienty ve video generátorech u kapel v rámci eventu
+- html stránka jako preview generovaného videa, frame skrz GET parametr
+- console log času renderování jednotlivých framů
+- GitHub repo odkaz na changelog stránce
+- genertátor thumbnailu pro generátor měsíčních přehledů
+- generátor instagram textací pro měsíční přehledy
+
+## opraveno
+- fonty u videogenerátorů
+- padding-y u generovaných videí formátu ig story
+- paddingy měsíčních přehledů se určijí podle výstupního formátu (b0, a4, videa)
+
+
+# 13. 5. 24
 
 ## upraveno
 - title info stránky
@@ -316,5 +340,6 @@
 		content="Nejnovější aktualizace programu na jednom místě. Aby Tě žádná změna nepřekvapila"
 	/>
 </svelte:head>
-  
-  <SvelteMarkdown {source} />
+
+<a href="https://github.com/Divocaak/zizkarna-program" class="text-muted karla" target="_blank"><i class="bi bi-github pe-1"></i>GitHub repo</a>
+<SvelteMarkdown {source} />

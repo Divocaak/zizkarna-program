@@ -1,4 +1,4 @@
-import { getEventDetailed } from '$lib/apiShortcuts/getEventDetailed.js'
+import { getEventDetailed } from '$lib/scripts/getEventDetailed.js'
 import { analyticsStore } from '$lib/stores/analyticsStore.js';
 
 export const load = async ({ url, params, fetch }) => {
