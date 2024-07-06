@@ -1,6 +1,7 @@
 <script>
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
+# 7. 7. 24
 
 ## upraveno
 - video generátory sjednoceny, použito OOP
@@ -17,6 +18,7 @@
 - console log času renderování jednotlivých framů
 - GitHub repo odkaz na changelog stránce
 - genertátor thumbnailu pro generátor měsíčních přehledů
+- generátor instagram textací pro měsíční přehledy
 
 ## opraveno
 - fonty u videogenerátorů
@@ -24,7 +26,7 @@
 - paddingy měsíčních přehledů se určijí podle výstupního formátu (b0, a4, videa)
 
 
-# 13. 5. 25
+# 13. 5. 24
 
 ## upraveno
 - title info stránky

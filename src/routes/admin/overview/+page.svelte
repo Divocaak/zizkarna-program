@@ -10,10 +10,13 @@
 	const testFrame = writable(false);
 	const changeTestFrame = () => testFrame.set(!$testFrame);
 
+	const date = new Date();
+	const month = ('0' + (date.getMonth() + 1)).slice(-2);
+	const year = date.getFullYear();
+
 	const formData = writable({
 		outputRange: 'month',
-		/* TODO def val */
-		selectedDate: undefined,
+		selectedDate: `${year}-${month}`,
 		outputMediumOrVidLength: '8',
 		dimPastEvents: true,
 		splitForTwoSections: false,

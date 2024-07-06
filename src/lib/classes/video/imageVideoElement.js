@@ -49,7 +49,7 @@ export class ImageVideoElement extends VideoElement {
                 background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
-                border: 1px solid cyan;
+                /* border: 1px solid cyan; */
                 ${this.#getWPx() != null && this.#getHPx() != null
                     ? `width: ${this.#getWPx()}px; height: ${this.#getHPx()}px;`
                     : `min-width: 100%; aspect-ratio: 16/9;`} 
@@ -72,7 +72,6 @@ export class ImageVideoElement extends VideoElement {
                 background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
-                border: 1px solid cyan;
             `
         });
     }

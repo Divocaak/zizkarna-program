@@ -36,8 +36,8 @@ export class LineDynamicStyles {
     */
     constructor() {
         this.#defaultLineWidth = 5;
-        this.#minLineWidth = 1;
-        this.#maxLineWidth = 3;
+        this.#minLineWidth = 3;
+        this.#maxLineWidth = 10;
     }
 
     /**

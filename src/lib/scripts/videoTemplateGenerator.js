@@ -316,15 +316,15 @@ function getHtml({
                             margin: 0;
                             padding: ${padding.getTop()}px ${padding.getRight()}px ${padding.getBottom()}px ${padding.getLeft()}px;
                             
-                            background:rgba(255,0,0,.1);
-                            border: 1px solid red;
+                            /* background: rgba(255,0,0,.1); */
+                            /* border: 1px solid red; */
                         }
 
                         .inner{
                             position:relative;
                             width:100%;
                             height:100%;
-                            background: rgba(255,255,255,.1);
+                            /* background: rgba(255,255,255,.1); */
                             
                             ${additionalInnerContainerStyles}
                         }
