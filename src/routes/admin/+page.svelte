@@ -5,6 +5,7 @@
 <a href="/admin/tags">tagy</a><br />
 <br />
 <a href="/admin/overview">generátor přehledů</a><br />
+<a href="/admin/overviewCopy">generátor textace k měsíčnímu přehledu</a><br />
 
 <!-- prettier-ignore -->
 <svg viewBox="175 225 868 655" width="693px" height="430px" xmlns="http://www.w3.org/2000/svg" version="1.1" style="position:absolute;top:200px">
