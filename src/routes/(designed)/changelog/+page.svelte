@@ -3,7 +3,9 @@
     const source = `
 # 7. 7. 24
 
-## upraveno
+## MAJOR video generator refactor
+
+### upraveno
 - video generátory sjednoceny, použito OOP
 - video generátory běží na html kódu, ne na Canvas
 - video generátor kapel v rámci eventu:
@@ -12,7 +14,7 @@
 - video se skládá z obrázků uložených v paměti (jednotlivé snímky už se nukládají jako fotky na disk)
 - video generátory bez skrz puppeteer (1 frame za .65 sekundy)
 
-## přidáno
+### přidáno
 - gradienty ve video generátorech u kapel v rámci eventu
 - html stránka jako preview generovaného videa, frame skrz GET parametr
 - console log času renderování jednotlivých framů
@@ -20,7 +22,7 @@
 - genertátor thumbnailu pro generátor měsíčních přehledů
 - generátor instagram textací pro měsíční přehledy
 
-## opraveno
+### opraveno
 - fonty u videogenerátorů
 - padding-y u generovaných videí formátu ig story
 - paddingy měsíčních přehledů se určijí podle výstupního formátu (b0, a4, videa)
