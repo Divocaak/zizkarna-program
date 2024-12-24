@@ -22,7 +22,6 @@ const puppeteerLaunchOptions = {
         '--disable-accelerated-2d-canvas',
         '--no-first-run',
         '--no-zygote',
-        '--single-process',
         '--disable-background-networking',
         '--disable-background-timer-throttling',
         '--disable-backgrounding-occluded-windows',
@@ -157,7 +156,9 @@ export async function renderTemplate({
 }
 
 async function renderFrame({ page, html }) {
+    console.time("===_setContent");
     page.setContent(html);
+    console.timeEnd("===_setContent");
     return await page.screenshot({
         type: 'jpeg',
         quality: 80,
