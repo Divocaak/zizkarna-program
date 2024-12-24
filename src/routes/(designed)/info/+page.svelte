@@ -25,7 +25,7 @@
 	<p class="lead karla">
 		Vojtěch Divoký<br />
 		<a class="link-secondary" href="mailto:vojtech@zizkarna.cz">
-			<i class="bi bi-envelope pe-2" />vojtech@zizkarna.cz
+			<i class="bi bi-envelope pe-2"></i>vojtech@zizkarna.cz
 		</a>
 	</p>
 	<h2 class="pt-5 neue-bold">Pro promotéry</h2>
@@ -51,7 +51,7 @@
 				loading="lazy"
 				referrerpolicy="no-referrer-when-downgrade"
 				title="map"
-			/>
+			></iframe>
 		</div>
 		<div class="col-12 col-md-6">
 			<p class="karla text-muted text-start">

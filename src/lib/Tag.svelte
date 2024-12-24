@@ -1,5 +1,5 @@
 <script>
-	export let tag;
+	let { tag } = $props();
 </script>
 
 <span

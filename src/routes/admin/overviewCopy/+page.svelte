@@ -1,7 +1,7 @@
 <script>
 	import { CopyText } from '$lib/classes/copyText.js';
 
-	export let form;
+	let { form } = $props();
 	const copyTextElement = new CopyText();
 	if (form) {
 		const monthText = form.label.charAt(0).toUpperCase() + form.label.slice(1);
@@ -43,6 +43,6 @@
 <br />
 
 {#if form}
-	<button on:click={copyTextElement.copyText()}>copy to clipboard</button>
+	<button onclick={copyTextElement.copyText()}>copy to clipboard</button>
 	{@html copyTextElement.getContentStyled()}
 {/if}

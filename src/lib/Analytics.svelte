@@ -1,8 +1,10 @@
 <script>
+	import { run } from 'svelte/legacy';
+
 	/* eslint-disable */
 	import { page } from '$app/stores';
 	import { analyticsStore } from '$lib/stores/analyticsStore.js';
-	$: {
+	run(() => {
 		// @ts-ignore
 		if (typeof gtag !== 'undefined') {
 			// @ts-ignore
@@ -11,7 +13,7 @@
 				page_path: $page.url.pathname
 			});
 		}
-	}
+	});
 	// subscribe to store and see if there is any event in store(array) then run that event
 	analyticsStore.subscribe((queue) => {
 		let next = queue && queue.length && queue.shift();

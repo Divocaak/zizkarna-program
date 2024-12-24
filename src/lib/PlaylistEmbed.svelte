@@ -1,8 +1,14 @@
 <script>
 	import AnalyticsButtonWrapper from '$lib/buttons/AnalyticsButtonWrapper.svelte';
 
-	export let title = 'Youtube Playlist';
-	export let src = '';
+	/**
+	 * @typedef {Object} Props
+	 * @property {string} [title]
+	 * @property {string} [src]
+	 */
+
+	/** @type {Props} */
+	let { title = 'Youtube Playlist', src = '' } = $props();
 </script>
 
 <AnalyticsButtonWrapper classes={"col-12 col-md-6"} event={'zztv-playlist'} data={{ playlistTitle: title, src: src }} youtubePlaylist={true}>
@@ -12,7 +18,7 @@
 		allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 		frameborder="0"
 		allowfullscreen
-	/>
+	></iframe>
 </AnalyticsButtonWrapper>
 
 <style>

@@ -1,9 +1,9 @@
 <script>
 	import selected from '$lib/stores/tagStore.js';
 	import TagForm from '$lib/admin/TagForm.svelte';
-	export let form;
+	let { form } = $props();
 
-	let selectedData;
+	let selectedData = $state();
 	selected.subscribe((data) => {
 		selectedData = data;
 	});

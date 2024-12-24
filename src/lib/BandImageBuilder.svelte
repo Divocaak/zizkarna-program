@@ -1,9 +1,15 @@
 <script>
 	import LazyImage from '$lib/LazyImage.svelte';
 
-	export let imgs = [];
-	export let id = '';
-	export let bandName = '';
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} [imgs]
+	 * @property {string} [id]
+	 * @property {string} [bandName]
+	 */
+
+	/** @type {Props} */
+	let { imgs = [], id = '', bandName = '' } = $props();
 
 	const colA = [];
 	const colB = [];

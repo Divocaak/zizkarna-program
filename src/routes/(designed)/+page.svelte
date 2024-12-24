@@ -1,8 +1,8 @@
 <script>
-	export let data;
 	import Card from '$lib/Card.svelte';
 	import { onMount } from 'svelte';
 	import { getHomepageSeo } from '$lib/seo/homepageSeoBuilder.js';
+	let { data } = $props();
 
 	const closest = data.closest;
 	const future = data.future;

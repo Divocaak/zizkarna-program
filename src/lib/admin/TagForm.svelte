@@ -1,12 +1,18 @@
 <script>
-	export let data = null;
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} [data]
+	 */
 
-	let txtValField;
-	let txtVal = '// TEST TAG //';
-	let bgField;
-	let bgColor = '#000000';
-	let txtField;
-	let txtColor = '#FFFFFF';
+	/** @type {Props} */
+	let { data = null } = $props();
+
+	let txtValField = $state();
+	let txtVal = $state('// TEST TAG //');
+	let bgField = $state();
+	let bgColor = $state('#000000');
+	let txtField = $state();
+	let txtColor = $state('#FFFFFF');
 
 	const refreshTxtVal = () => (txtVal = txtValField.value);
 	const refreshBgColor = () => (bgColor = bgField.value);
@@ -24,7 +30,7 @@
 		* název (max 64)
 		<input
 			bind:this={txtValField}
-			on:input={refreshTxtVal}
+			oninput={refreshTxtVal}
 			type="text"
 			id="label"
 			name="label"
@@ -37,7 +43,7 @@
 		* barva pozadí
 		<input
 			bind:this={bgField}
-			on:input={refreshBgColor}
+			oninput={refreshBgColor}
 			type="color"
 			id="bgColor"
 			name="bgColor"
@@ -49,7 +55,7 @@
 		* barva textu
 		<input
 			bind:this={txtField}
-			on:input={refreshTxtColor}
+			oninput={refreshTxtColor}
 			type="color"
 			id="textColor"
 			name="textColor"

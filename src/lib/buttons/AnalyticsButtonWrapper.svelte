@@ -1,15 +1,31 @@
 <script>
 	import { analyticsStore } from '$lib/stores/analyticsStore.js';
 
-	export let classes = '';
-	export let title = '';
 
-	export let event;
-	export let data;
-	export let fromCard = false;
-	export let youtubePlaylist = false;
 
-	export let callback = null;
+	/**
+	 * @typedef {Object} Props
+	 * @property {string} [classes]
+	 * @property {string} [title]
+	 * @property {any} event
+	 * @property {any} data
+	 * @property {boolean} [fromCard]
+	 * @property {boolean} [youtubePlaylist]
+	 * @property {any} [callback]
+	 * @property {import('svelte').Snippet} [children]
+	 */
+
+	/** @type {Props} */
+	let {
+		classes = '',
+		title = '',
+		event,
+		data,
+		fromCard = false,
+		youtubePlaylist = false,
+		callback = null,
+		children
+	} = $props();
 
 	const eventName = `zzBtn${fromCard ? '-card' : ''}-${event}`;
 
@@ -29,13 +45,13 @@
 <div
 	class={classes}
 	class:youtube-playlist={youtubePlaylist}
-	on:click={addEventToAnalytics}
-	on:keyup={addEventToAnalytics}
+	onclick={addEventToAnalytics}
+	onkeyup={addEventToAnalytics}
 	tabindex="0"
 	role="button"
 	{title}
 >
-	<slot />
+	{@render children?.()}
 </div>
 
 <style>

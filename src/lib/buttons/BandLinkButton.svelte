@@ -12,14 +12,26 @@
 		Other: 'Jiný odkaz'
 	};
 
-	export let link;
-	export let eventLabel = '';
-	export let bandName = '';
-	export let zztvFromEvent = false;
 
-	export let isZizkarnaTV = false;
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} link
+	 * @property {string} [eventLabel]
+	 * @property {string} [bandName]
+	 * @property {boolean} [zztvFromEvent]
+	 * @property {boolean} [isZizkarnaTV]
+	 */
 
-	let type;
+	/** @type {Props} */
+	let {
+		link,
+		eventLabel = '',
+		bandName = '',
+		zztvFromEvent = false,
+		isZizkarnaTV = false
+	} = $props();
+
+	let type = $state();
 	const tmp = link.substring(8, link.length);
 	switch (tmp.substring(0, tmp.indexOf('/'))) {
 		case 'youtu.be':
@@ -69,7 +81,7 @@
 
 <AnalyticsButtonWrapper event={analyticsEvent} data={analyticsData}>
 	<a href={link} class="btn btn-outline-secondary mt-1 me-1 {typeInfo.class} karla" target="_blank">
-		<i class="bi {typeInfo.icon} pe-2" />
+		<i class="bi {typeInfo.icon} pe-2"></i>
 		{#if zztvFromEvent}
 			Záznam z koncertu
 		{:else}

@@ -1,6 +1,4 @@
 <script>
-	export var event;
-	export var isPast = false;
 
 	import { onMount } from 'svelte';
 	import ShareButton from '$lib/buttons/ShareButton.svelte';
@@ -14,13 +12,21 @@
 	import LazyImage from '$lib/LazyImage.svelte';
 	import AnalyticsButtonWrapper from '$lib/buttons/AnalyticsButtonWrapper.svelte';
 	import BandLinkButton from '$lib/buttons/BandLinkButton.svelte';
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} event
+	 * @property {boolean} [isPast]
+	 */
+
+	/** @type {Props} */
+	let { event, isPast = false } = $props();
 
 	function showDetail() {
 		window.location = '/' + event.id;
 	}
 
 	const imagePath = `/dynamic/events/${event.id}.jpg`;
-	let imageExists = false;
+	let imageExists = $state(false);
 
 	const checkImageExists = async () => {
 		const response = await fetch(imagePath, { method: 'HEAD' });
@@ -67,7 +73,7 @@
 		<hr class="border-2" />
 		<AnalyticsButtonWrapper event="detail-from-button" data={{ eventLabel: event.label }}>
 			<a href="/{event.id}" class="btn btn-outline-info karla mt-1">
-				<i class="bi bi-info-circle-fill pe-2" />Detaily akce
+				<i class="bi bi-info-circle-fill pe-2"></i>Detaily akce
 			</a>
 		</AnalyticsButtonWrapper>
 		<FacebookEventButton fbEvent={event.fbEvent} label={event.label} card={true} />

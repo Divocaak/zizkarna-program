@@ -1,5 +1,12 @@
 <script>
 	import Analytics from '$lib/Analytics.svelte';
+	/**
+	 * @typedef {Object} Props
+	 * @property {import('svelte').Snippet} [children]
+	 */
+
+	/** @type {Props} */
+	let { children } = $props();
 </script>
 
 <svelte:head>
@@ -80,21 +87,21 @@
 		aria-expanded="false"
 		aria-label="Toggle navigation"
 	>
-		<span class="navbar-toggler-icon" />
+		<span class="navbar-toggler-icon"></span>
 	</button>
 	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 		<div class="pe-5 navbar-nav ms-auto">
 			<a class="nav-item nav-link neue" href="/#closest">Nejbližší akce</a>
 			<a class="nav-item nav-link neue" href="/#future">Na co se můžete těšit</a>
 			<a class="nav-item nav-link neue" href="/#older">Uplynulé akce</a>
-			<div class="d-none d-md-block border-start border-1 mx-1" />
+			<div class="d-none d-md-block border-start border-1 mx-1"></div>
 			<a class="nav-item nav-link neue" href="/zztv">žžTV</a>
-			<div class="d-none d-md-block border-start border-1 mx-1" />
+			<div class="d-none d-md-block border-start border-1 mx-1"></div>
 			<a class="nav-item nav-link neue" href="/info">Info</a>
 		</div>
 	</div>
 </nav>
-<slot />
+{@render children?.()}
 <Analytics />
 
 <style lang="scss">

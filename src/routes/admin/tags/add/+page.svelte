@@ -1,7 +1,7 @@
 <script>
 	import TagForm from "$lib/admin/TagForm.svelte";
 
-	export let form;
+	let { form } = $props();
 </script>
 
 {#if form !== null}<p>{form}</p>{/if}

@@ -1,8 +1,7 @@
 <script>
 	import EventForm from '$lib/admin/EventForm.svelte';
 
-	export let form;
-	export let data;
+	let { form, data } = $props();
 </script>
 
 {#if form !== null}<p>{form}</p>{/if}

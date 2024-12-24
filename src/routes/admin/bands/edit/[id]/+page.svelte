@@ -1,7 +1,6 @@
 <script>
 	import BandForm from '$lib/admin/BandForm.svelte';
-	export let data;
-	export let form;
+	let { data, form } = $props();
 
 	const scpCommand =
 		'scp -i ~/.ssh/jmhosting -r ' +
@@ -19,4 +18,4 @@
 
 <p>scp příkaz pro nahrání fotek (posílá celou složku):</p>
 <code>{scpCommand}</code>
-<button on:click={copyScp}>kopírovat</button>
+<button onclick={copyScp}>kopírovat</button>

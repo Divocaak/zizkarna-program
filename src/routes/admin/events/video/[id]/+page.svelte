@@ -1,6 +1,6 @@
 <script>
 	import { writable } from 'svelte/store';
-	export let data;
+	let { data } = $props();
 
 	const isLoading = writable(null);
 
@@ -94,7 +94,7 @@
 
 <h1>generátor ig story videa</h1>
 <a href="/admin/events">zpět</a><br /><br />
-<form method="POST" on:submit={handleSubmit}>
+<form method="POST" onsubmit={handleSubmit}>
 	<label for="eventLabel">
 		event label
 		<input
@@ -118,7 +118,7 @@
 			rows="2"
 			required
 			bind:value={$formData.eventTags}
-		/>
+		></textarea>
 	</label><br />
 	{#if selectedEvent.tickets}
 		<label for="eventTickets">
@@ -138,7 +138,7 @@
 	<br />band select<br />
 	{#each bands as band}
 		<input
-			on:change={() => selectBand(band)}
+			onchange={() => selectBand(band)}
 			type="radio"
 			id={band.id}
 			name="selectedBand"
@@ -160,7 +160,7 @@
 				rows="5"
 				required
 				bind:value={$selectedBand.description}
-			/>
+			></textarea>
 		</label><br />
 		<label for="bandTags">
 			band tags<br />
@@ -173,7 +173,7 @@
 				rows="2"
 				required
 				bind:value={$bandTags}
-			/>
+			></textarea>
 		</label><br />
 		{#each $selectedBand.imgs as img}
 			<div class="img-select">
@@ -193,7 +193,7 @@
 	{/if}
 	<label for="testFrame">
 		<input
-			on:change={() => changeTestFrame()}
+			onchange={() => changeTestFrame()}
 			type="checkbox"
 			id="testFrame"
 			name="testFrame"
@@ -223,7 +223,7 @@
 	(ᵔᴥᵔ)
 {:else}
 	<a href="/dynamic/generator/output.mp4" target="_blank" download="output.mp4">stáhnout video</a><br />
-	<!-- svelte-ignore a11y-media-has-caption -->
+	<!-- svelte-ignore a11y_media_has_caption -->
 	<video width="342" height="607" autoplay loop>
 		<source src="/dynamic/generator/output.mp4" type="video/mp4" />
 	</video><br />

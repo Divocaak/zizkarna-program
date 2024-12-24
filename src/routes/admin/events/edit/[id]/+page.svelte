@@ -1,7 +1,6 @@
 <script>
 	import EventForm from '$lib/admin/EventForm.svelte';
-	export let data;
-	export let form;
+	let { data, form } = $props();
 
 	const scpCommand =
 		'scp -i ~/.ssh/jmhosting -r ' +
@@ -19,7 +18,7 @@
 
 <p>scp příkaz pro nahrání úvodní fotky:</p>
 <code>{scpCommand}</code>
-<button on:click={copyScp}>kopírovat</button>
+<button onclick={copyScp}>kopírovat</button>
 <a href="/dynamic/events/{data.id}.jpg" target="_blank" download="{data.id}.jpg">
 	stáhnout úvodku
 </a><br />

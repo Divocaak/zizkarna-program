@@ -1,5 +1,5 @@
 <script>
-	export let data;
+	let { data } = $props();
 	const event = data.event;
 	const bands = data.bands ?? [];
 
@@ -82,14 +82,14 @@
 <b>Název</b>
 <p>
 	{event.label}
-	<button on:click={() => copyToClipboard(event.eventLabel)}>kopírovat</button>
+	<button onclick={() => copyToClipboard(event.eventLabel)}>kopírovat</button>
 </p>
 
 <b>Místo konání</b>
 <p>
 	Žižkárna, Žižkova třída 28, Č. Budějovice (Vedle OC MERCURY)
 	<button
-		on:click={() => copyToClipboard('Žižkárna, Žižkova třída 28, Č. Budějovice (Vedle OC MERCURY)')}
+		onclick={() => copyToClipboard('Žižkárna, Žižkova třída 28, Č. Budějovice (Vedle OC MERCURY)')}
 		>kopírovat</button
 	>
 </p>
@@ -97,13 +97,13 @@
 <b>Datum</b>
 <p>
 	{dateFormatted}
-	<button on:click={() => copyToClipboard(dateFormatted)}>kopírovat</button>
+	<button onclick={() => copyToClipboard(dateFormatted)}>kopírovat</button>
 </p>
 
 <b>Čas</b>
 <p>
 	{timeFormat(event.doors)}
-	<button on:click={() => copyToClipboard(timeFormat(event.doors))}>kopírovat</button>
+	<button onclick={() => copyToClipboard(timeFormat(event.doors))}>kopírovat</button>
 </p>
 
 <b>Popis</b>
@@ -133,35 +133,35 @@
 <b>Kontaktní informace</b>
 <p>
 	722680481
-	<button on:click={() => copyToClipboard('722680481')}>kopírovat</button>
+	<button onclick={() => copyToClipboard('722680481')}>kopírovat</button>
 </p>
 <p>
 	vojtech@zizkarna.cz
-	<button on:click={() => copyToClipboard('vojtech@zizkarna.cz')}>kopírovat</button>
+	<button onclick={() => copyToClipboard('vojtech@zizkarna.cz')}>kopírovat</button>
 </p>
 
 <b>Vstupné</b>
 <p>
 	{event.cash}
-	<button on:click={() => copyToClipboard(event.cash)}>kopírovat</button>
+	<button onclick={() => copyToClipboard(event.cash)}>kopírovat</button>
 </p>
 
 <b>Pořadatel</b>
 <p>
 	Žižkárna z.s.
-	<button on:click={() => copyToClipboard('Žižkárna z.s.')}>kopírovat</button>
+	<button onclick={() => copyToClipboard('Žižkárna z.s.')}>kopírovat</button>
 </p>
 
 <b>Zdroj dat</b>
 <p>
 	www.program.zizkarna.cz/{event.id}
-	<button on:click={() => copyToClipboard('www.program.zizkarna.cz/' + event.id)}>kopírovat</button>
+	<button onclick={() => copyToClipboard('www.program.zizkarna.cz/' + event.id)}>kopírovat</button>
 </p>
 
 <b>Odkaz na akci</b>
 <p>
 	{urlToEvent}
-	<button on:click={() => copyToClipboard(urlToEvent)}>kopírovat</button>
+	<button onclick={() => copyToClipboard(urlToEvent)}>kopírovat</button>
 </p>
 <p>
 	(funguje dynamicky, pokud existuje událost, nabídne odkaz na událost, pokud ne, nabídne odkaz na
@@ -172,6 +172,6 @@
 	<b>Rezervace vstupenek</b>
 	<p>
 		{event.tickets}
-		<button on:click={() => copyToClipboard(event.tickets)}>kopírovat</button>
+		<button onclick={() => copyToClipboard(event.tickets)}>kopírovat</button>
 	</p>
 {/if}

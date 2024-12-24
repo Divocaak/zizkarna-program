@@ -2,14 +2,26 @@
 	import { invalidateAll } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import Tag from '$lib/Tag.svelte';
-	export let data = null;
-	export let tags;
-	export let selectedTags = null;
-	export let bands;
-	export let selectedBands = null;
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} [data]
+	 * @property {any} tags
+	 * @property {any} [selectedTags]
+	 * @property {any} bands
+	 * @property {any} [selectedBands]
+	 */
+
+	/** @type {Props} */
+	let {
+		data = null,
+		tags,
+		selectedTags = null,
+		bands,
+		selectedBands = null
+	} = $props();
 	const selectedBandsKeys = selectedBands != null ? Object.keys(selectedBands) : null;
 
-	let dateStr = null;
+	let dateStr = $state(null);
 	if (data != null && data.date != null) {
 		const date = new Date(data.date).toLocaleDateString('cs-CZ', {}).split('. ');
 		if (date[0].length < 2) date[0] = '0' + date[0];

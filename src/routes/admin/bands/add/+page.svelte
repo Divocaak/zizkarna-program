@@ -1,8 +1,7 @@
 <script>
 	import BandForm from '$lib/admin/BandForm.svelte';
 
-	export let data;
-	export let form;
+	let { data, form } = $props();
 </script>
 
 {#if form !== null}<p>{form}</p>{/if}

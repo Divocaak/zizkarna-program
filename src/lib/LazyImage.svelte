@@ -2,10 +2,21 @@
 	import { onMount } from 'svelte';
 	import { FxReveal as Img } from '@zerodevx/svelte-img';
 
-	export let path;
-	export let alt = '';
-	export let additionalClasses = '';
-	export let disabled = false;
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} path
+	 * @property {string} [alt]
+	 * @property {string} [additionalClasses]
+	 * @property {boolean} [disabled]
+	 */
+
+	/** @type {Props} */
+	let {
+		path,
+		alt = '',
+		additionalClasses = '',
+		disabled = false
+	} = $props();
 
 	const src = {
 		img: { src: path, w: 1920, h: 1080 },
@@ -23,7 +34,7 @@
 		}
 	};
 
-	let ref, loaded;
+	let ref = $state(), loaded = $state();
 	onMount(() => {
 		if (ref.complete) loaded = true;
 	});
@@ -37,7 +48,7 @@
 		bind:ref
 		on:load={() => (loaded = true)}
 	/>
-	<div class="blur" class:loaded />
+	<div class="blur" class:loaded></div>
 </div>
 
 <style>

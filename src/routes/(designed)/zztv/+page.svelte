@@ -1,7 +1,7 @@
 <script>
 	import PlaylistEmbed from '$lib/PlaylistEmbed.svelte';
 	import BandLinkButton from '$lib/buttons/BandLinkButton.svelte';
-	export let data;
+	let { data } = $props();
 </script>
 
 <svelte:head>

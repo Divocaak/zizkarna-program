@@ -2,9 +2,15 @@
 	import { invalidateAll } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import Tag from '$lib/Tag.svelte';
-	export let data = null;
-	export let tags;
-	export let selectedTags = null;
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} [data]
+	 * @property {any} tags
+	 * @property {any} [selectedTags]
+	 */
+
+	/** @type {Props} */
+	let { data = null, tags, selectedTags = null } = $props();
 
 	function idResolver(id) {
 		return selectedTags != null && selectedTags.includes(id) ? 'old-tag-' + id : 'tag-' + id;

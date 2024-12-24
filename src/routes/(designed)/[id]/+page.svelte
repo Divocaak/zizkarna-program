@@ -11,7 +11,6 @@
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 	import BandImageBuilder from '$lib/BandImageBuilder.svelte';
 
-	export let data;
 	const event = data.event;
 	const bands = data.bands ?? [];
 	const isPast = data.isPast;
@@ -21,6 +20,7 @@
 	}
 
 	import { getEventSeo } from '$lib/seo/eventSeoBuilder.js';
+	let { data } = $props();
 	const eventSeo = getEventSeo(event, { tags: data.eventTags, bands: bands, past: isPast });
 
 	onMount(() => {
@@ -43,11 +43,11 @@
 <div
 	class="bg-img"
 	style="background-image: url('/dynamic/events/{event.id}.jpg'), url('/placeholder.jpg');"
-/>
+></div>
 <div class="content bg-light py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5">
 	<div class="back-arrow">
-		<!-- svelte-ignore a11y-missing-content -->
-		<a href="/" class="btn btn-close" />
+		<!-- svelte-ignore a11y_missing_content -->
+		<a href="/" class="btn btn-close"></a>
 	</div>
 	<h1 class="display-1 neue-bold">{event.label}</h1>
 	<div class="text-center" style="font-size:1.3rem">
@@ -106,7 +106,7 @@
 	<h2 class="display-3 text-center neue mt-0 mt-md-5 pt-0 pt-md-5">Časový harmonogram</h2>
 	<div class="karla">
 		<div class="mx-auto centered-div my-5" style="font-size: 1.2rem;">
-			<p><b>{timeFormat(event.doors)}</b><i class="bi bi-door-open px-2" />Otevření Žižkárny</p>
+			<p><b>{timeFormat(event.doors)}</b><i class="bi bi-door-open px-2"></i>Otevření Žižkárny</p>
 			{#each bands as band}
 				{#if !band.isCoorganiser}
 					<p><b>{timeFormat(band.stageTime)}</b> {band.label}</p>

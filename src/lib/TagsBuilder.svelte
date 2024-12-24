@@ -1,7 +1,13 @@
 <script>
 	import Tag from '$lib/Tag.svelte';
-	export let tags = [];
-	export let isHomepageCard = false;
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} [tags]
+	 * @property {boolean} [isHomepageCard]
+	 */
+
+	/** @type {Props} */
+	let { tags = [], isHomepageCard = false } = $props();
 </script>
 
 {#each tags as tag}

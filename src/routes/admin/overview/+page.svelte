@@ -103,7 +103,7 @@
 <h1>generátor přehledů</h1>
 <a href="/admin">zpět</a><br />
 <br />
-<form method="POST" on:submit={handleSubmit}>
+<form method="POST" onsubmit={handleSubmit}>
 	<label for="outputFormatWeek">
 		<input
 			type="radio"
@@ -155,7 +155,7 @@
 
 	<label for="outputDurationThumbnail">
 		<input
-			on:change={() => changeOutputMediumPoster(true)}
+			onchange={() => changeOutputMediumPoster(true)}
 			type="radio"
 			id="outputDurationThumbnail"
 			name="outputDuration"
@@ -167,7 +167,7 @@
 	</label><br />
 	<label for="outputDurationPoster">
 		<input
-			on:change={() => changeOutputMediumPoster(true)}
+			onchange={() => changeOutputMediumPoster(true)}
 			type="radio"
 			id="outputDurationPoster"
 			name="outputDuration"
@@ -179,7 +179,7 @@
 	</label><br />
 	<label for="outputDurationTarp">
 		<input
-			on:change={() => changeOutputMediumPoster(true)}
+			onchange={() => changeOutputMediumPoster(true)}
 			type="radio"
 			id="outputDurationTarp"
 			name="outputDuration"
@@ -191,7 +191,7 @@
 	</label><br />
 	<label for="outputDurationStory">
 		<input
-			on:change={() => changeOutputMediumPoster(false)}
+			onchange={() => changeOutputMediumPoster(false)}
 			type="radio"
 			id="outputDurationStory"
 			name="outputDuration"
@@ -204,7 +204,7 @@
 	</label><br />
 	<label for="outputDurationReel">
 		<input
-			on:change={() => changeOutputMediumPoster(false)}
+			onchange={() => changeOutputMediumPoster(false)}
 			type="radio"
 			id="outputDurationReel"
 			name="outputDuration"
@@ -242,7 +242,7 @@
 
 	<label for="testFrame">
 		<input
-			on:change={() => changeTestFrame()}
+			onchange={() => changeTestFrame()}
 			type="checkbox"
 			id="testFrame"
 			name="testFrame"
@@ -274,7 +274,7 @@
 	<!-- prettier-ignore -->
 	{#if $isImage === null}
 		<a href="/dynamic/generator/output.mp4" target="_blank" download="output.mp4">stáhnout video</a><br />
-		<!-- svelte-ignore a11y-media-has-caption -->
+		<!-- svelte-ignore a11y_media_has_caption -->
 		<video width="342" height="607" autoplay loop>
 			<source src="/dynamic/generator/output.mp4" type="video/mp4" />
 		</video><br />

@@ -2,8 +2,21 @@
 	import { onMount } from 'svelte';
 	import AnalyticsButtonWrapper from './AnalyticsButtonWrapper.svelte';
 
-	export let label, date, doors;
-	export let card = false;
+	/**
+	 * @typedef {Object} Props
+	 * @property {any} label
+	 * @property {any} date
+	 * @property {any} doors
+	 * @property {boolean} [card]
+	 */
+
+	/** @type {Props} */
+	let {
+		label,
+		date,
+		doors,
+		card = false
+	} = $props();
 
 	onMount(() => {
 		const script = document.createElement('script');
