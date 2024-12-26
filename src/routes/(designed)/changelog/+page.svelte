@@ -1,6 +1,13 @@
 <script>
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
+# 26. 12. 24
+
+## upraveno
+- migrace na SvelteKit 5
+- kontakty rozděleny na hudební a nehudební
+
+
 # 7. 7. 24
 
 ## MAJOR video generator refactor
