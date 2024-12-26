@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { FxReveal as Img } from '@zerodevx/svelte-img';
+	/* import { FxReveal as Img } from '@zerodevx/svelte-img'; */
 
 	/**
 	 * @typedef {Object} Props
@@ -11,12 +11,7 @@
 	 */
 
 	/** @type {Props} */
-	let {
-		path,
-		alt = '',
-		additionalClasses = '',
-		disabled = false
-	} = $props();
+	let { path, alt = '', additionalClasses = '', disabled = false } = $props();
 
 	const src = {
 		img: { src: path, w: 1920, h: 1080 },
@@ -34,19 +29,27 @@
 		}
 	};
 
-	let ref = $state(), loaded = $state();
+	let ref = $state(),
+		loaded = $state();
 	onMount(() => {
 		if (ref.complete) loaded = true;
 	});
 </script>
 
+<!-- BUG svelte-img has to migrate to svelte5 -->
 <div class="wrap">
-	<Img
+	<!-- <Img
 		{src}
 		class="my-img {additionalClasses}{disabled ? " disabled" : ""}"
 		{alt}
 		bind:ref
 		on:load={() => (loaded = true)}
+	/> -->
+	<img
+		src={path}
+		class="my-img {additionalClasses}{disabled ? " disabled" : ""}"
+		{alt}
+		onload={() => (loaded = true)}
 	/>
 	<div class="blur" class:loaded></div>
 </div>

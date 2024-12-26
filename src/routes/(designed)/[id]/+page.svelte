@@ -10,18 +10,19 @@
 	import BandLinkButton from '$lib/buttons/BandLinkButton.svelte';
 	import TagsBuilder from '$lib/TagsBuilder.svelte';
 	import BandImageBuilder from '$lib/BandImageBuilder.svelte';
-
+	import { getEventSeo } from '$lib/seo/eventSeoBuilder.js';
+	
+	let { data } = $props();
+	
 	const event = data.event;
 	const bands = data.bands ?? [];
 	const isPast = data.isPast;
 
+	const eventSeo = getEventSeo(event, { tags: data.eventTags, bands: bands, past: isPast });
+
 	function timeFormat(time) {
 		return time.substring(0, time.length - 3);
 	}
-
-	import { getEventSeo } from '$lib/seo/eventSeoBuilder.js';
-	let { data } = $props();
-	const eventSeo = getEventSeo(event, { tags: data.eventTags, bands: bands, past: isPast });
 
 	onMount(() => {
 		const script = document.createElement('script');
@@ -35,7 +36,7 @@
 	<title>{event.label}</title>
 	<meta
 		name="description"
-		content="Zajímá tě detail akce {event.label}? Na této stránce najdeš odkazy na jedtliové kapely, představující text a spoustu dalšího"
+		content="Zajímá tě detail akce {event.label}? Na této stránce najdeš odkazy na jednotlivé kapely, anotaci a spoustu dalšího"
 	/>
 	<meta name="keywords" content={eventSeo.keywords.join(', ')} />
 </svelte:head>
@@ -47,6 +48,7 @@
 <div class="content bg-light py-5 mx-1 mx-md-5 px-4 px-md-5 border border-dark border-5">
 	<div class="back-arrow">
 		<!-- svelte-ignore a11y_missing_content -->
+		<!-- svelte-ignore a11y_consider_explicit_label -->
 		<a href="/" class="btn btn-close"></a>
 	</div>
 	<h1 class="display-1 neue-bold">{event.label}</h1>

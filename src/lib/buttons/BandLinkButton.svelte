@@ -12,7 +12,6 @@
 		Other: 'Jiný odkaz'
 	};
 
-
 	/**
 	 * @typedef {Object} Props
 	 * @property {any} link

@@ -1,4 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <script>
 	export let label;
 	let text = 'Přijď do Žižkárny na ' + label;
@@ -20,7 +19,7 @@
 			if (navigator.canShare) {
 				await navigator.share({ text, url, title });
 			} else {
-				await navigator.clipboard.writeText(url + "?from=share");
+				await navigator.clipboard.writeText(url + '?from=share');
 				complete = true;
 			}
 		} catch (error) {
@@ -31,11 +30,11 @@
 
 <AnalyticsButtonWrapper event="share" data={{ eventLabel: label, eventPast: past }} fromCard={card}>
 	<button on:click={handleClick} class="btn btn-outline-secondary mt-1 karla">
-		<i class="bi bi-share-fill pe-2" />
+		<i class="bi bi-share-fill pe-2"></i>
 		{#if complete}
-			<slot name="complete">Odkaz zkopírován</slot>
+			Odkaz zkopírován
 		{:else}
-			<slot>{!past ? 'Pozvat přátele' : 'Ukázat přátelům'}</slot>
+			{!past ? 'Pozvat přátele' : 'Ukázat přátelům'}
 		{/if}
 	</button>
 </AnalyticsButtonWrapper>
