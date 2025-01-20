@@ -21,13 +21,30 @@
 		bandName={'zizkarna'}
 	/>
 	<BandLinkButton link={'https://zizkarna.cz/'} eventLabel={'zz-info-page'} bandName={'zizkarna'} />
-	<h2 class="pt-5 neue-bold">Dramaturgie a produkce Žižkárny</h2>
-	<p class="lead karla">
-		Vojtěch Divoký<br />
-		<a class="link-secondary" href="mailto:vojtech@zizkarna.cz">
-			<i class="bi bi-envelope pe-2" />vojtech@zizkarna.cz
-		</a>
-	</p>
+	<h2 class="pt-5 neue-bold">Dramaturgie a produkce</h2>
+	<div class="row p-0 m-0">
+		<div class="col-12 col-sm-6 p-0 m-0">
+			<h3 class="neue-bold">hudebních akcí</h3>
+			<p class="lead karla">
+				Vojtěch Divoký<br />
+				<a class="link-secondary" href="mailto:vojtech@zizkarna.cz">
+					<i class="bi bi-envelope pe-2"></i>vojtech@zizkarna.cz
+				</a>
+			</p>
+		</div>
+		<div class="col-12 col-sm-6 p-0 m-0">
+			<h3 class="neue-bold">nehudebních akcí</h3>
+			<p class="lead karla">
+				Petra Hadová<br />
+				<a class="link-secondary" href="mailto:vojtech@zizkarna.cz">
+					<i class="bi bi-envelope pe-2"></i>petra@zizkarna.cz
+				</a><br>
+				<a class="link-secondary" href="tel:605237868">
+					<i class="bi bi-telephone pe-2"></i>605237868
+				</a>
+			</p>
+		</div>
+	</div>
 	<h2 class="pt-5 neue-bold">Pro promotéry</h2>
 	<p class="karla">
 		<b>Logo Žižkárny</b> (<i>.svg</i> a <i>.png</i>) pro použití na plakátech a grafikách lze stáhnout
