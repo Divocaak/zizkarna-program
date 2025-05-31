@@ -8,7 +8,8 @@ import { PaddingElement } from '$lib/classes/video/paddingHolder';
 import puppeteer from 'puppeteer';
 
 const outputPath = "dynamic/generator/";
-const frameRate = 1;
+/* BUG framerate */
+const frameRate = 60;
 
 const puppeteerLaunchOptions = {
     headless: "new",

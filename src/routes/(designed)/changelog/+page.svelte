@@ -1,6 +1,13 @@
 <script>
     import SvelteMarkdown from 'svelte-markdown';
     const source = `
+
+# 31. 5. 25
+
+## přidáno
+- API endpoint pro Guilde (integrace do inbudejovice.cz)
+
+
 # 20. 1. 25
 
 ## upraveno
