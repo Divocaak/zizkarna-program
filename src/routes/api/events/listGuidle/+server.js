@@ -1,4 +1,5 @@
 import { pool } from "$lib/db/mysql.js";
+import { json } from '@sveltejs/kit';
 
 export async function GET({ url }) {
     const year = url.searchParams.get("year");
@@ -20,7 +21,7 @@ export async function GET({ url }) {
         })
     );
 
-    return new Response(JSON.stringify(result));
+    return json(result);
 }
 
 async function addTags(event) {
