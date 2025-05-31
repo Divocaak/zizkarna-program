@@ -82,6 +82,9 @@
 	<div class="mt-5 pt-5">
 		<a class="text-muted karla" href="/changelog">changelog webu</a>
 	</div>
+	<div class="mt-5 pt-5 text-end signature">
+		<p class="text-muted karla px-3">Website coded, designed and maintained by <a class="text-muted karla"  href="https://divokyvojtech.cz" target="_blank">Vojtěch Divoký</a></p>
+	</div>
 </div>
 
 <style>
@@ -90,5 +93,9 @@
 		position: relative;
 		width: 100%;
 		height: 100%;
+	}
+
+	.signature{
+		font-size: 12px;
 	}
 </style>
