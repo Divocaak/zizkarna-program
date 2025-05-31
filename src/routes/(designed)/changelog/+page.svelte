@@ -1,11 +1,15 @@
 <script>
-    import SvelteMarkdown from 'svelte-markdown';
-    const source = `
+	import MarkdownIt from 'markdown-it';
+	const md = new MarkdownIt();
+	const source = `
 
 # 31. 5. 25
 
 ## přidáno
 - API endpoint pro Guilde (integrace do inbudejovice.cz)
+- podpis autora
+- odstraněna sekce Pro promotéry (obsáhleji na zizkarna.cz)
+- přechod na Svelte 5!
 
 
 # 20. 1. 25
@@ -31,7 +35,7 @@
 ## MAJOR video generator refactor
 
 ### upraveno
-- video generátory sjednoceny, použito OOP
+// - video generátory sjednoceny, použito OOP
 - video generátory běží na html kódu, ne na Canvas
 - video generátor kapel v rámci eventu:
   - obrázek kapely kliknutelný
@@ -358,15 +362,19 @@
 ## upraveno
 - db pool
 `;
-  </script>
+
+	$: html = md.render(source);
+</script>
 
 <svelte:head>
-  <title>Changelog</title>
+	<title>Changelog</title>
 	<meta
 		name="description"
 		content="Nejnovější aktualizace programu na jednom místě. Aby Tě žádná změna nepřekvapila"
 	/>
 </svelte:head>
 
-<a href="https://github.com/Divocaak/zizkarna-program" class="text-muted karla" target="_blank"><i class="bi bi-github pe-1"></i>GitHub repo</a>
-<SvelteMarkdown {source} />
+<a href="https://github.com/Divocaak/zizkarna-program" class="text-muted karla" target="_blank"
+	><i class="bi bi-github pe-1"></i>GitHub repo</a
+>
+<div class="markdown">{@html html}</div>

@@ -23,7 +23,7 @@
 			<th scope="col"></th>
 			<th scope="col"></th>
 			<th scope="col">Místo | Online</th>
-		  </tr>
+		</tr>
 	</thead>
 	{#each data.events as event}
 		<tr>
@@ -58,7 +58,9 @@
 				{/if}
 			</td>
 			<td>
-				{event.cash}{#if event.tickets != null}&nbsp;|&nbsp;<span style="color:cyan">{event.presalePrice}</span>{/if}
+				{event.cash}{#if event.tickets != null}&nbsp;|&nbsp;<span style="color:cyan"
+						>{event.presalePrice}</span
+					>{/if}
 			</td>
 			<td>
 				{event.label}

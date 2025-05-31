@@ -222,7 +222,8 @@
 {:else if $isLoading === null}
 	(ᵔᴥᵔ)
 {:else}
-	<a href="/dynamic/generator/output.mp4" target="_blank" download="output.mp4">stáhnout video</a><br />
+	<a href="/dynamic/generator/output.mp4" target="_blank" download="output.mp4">stáhnout video</a
+	><br />
 	<!-- svelte-ignore a11y-media-has-caption -->
 	<video width="342" height="607" autoplay loop>
 		<source src="/dynamic/generator/output.mp4" type="video/mp4" />

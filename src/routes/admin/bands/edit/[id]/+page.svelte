@@ -15,7 +15,7 @@
 {#if form !== null}<p>{form}</p>{/if}
 <h1>upravit kapelu</h1>
 <a href="/admin/bands">zpět</a>
-<BandForm data={data} tags={data.tags} selectedTags={data.selectedTags}/>
+<BandForm {data} tags={data.tags} selectedTags={data.selectedTags} />
 
 <p>scp příkaz pro nahrání fotek (posílá celou složku):</p>
 <code>{scpCommand}</code>

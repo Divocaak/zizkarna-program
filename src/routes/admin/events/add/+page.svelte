@@ -9,4 +9,4 @@
 <h1>přidat event</h1>
 <a href="/admin/events">zpět</a>
 
-<EventForm tags={data.tags} bands={data.bands}/>
+<EventForm tags={data.tags} bands={data.bands} />

@@ -6,7 +6,7 @@
 	export let card = false;
 </script>
 
-<AnalyticsButtonWrapper event="facebook-event" data={{eventLabel: label}} fromCard={card}>
+<AnalyticsButtonWrapper event="facebook-event" data={{ eventLabel: label }} fromCard={card}>
 	<a
 		href={fbEvent}
 		class="btn btn-outline-primary karla mt-1"

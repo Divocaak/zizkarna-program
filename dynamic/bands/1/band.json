@@ -1,11 +1,8 @@
 {
-    "links": [
-        "https://youtu.be/iOPEZaVtzcw",
-        "https://youtu.be/YPIqNvkcQQc",
-        "https://sptfy.com/MIt1"
-    ],
-    "imgs": [
-        "0.jpg",
-        "1.jpg"
-    ]
+	"links": [
+		"https://youtu.be/iOPEZaVtzcw",
+		"https://youtu.be/YPIqNvkcQQc",
+		"https://sptfy.com/MIt1"
+	],
+	"imgs": ["0.jpg", "1.jpg"]
 }

@@ -9,4 +9,4 @@
 <h1>přidat kapelu</h1>
 <a href="/admin/bands">zpět</a>
 
-<BandForm tags={data.tags}/>
+<BandForm tags={data.tags} />

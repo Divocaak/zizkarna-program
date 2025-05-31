@@ -1,5 +1,5 @@
 <script>
-	import TagForm from "$lib/admin/TagForm.svelte";
+	import TagForm from '$lib/admin/TagForm.svelte';
 
 	export let form;
 </script>
