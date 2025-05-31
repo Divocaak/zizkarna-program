@@ -7,257 +7,287 @@ import { PassThrough } from 'stream';
 import { PaddingElement } from '$lib/classes/video/paddingHolder';
 import puppeteer from 'puppeteer';
 
-const outputPath = "dynamic/generator/";
+const outputPath = 'dynamic/generator/';
 /* BUG framerate */
 const frameRate = 60;
 
 const puppeteerLaunchOptions = {
-    headless: "new",
-    maxConcurrency: 10,
-    args: [
-        '--headless',
-        '--disable-gpu',
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--single-process',
-        '--disable-background-networking',
-        '--disable-background-timer-throttling',
-        '--disable-backgrounding-occluded-windows',
-        '--disable-renderer-backgrounding',
-    ]
+	headless: 'new',
+	maxConcurrency: 10,
+	args: [
+		'--headless',
+		'--disable-gpu',
+		'--no-sandbox',
+		'--disable-setuid-sandbox',
+		'--disable-dev-shm-usage',
+		'--disable-accelerated-2d-canvas',
+		'--no-first-run',
+		'--no-zygote',
+		'--single-process',
+		'--disable-background-networking',
+		'--disable-background-timer-throttling',
+		'--disable-backgrounding-occluded-windows',
+		'--disable-renderer-backgrounding'
+	]
 };
 
 export async function renderTemplate({
-    onlyFrame = null,
-    duration,
-    outputDimensions = { w: 1080, h: 1920 },
-    padding = PaddingElement({ x: 0, y: 0 }),
-    overviewPoster = false,
-    videoElements = [],
-    additionalInnerContainerStyles = ""
+	onlyFrame = null,
+	duration,
+	outputDimensions = { w: 1080, h: 1920 },
+	padding = PaddingElement({ x: 0, y: 0 }),
+	overviewPoster = false,
+	videoElements = [],
+	additionalInnerContainerStyles = ''
 }) {
-    ffmpeg.setFfmpegPath(ffmpegStatic);
+	ffmpeg.setFfmpegPath(ffmpegStatic);
 
-    // Clean up the temporary directories first
-    for (const path of [outputPath]) {
-        if (fs.existsSync(path)) await fs.promises.rm(path, { recursive: true });
-        await fs.promises.mkdir(path, { recursive: true });
-    }
+	// Clean up the temporary directories first
+	for (const path of [outputPath]) {
+		if (fs.existsSync(path)) await fs.promises.rm(path, { recursive: true });
+		await fs.promises.mkdir(path, { recursive: true });
+	}
 
-    // duration value is a4 or b0 (posters from overviewGenerators)
-    if (duration === 'a4' || duration == "b0" || duration == "thumbnail") duration = 2;
+	// duration value is a4 or b0 (posters from overviewGenerators)
+	if (duration === 'a4' || duration == 'b0' || duration == 'thumbnail') duration = 2;
 
-    console.time("===_init");
-    const gradients = [];
-    let gradientMiddleTimeOffset = -2;
-    for (let i = 0; i < 4; i++) {
-        const sizeFactor = Math.floor(Math.random() * (2 - 1 + 1)) + 1;
-        const gradW = outputDimensions.w * sizeFactor;
-        const gradH = outputDimensions.h * sizeFactor;
-        const posStart = ImageVideoElement.getImagePositionInRange(gradW, gradH, outputDimensions.w, outputDimensions.h);
-        const posMid = ImageVideoElement.getImagePositionInRange(gradW, gradH, outputDimensions.w, outputDimensions.h);
-        const posEnd = ImageVideoElement.getImagePositionInRange(gradW, gradH, outputDimensions.w, outputDimensions.h);
+	console.time('===_init');
+	const gradients = [];
+	let gradientMiddleTimeOffset = -2;
+	for (let i = 0; i < 4; i++) {
+		const sizeFactor = Math.floor(Math.random() * (2 - 1 + 1)) + 1;
+		const gradW = outputDimensions.w * sizeFactor;
+		const gradH = outputDimensions.h * sizeFactor;
+		const posStart = ImageVideoElement.getImagePositionInRange(
+			gradW,
+			gradH,
+			outputDimensions.w,
+			outputDimensions.h
+		);
+		const posMid = ImageVideoElement.getImagePositionInRange(
+			gradW,
+			gradH,
+			outputDimensions.w,
+			outputDimensions.h
+		);
+		const posEnd = ImageVideoElement.getImagePositionInRange(
+			gradW,
+			gradH,
+			outputDimensions.w,
+			outputDimensions.h
+		);
 
-        gradients.push(new ImageVideoElement({
-            id: `gradient-${i}`,
-            content: `./vidGenAssets/grads/grad${i}.png`,
-            posX: [
-                { time: 0, value: posStart.x },
-                { time: (duration / 2) + gradientMiddleTimeOffset, value: posMid.x },
-                { time: duration, value: posEnd.x }
-            ],
-            posY: [
-                { time: 0, value: posStart.y },
-                { time: (duration / 2) + gradientMiddleTimeOffset, value: posMid.y },
-                { time: duration, value: posEnd.y }
-            ],
-            wPx: gradW,
-            hPx: gradH,
-            easing: "inOutBack"
-        }));
-        gradientMiddleTimeOffset++;
-    }
+		gradients.push(
+			new ImageVideoElement({
+				id: `gradient-${i}`,
+				content: `./vidGenAssets/grads/grad${i}.png`,
+				posX: [
+					{ time: 0, value: posStart.x },
+					{ time: duration / 2 + gradientMiddleTimeOffset, value: posMid.x },
+					{ time: duration, value: posEnd.x }
+				],
+				posY: [
+					{ time: 0, value: posStart.y },
+					{ time: duration / 2 + gradientMiddleTimeOffset, value: posMid.y },
+					{ time: duration, value: posEnd.y }
+				],
+				wPx: gradW,
+				hPx: gradH,
+				easing: 'inOutBack'
+			})
+		);
+		gradientMiddleTimeOffset++;
+	}
 
-    const fontDataNeue = font2base64.encodeToDataUrlSync('./vidGenAssets/neue.otf')
-    const fontDataKarla = font2base64.encodeToDataUrlSync('./vidGenAssets/karla.ttf')
+	const fontDataNeue = font2base64.encodeToDataUrlSync('./vidGenAssets/neue.otf');
+	const fontDataKarla = font2base64.encodeToDataUrlSync('./vidGenAssets/karla.ttf');
 
-    const staticStyles = getStaticStyles({
-        outputDimensions: outputDimensions,
-        padding: padding,
-        additionalInnerContainerStyles: additionalInnerContainerStyles,
-        fonts: { neue: fontDataNeue, karla: fontDataKarla }
-    });
-    const staticBody = getStaticBody({
-        gradients: gradients,
-        videoElements: videoElements,
-    });
+	const staticStyles = getStaticStyles({
+		outputDimensions: outputDimensions,
+		padding: padding,
+		additionalInnerContainerStyles: additionalInnerContainerStyles,
+		fonts: { neue: fontDataNeue, karla: fontDataKarla }
+	});
+	const staticBody = getStaticBody({
+		gradients: gradients,
+		videoElements: videoElements
+	});
 
-    const browser = await puppeteer.launch(puppeteerLaunchOptions);
-    const page = await browser.newPage();
-    await page.setViewport({ width: outputDimensions.w, height: outputDimensions.h });
-    console.timeEnd("===_init");
+	const browser = await puppeteer.launch(puppeteerLaunchOptions);
+	const page = await browser.newPage();
+	await page.setViewport({ width: outputDimensions.w, height: outputDimensions.h });
+	console.timeEnd('===_init');
 
-    if (overviewPoster) {
-        const html = getPage({
-            staticStyles: staticStyles,
-            staticBody: staticBody,
-            time: 1,
-            gradients: gradients,
-            videoElements: videoElements
-        });
+	if (overviewPoster) {
+		const html = getPage({
+			staticStyles: staticStyles,
+			staticBody: staticBody,
+			time: 1,
+			gradients: gradients,
+			videoElements: videoElements
+		});
 
-        if (onlyFrame) return html;
+		if (onlyFrame) return html;
 
-        let viewportHeight = 540;
-        const remainder = outputDimensions.h % viewportHeight;
-        if (remainder !== 0) viewportHeight = viewportHeight - remainder;
-        await page.setViewport({ width: outputDimensions.w, height: viewportHeight });
+		let viewportHeight = 540;
+		const remainder = outputDimensions.h % viewportHeight;
+		if (remainder !== 0) viewportHeight = viewportHeight - remainder;
+		await page.setViewport({ width: outputDimensions.w, height: viewportHeight });
 
-        const numScreenshots = Math.ceil(outputDimensions.h / viewportHeight);
-        const buffers = [];
-        for (let i = 0; i < numScreenshots; i++) {
-            const offsetY = i * viewportHeight;
-            await page.evaluate(_offsetY => window.scrollTo(0, _offsetY), offsetY);
-            buffers.push(await renderFrame({ page: page, html: html }));
-        }
+		const numScreenshots = Math.ceil(outputDimensions.h / viewportHeight);
+		const buffers = [];
+		for (let i = 0; i < numScreenshots; i++) {
+			const offsetY = i * viewportHeight;
+			await page.evaluate((_offsetY) => window.scrollTo(0, _offsetY), offsetY);
+			buffers.push(await renderFrame({ page: page, html: html }));
+		}
 
-        await page.close();
-        await browser.close();
-        await createPosterFromBuffers(buffers);
-        return new Response(JSON.stringify({ path: `${outputPath}output.jpg`, format: "image" }, { status: 200 }));
-    }
+		await page.close();
+		await browser.close();
+		await createPosterFromBuffers(buffers);
+		return new Response(
+			JSON.stringify({ path: `${outputPath}output.jpg`, format: 'image' }, { status: 200 })
+		);
+	}
 
-    // not null, which means that a number of wanted test frame is passed
-    if (onlyFrame !== null) {
-        return getPage({
-            staticStyles: staticStyles,
-            staticBody: staticBody,
-            time: onlyFrame,
-            gradients: gradients,
-            videoElements: videoElements
-        });
-    }
+	// not null, which means that a number of wanted test frame is passed
+	if (onlyFrame !== null) {
+		return getPage({
+			staticStyles: staticStyles,
+			staticBody: staticBody,
+			time: onlyFrame,
+			gradients: gradients,
+			videoElements: videoElements
+		});
+	}
 
-    const imageBuffers = await generateImages({
-        page: page,
-        duration: duration,
-        staticStyles: staticStyles,
-        staticBody: staticBody,
-        gradients: gradients,
-        videoElements: videoElements
-    });
+	const imageBuffers = await generateImages({
+		page: page,
+		duration: duration,
+		staticStyles: staticStyles,
+		staticBody: staticBody,
+		gradients: gradients,
+		videoElements: videoElements
+	});
 
-    await page.close();
-    await browser.close();
-    await createVideoFromBuffers(imageBuffers);
-    return new Response(JSON.stringify({ path: `${outputPath}output.mp4`, format: "video" }, { status: 200 }));
+	await page.close();
+	await browser.close();
+	await createVideoFromBuffers(imageBuffers);
+	return new Response(
+		JSON.stringify({ path: `${outputPath}output.mp4`, format: 'video' }, { status: 200 })
+	);
 }
 
 async function renderFrame({ page, html }) {
-    page.setContent(html);
-    return await page.screenshot({
-        type: 'jpeg',
-        quality: 80,
-        encoding: 'buffer'
-    });
+	page.setContent(html);
+	return await page.screenshot({
+		type: 'jpeg',
+		quality: 80,
+		encoding: 'buffer'
+	});
 }
 
-async function generateImages({ page, duration, staticStyles, staticBody, gradients, videoElements }) {
-    const imageBuffers = [];
-    const frameCount = Math.floor(duration * frameRate);
-    console.time("===_render_all_frames");
+async function generateImages({
+	page,
+	duration,
+	staticStyles,
+	staticBody,
+	gradients,
+	videoElements
+}) {
+	const imageBuffers = [];
+	const frameCount = Math.floor(duration * frameRate);
+	console.time('===_render_all_frames');
 
-    for (let i = 0; i < frameCount; i++) {
-        console.time(`===_render_frame_${i}`);
+	for (let i = 0; i < frameCount; i++) {
+		console.time(`===_render_frame_${i}`);
 
-        const time = i / frameRate;
-        const buffer = await renderFrame({
-            page: page,
-            html: getPage({
-                staticStyles: staticStyles,
-                staticBody: staticBody,
-                time: time,
-                gradients: gradients,
-                videoElements: videoElements
-            })
-        });
-        imageBuffers.push(buffer);
+		const time = i / frameRate;
+		const buffer = await renderFrame({
+			page: page,
+			html: getPage({
+				staticStyles: staticStyles,
+				staticBody: staticBody,
+				time: time,
+				gradients: gradients,
+				videoElements: videoElements
+			})
+		});
+		imageBuffers.push(buffer);
 
-        console.timeEnd(`===_render_frame_${i}`);
-    }
+		console.timeEnd(`===_render_frame_${i}`);
+	}
 
-    console.timeEnd("===_render_all_frames");
-    return imageBuffers;
-};
+	console.timeEnd('===_render_all_frames');
+	return imageBuffers;
+}
 
 const createVideoFromBuffers = (buffers) => {
-    return new Promise((resolve, reject) => {
-        const videoOutputPath = `${outputPath}output.mp4`;
+	return new Promise((resolve, reject) => {
+		const videoOutputPath = `${outputPath}output.mp4`;
 
-        const inputStream = new PassThrough();
-        buffers.forEach(buffer => { inputStream.write(buffer); });
-        inputStream.end();
+		const inputStream = new PassThrough();
+		buffers.forEach((buffer) => {
+			inputStream.write(buffer);
+		});
+		inputStream.end();
 
-        ffmpeg(inputStream)
-            .inputFormat('image2pipe')
-            .inputFPS(frameRate)
-            .videoCodec('libx264')
-            .outputOptions(['-pix_fmt yuv420p'])
-            .on('end', () => {
-                console.log('Video created successfully');
-                resolve(videoOutputPath);
-            })
-            .on('error', (err, stdout, stderr) => {
-                console.error('Error creating video:', err);
-                console.log("stdout:\n" + stdout);
-                console.log("stderr:\n" + stderr);
-                reject(err);
-            })
-            .save(videoOutputPath);
-    });
+		ffmpeg(inputStream)
+			.inputFormat('image2pipe')
+			.inputFPS(frameRate)
+			.videoCodec('libx264')
+			.outputOptions(['-pix_fmt yuv420p'])
+			.on('end', () => {
+				console.log('Video created successfully');
+				resolve(videoOutputPath);
+			})
+			.on('error', (err, stdout, stderr) => {
+				console.error('Error creating video:', err);
+				console.log('stdout:\n' + stdout);
+				console.log('stderr:\n' + stderr);
+				reject(err);
+			})
+			.save(videoOutputPath);
+	});
 };
 
 const createPosterFromBuffers = (buffers) => {
-    return new Promise((resolve, reject) => {
-        const posterOutputPath = `${outputPath}/output.jpg`;
+	return new Promise((resolve, reject) => {
+		const posterOutputPath = `${outputPath}/output.jpg`;
 
-        const inputStream = new PassThrough();
-        buffers.forEach(buffer => { inputStream.write(buffer); });
-        inputStream.end();
+		const inputStream = new PassThrough();
+		buffers.forEach((buffer) => {
+			inputStream.write(buffer);
+		});
+		inputStream.end();
 
-        ffmpeg(inputStream)
-            .inputFormat('image2pipe')
-            .outputOptions('-vf', `tile=layout=1x${buffers.length}`)
-            .frames(1)
-            .outputOptions('-pix_fmt', 'yuv420p')
-            .on('end', () => {
-                console.log('Processing finished!');
-                resolve(posterOutputPath);
-            })
-            .on('error', (err) => {
-                console.error('Error creating video:', err);
-                console.log("stdout:\n" + stdout);
-                console.log("stderr:\n" + stderr);
-                reject(err);
-            })
-            .save(posterOutputPath)
-    });
-}
+		ffmpeg(inputStream)
+			.inputFormat('image2pipe')
+			.outputOptions('-vf', `tile=layout=1x${buffers.length}`)
+			.frames(1)
+			.outputOptions('-pix_fmt', 'yuv420p')
+			.on('end', () => {
+				console.log('Processing finished!');
+				resolve(posterOutputPath);
+			})
+			.on('error', (err) => {
+				console.error('Error creating video:', err);
+				console.log('stdout:\n' + stdout);
+				console.log('stderr:\n' + stderr);
+				reject(err);
+			})
+			.save(posterOutputPath);
+	});
+};
 
-function getPage({
-    staticStyles,
-    staticBody,
-    time,
-    gradients = [],
-    videoElements = []
-}) {
-    console.time("===_getPage");
-    const dynamicStyles = getDynamicStyles({ time: time, gradients: gradients, videoElements: videoElements });
-    const html = `
+function getPage({ staticStyles, staticBody, time, gradients = [], videoElements = [] }) {
+	console.time('===_getPage');
+	const dynamicStyles = getDynamicStyles({
+		time: time,
+		gradients: gradients,
+		videoElements: videoElements
+	});
+	const html = `
         <html>
             <head>
                 <style>
@@ -269,17 +299,17 @@ function getPage({
                 ${staticBody}
             </body>
         </html>`;
-    console.timeEnd("===_getPage");
-    return html;
+	console.timeEnd('===_getPage');
+	return html;
 }
 
 function getStaticStyles({
-    outputDimensions = { w: 1080, h: 1920 },
-    padding = PaddingElement({ x: 0, y: 0 }),
-    additionalInnerContainerStyles = "",
-    fonts
+	outputDimensions = { w: 1080, h: 1920 },
+	padding = PaddingElement({ x: 0, y: 0 }),
+	additionalInnerContainerStyles = '',
+	fonts
 }) {
-    return `
+	return `
         @font-face {
             font-family: 'Neue Machina Regular';
             src: url(${fonts.neue}) format('woff2');
@@ -333,36 +363,28 @@ function getStaticStyles({
         }`;
 }
 
-
-function getDynamicStyles({
-    time,
-    gradients = [],
-    videoElements = [],
-}) {
-    let styles = "";
-    gradients.forEach(gradient => styles += `${gradient.getGradientStyles(time)}\n`);
-    videoElements.forEach(element => styles += `${element.getStyles(time)}\n`);
-    return styles;
+function getDynamicStyles({ time, gradients = [], videoElements = [] }) {
+	let styles = '';
+	gradients.forEach((gradient) => (styles += `${gradient.getGradientStyles(time)}\n`));
+	videoElements.forEach((element) => (styles += `${element.getStyles(time)}\n`));
+	return styles;
 }
 
-function getStaticBody({
-    gradients = [],
-    videoElements = [],
-}) {
-    let gradientsHtml = '';
-    gradients.forEach(gradient => gradientsHtml += `${gradient.getHtml()}\n`);
+function getStaticBody({ gradients = [], videoElements = [] }) {
+	let gradientsHtml = '';
+	gradients.forEach((gradient) => (gradientsHtml += `${gradient.getHtml()}\n`));
 
-    let elementHtml = '';
-    let elementHtmlImgs = "";
-    videoElements.forEach(element => {
-        if (element instanceof ImageVideoElement) {
-            elementHtmlImgs += `${element.getHtml()}\n`;
-            return;
-        }
-        elementHtml += `${element.getHtml()}\n`;
-    });
+	let elementHtml = '';
+	let elementHtmlImgs = '';
+	videoElements.forEach((element) => {
+		if (element instanceof ImageVideoElement) {
+			elementHtmlImgs += `${element.getHtml()}\n`;
+			return;
+		}
+		elementHtml += `${element.getHtml()}\n`;
+	});
 
-    return `
+	return `
         <div class="bg-holder">
             ${gradientsHtml}
             <div class="noise"></div>

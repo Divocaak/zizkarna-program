@@ -5,7 +5,12 @@
 	export let src = '';
 </script>
 
-<AnalyticsButtonWrapper classes={"col-12 col-md-6"} event={'zztv-playlist'} data={{ playlistTitle: title, src: src }} youtubePlaylist={true}>
+<AnalyticsButtonWrapper
+	classes={'col-12 col-md-6'}
+	event={'zztv-playlist'}
+	data={{ playlistTitle: title, src: src }}
+	youtubePlaylist={true}
+>
 	<iframe
 		{src}
 		{title}
@@ -16,7 +21,7 @@
 </AnalyticsButtonWrapper>
 
 <style>
-	iframe{
+	iframe {
 		position: relative;
 		width: 100%;
 		height: 100%;

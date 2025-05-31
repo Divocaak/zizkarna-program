@@ -54,11 +54,11 @@
 	.image-column {
 		flex: 33;
 		max-width: 33%;
-		padding: 0 .1rem;
+		padding: 0 0.1rem;
 	}
 
 	:global(.column-img) {
-		margin-top: .2rem !important;
+		margin-top: 0.2rem !important;
 		vertical-align: middle;
 		width: 100%;
 	}

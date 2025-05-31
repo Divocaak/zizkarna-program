@@ -15,7 +15,13 @@
 {#if form !== null}<p>{form}</p>{/if}
 <h1>upravit event</h1>
 <a href="/admin/events">zpět</a>
-<EventForm data={data.event} tags={data.tags} selectedTags={data.selectedTags} bands={data.bands} selectedBands={data.selectedBands}/>
+<EventForm
+	data={data.event}
+	tags={data.tags}
+	selectedTags={data.selectedTags}
+	bands={data.bands}
+	selectedBands={data.selectedBands}
+/>
 
 <p>scp příkaz pro nahrání úvodní fotky:</p>
 <code>{scpCommand}</code>

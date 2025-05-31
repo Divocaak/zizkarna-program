@@ -20,7 +20,12 @@
 	const dateToUse = day + '/' + month + '/' + year;
 </script>
 
-<AnalyticsButtonWrapper event="add-to-calendar" data={{ eventLabel: label }} fromCard={card} classes={"mt-1"}>
+<AnalyticsButtonWrapper
+	event="add-to-calendar"
+	data={{ eventLabel: label }}
+	fromCard={card}
+	classes={'mt-1'}
+>
 	<div title="Přidat do mého kalendáře" class="addeventatc">
 		<p class="karla">Přidat do mého kalendáře</p>
 		<span class="start">{dateToUse + doors}</span>

@@ -18,16 +18,16 @@
 		background-color: #696969;
 	}
 
-	:global(body){
+	:global(body) {
 		background-color: #212529;
 		color: #dee2e6;
 	}
 
-	:global(a){
-		color:#6495ED;
+	:global(a) {
+		color: #6495ed;
 	}
 
-	:global(input, textarea){
-		background-color: darkgrey
+	:global(input, textarea) {
+		background-color: darkgrey;
 	}
 </style>

@@ -38,14 +38,14 @@
 				Petra Hadová<br />
 				<a class="link-secondary" href="mailto:vojtech@zizkarna.cz">
 					<i class="bi bi-envelope pe-2"></i>petra@zizkarna.cz
-				</a><br>
+				</a><br />
 				<a class="link-secondary" href="tel:605237868">
 					<i class="bi bi-telephone pe-2"></i>605237868
 				</a>
 			</p>
 		</div>
 	</div>
-	<h2 class="pt-5 neue-bold">Pro promotéry</h2>
+	<!-- <h2 class="pt-5 neue-bold">Pro promotéry</h2>
 	<p class="karla">
 		<b>Logo Žižkárny</b> (<i>.svg</i> a <i>.png</i>) pro použití na plakátech a grafikách lze stáhnout
 		<a
@@ -54,7 +54,7 @@
 			target="_blank">zde</a
 		>.
 	</p>
-	Prezentace o Žižkárně v <a class="text-muted karla" href="/presentations/cs.pdf" target="_blank">🇨🇿 češtině</a> a <a class="text-muted karla" href="/presentations/en.pdf" target="_blank">🇬🇧 angličtině (EN)</a>
+	Prezentace o Žižkárně v <a class="text-muted karla" href="/presentations/cs.pdf" target="_blank">🇨🇿 češtině</a> a <a class="text-muted karla" href="/presentations/en.pdf" target="_blank">🇬🇧 angličtině (EN)</a> -->
 	<h2 class="pt-5 neue-bold">Kde nás najdete</h2>
 	<p class="karla lead">a jak se k nám dostanete</p>
 	<div class="row pt-3 mx-5">
@@ -83,7 +83,13 @@
 		<a class="text-muted karla" href="/changelog">changelog webu</a>
 	</div>
 	<div class="mt-5 pt-5 text-end signature">
-		<p class="text-muted karla px-3">Website coded, designed and maintained by <a class="text-muted karla"  href="https://divokyvojtech.cz" target="_blank">Vojtěch Divoký</a></p>
+		<p class="text-muted karla px-3">
+			Website coded, designed and maintained by <a
+				class="text-muted karla"
+				href="https://divokyvojtech.cz"
+				target="_blank">Vojtěch Divoký</a
+			>
+		</p>
 	</div>
 </div>
 
@@ -95,7 +101,7 @@
 		height: 100%;
 	}
 
-	.signature{
+	.signature {
 		font-size: 12px;
 	}
 </style>

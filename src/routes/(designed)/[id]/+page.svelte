@@ -147,7 +147,7 @@
 		min-height: 100vh;
 	}
 
-	.allow-whitespaces{
+	.allow-whitespaces {
 		white-space: pre-line;
 	}
 </style>

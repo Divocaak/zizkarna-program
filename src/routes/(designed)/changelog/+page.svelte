@@ -7,6 +7,9 @@
 
 ## přidáno
 - API endpoint pro Guilde (integrace do inbudejovice.cz)
+- podpis autora
+- odstraněna sekce Pro promotéry (obsáhleji na zizkarna.cz)
+- přechod na Svelte 5!
 
 
 # 20. 1. 25
@@ -32,7 +35,7 @@
 ## MAJOR video generator refactor
 
 ### upraveno
-- video generátory sjednoceny, použito OOP
+// - video generátory sjednoceny, použito OOP
 - video generátory běží na html kódu, ne na Canvas
 - video generátor kapel v rámci eventu:
   - obrázek kapely kliknutelný

@@ -11,7 +11,7 @@
 
 	const src = {
 		sources: {
-			jpeg:`${path} 1920w, ${path} 1024w, ${path} 480w`
+			jpeg: `${path} 1920w, ${path} 1024w, ${path} 480w`
 		},
 		img: { src: path, w: 1920, h: 1080 }
 	};
@@ -25,12 +25,12 @@
 	$: condition = innerWidth < 800;
 </script>
 
-<svelte:window bind:innerWidth/>
+<svelte:window bind:innerWidth />
 
 <div class="wrap">
 	<Img
 		{src}
-		class="my-img {additionalClasses}{disabled ? " disabled" : ""}"
+		class="my-img {additionalClasses}{disabled ? ' disabled' : ''}"
 		style="top:{condition ? offsetYSm : offsetY}px; "
 		{alt}
 		bind:ref
