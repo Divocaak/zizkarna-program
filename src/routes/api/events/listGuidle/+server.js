@@ -5,17 +5,34 @@ export async function GET({ url }) {
 	const year = url.searchParams.get('year');
 	const month = url.searchParams.get('month');
 
-	const query = `
-        SELECT id, label, date, doors, cash, presalePrice, fbEvent, tickets, description
-        FROM event
-        WHERE YEAR(date) = ? AND MONTH(date) = ? AND is_visible IS TRUE
-        ORDER BY date ASC;
-    `;
+	let query;
+	if (year && month)
+		query = `
+        	SELECT id, label, date, doors, cash, presalePrice, fbEvent, tickets, description
+        	FROM event
+        	WHERE YEAR(date) = ? AND MONTH(date) = ? AND is_visible IS TRUE
+        	ORDER BY date ASC;`;
+	else
+		query = `
+				SELECT id, label, date, doors, cash, presalePrice, fbEvent, tickets, description
+				FROM event
+				WHERE date >= CURDATE() AND is_visible IS TRUE
+				ORDER BY date ASC;`;
 	const [events] = await pool.promise().query(query, [year, month]);
 
 	const result = await Promise.all(
 		events.map(async (event) => {
 			event.poster = `https://program.zizkarna.cz/dynamic/events/${event.id}.jpg`;
+			event.venue = {
+				"label": "Žižkárna",
+				"address": "Žižkova tř. 28, České Budějovice"
+			};
+			event.contact = {
+				"name": "Vojtěch Divoký",
+				"email": "info@zizkarna.cz",
+				"tel": "722680481"
+			}
+
 			await Promise.all([addTags(event), addBands(event, url)]);
 			return event;
 		})
