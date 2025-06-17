@@ -5,6 +5,12 @@
 
 # 31. 5. 25
 
+## upraveno
+- listGuidle endpoint (prázdné GET parametry zobrazují jen budoucí akce, hardcoded kontakt a venue)
+
+
+# 31. 5. 25
+
 ## přidáno
 - API endpoint pro Guilde (integrace do inbudejovice.cz)
 - podpis autora
