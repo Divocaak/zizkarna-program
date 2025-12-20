@@ -65,10 +65,6 @@
 				: '{ "links": [],"imgs": [] }'}</textarea
 		>
 	</label><br />
-	<label>
-		* admin heslo
-		<input name="password" type="password" required />
-	</label><br />
 	<input type="submit" value="uložit" /><br /><br />
 	{#if selectedTags != null}
 		<p>zatím přiřazeno <b>{selectedTags.length}</b>/{tags.length} tagů</p>

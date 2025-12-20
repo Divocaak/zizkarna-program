@@ -3,7 +3,6 @@ import { pool } from '$lib/db/mysql.js';
 export async function POST({ request }) {
 	const data = await request.json();
 	const [sql, _] = await pool
-		.promise()
 		.query(
 			'INSERT INTO event (label, date, doors, cash, presalePrice, fbEvent, tickets, description, is_visible, youtube) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
 			[

@@ -18,7 +18,7 @@ export async function GET({ url }) {
 				FROM event
 				WHERE date >= CURDATE() AND is_visible IS TRUE
 				ORDER BY date ASC;`;
-	const [events] = await pool.promise().query(query, [year, month]);
+	const [events] = await pool.query(query, [year, month]);
 
 	const result = await Promise.all(
 		events.map(async (event) => {
@@ -48,7 +48,7 @@ async function addTags(event) {
         INNER JOIN tag t ON tib.id_tag = t.id
         WHERE tib.id_event = ?;
     `;
-	const [directTags] = await pool.promise().query(tagQuery, [event.id]);
+	const [directTags] = await pool.query(tagQuery, [event.id]);
 
 	const bandTagQuery = `
         SELECT DISTINCT t.label
@@ -57,7 +57,7 @@ async function addTags(event) {
         INNER JOIN tag t ON tie.id_tag = t.id
         WHERE bie.id_event = ? AND t.id <>174;
     `;
-	const [bandTags] = await pool.promise().query(bandTagQuery, [event.id]);
+	const [bandTags] = await pool.query(bandTagQuery, [event.id]);
 
 	const labels = [...directTags, ...bandTags].map((tag) => tag.label);
 	event.tags = Array.from(new Set(labels));
@@ -73,7 +73,7 @@ async function addBands(event, url) {
         WHERE bie.id_event = ?
         ORDER BY bie.stageTime ASC;
     `;
-	const [bands] = await pool.promise().query(bandQuery, [event.id]);
+	const [bands] = await pool.query(bandQuery, [event.id]);
 
 	await Promise.all(
 		bands.map(async (band) => {

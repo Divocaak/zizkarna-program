@@ -4,7 +4,6 @@ import fs from 'fs';
 export async function POST({ request }) {
 	const data = await request.json();
 	const [sql, _] = await pool
-		.promise()
 		.query('INSERT INTO band (label, description) VALUES (?, ?);', [data.label, data.description]);
 
 	// json creation

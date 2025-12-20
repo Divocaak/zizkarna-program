@@ -3,8 +3,7 @@ import fs from 'fs';
 
 export async function POST({ request }) {
 	const data = await request.json();
-	await pool
-		.promise()
+	await pool	
 		.query('UPDATE band SET label=?, description=? WHERE id=?;', [
 			data.label,
 			data.description,

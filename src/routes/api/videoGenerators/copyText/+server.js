@@ -3,7 +3,6 @@ import { pool } from '$lib/db/mysql.js';
 export async function GET({ request, params, url }) {
 	const result = {};
 	await pool
-		.promise()
 		.query(
 			`SELECT e.id AS eventId, e.label AS eventLabel, e.date, b.id AS bandId, b.label AS bandLabel FROM band_in_event be 
             INNER JOIN event e ON e.id=be.id_event
