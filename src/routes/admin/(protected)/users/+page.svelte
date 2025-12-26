@@ -5,7 +5,7 @@
 <h2>Uživatelé</h2>
 <a href="/admin">Zpět</a><br />
 
-<table>
+<table class="admin-table">
 	<thead>
 		<tr>
 			<th scope="col">ID</th>

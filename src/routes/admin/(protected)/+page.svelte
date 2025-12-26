@@ -6,6 +6,8 @@
 <a href="/admin/bands">kapely</a><br />
 <a href="/admin/tags">tagy</a><br />
 <br />
+<a href="/admin/analytics">analytics</a><br />
+<br />
 <a href="/admin/overview">generátor přehledů</a><br />
 <a href="/admin/overviewCopy">generátor textace k měsíčnímu přehledu</a><br />
 
