@@ -10,7 +10,6 @@ export async function POST({ request }) {
 
 	if (bandInserts.length > 0)
 		await pool
-			.promise()
 			.query(
 				'INSERT INTO band_in_event (id_event, id_band, stageTime) VALUES ? ON DUPLICATE KEY UPDATE stageTime=VALUES(stageTime);',
 				[bandInserts]

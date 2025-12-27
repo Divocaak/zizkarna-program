@@ -11,7 +11,6 @@ export async function POST({ request }) {
 
 	if (tagInserts.length > 0)
 		await pool
-			.promise()
 			.query('INSERT INTO tag_in_event (id_event, id_tag) VALUES ?;', [tagInserts]);
 	return new Response(JSON.stringify({ message: 'přidáno do db', status: 200 }));
 }

@@ -154,10 +154,6 @@
 			checked={data != null && data.is_visible != null ? data.is_visible : true}
 		/>
 	</label><br />
-	<label>
-		* admin heslo
-		<input name="password" type="password" required />
-	</label><br />
 	<input type="submit" value="uložit" /><br /><br />
 	<div style="float:left;">
 		{#if selectedBands != null}

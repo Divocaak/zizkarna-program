@@ -66,10 +66,6 @@
 			checked={data != null && data.eventTag != null ? data.eventTag : null}
 		/>
 	</label><br />
-	<label>
-		* admin heslo
-		<input name="password" type="password" required />
-	</label><br />
 	<input type="submit" value="uložit" />
 </form>
 <p>

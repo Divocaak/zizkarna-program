@@ -4,7 +4,6 @@ export async function POST({ request }) {
 	const data = await request.json();
 
 	await pool
-		.promise()
 		.query('UPDATE tag SET label=?, bgColor=?, textColor=?, is_eventTag=? WHERE id=?', [
 			data.label,
 			data.bgColor,
