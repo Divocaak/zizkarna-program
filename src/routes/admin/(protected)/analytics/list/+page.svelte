@@ -28,7 +28,7 @@
 					{event.label}
 				</td>
 				<td>
-					{event.total} ({event.onSite}/{event.presale}/{event.guest})
+					{event.total} ({event.onSite ?? 0} / {event.presale ?? 0} / {event.guest ?? 0})
 				</td>
 				<td>
 					<a href="/admin/analytics/list/edit/{event.id}">upravit</a>

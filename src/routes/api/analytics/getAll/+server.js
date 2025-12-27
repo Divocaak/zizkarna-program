@@ -2,20 +2,20 @@ import { json, error } from '@sveltejs/kit'
 import { pool } from '$lib/db/mysql.js'
 
 export async function GET({ url }) {
-	const date_from = url.searchParams.get('date_from')
-	const date_to = url.searchParams.get('date_to')
+  const date_from = url.searchParams.get('date_from')
+  const date_to = url.searchParams.get('date_to')
 
-	if (!date_from || !date_to) {
-		throw error(400, 'date_from and date_to are required')
-	}
+  if (!date_from || !date_to) {
+    throw error(400, 'date_from and date_to are required')
+  }
 
-	const p = [date_from, date_to]
+  const p = [date_from, date_to]
 
-	/* =====================================================
-	   1. EVENT PERFORMANCE METRICS
-	===================================================== */
+  /* =====================================================
+     1. EVENT PERFORMANCE METRICS
+  ===================================================== */
 
-	const [[event_performance]] = await pool.query(`
+  const [[event_performance]] = await pool.query(`
     SELECT
       COUNT(*) AS total_events,
       SUM(soldOnPlace + soldPresale + soldGuestList) AS total_attendance,
@@ -28,11 +28,11 @@ export async function GET({ url }) {
       AND date BETWEEN ? AND ?
   `, p)
 
-	/* =====================================================
-	   2. REVENUE METRICS
-	===================================================== */
+  /* =====================================================
+     2. REVENUE METRICS
+  ===================================================== */
 
-	const [[revenue]] = await pool.query(`
+  const [[revenue]] = await pool.query(`
     SELECT
       SUM(soldOnPlace * cash + soldPresale * IFNULL(presalePrice,0)) AS gross_revenue,
       AVG(soldOnPlace * cash + soldPresale * IFNULL(presalePrice,0)) AS avg_revenue_per_event,
@@ -43,11 +43,11 @@ export async function GET({ url }) {
       AND date BETWEEN ? AND ?
   `, p)
 
-	/* =====================================================
-	   3. TIME-BASED METRICS
-	===================================================== */
+  /* =====================================================
+     3. TIME-BASED METRICS
+  ===================================================== */
 
-	const [events_by_weekday] = await pool.query(`
+  const [events_by_weekday] = await pool.query(`
     SELECT
       DAYOFWEEK(date) AS weekday,
       COUNT(*) AS events,
@@ -58,7 +58,7 @@ export async function GET({ url }) {
     GROUP BY weekday
   `, p)
 
-	const [seasonality] = await pool.query(`
+  const [seasonality] = await pool.query(`
     SELECT
       MONTH(date) AS month,
       COUNT(*) AS events,
@@ -69,11 +69,11 @@ export async function GET({ url }) {
     GROUP BY month
   `, p)
 
-	/* =====================================================
-	   4. BAND PERFORMANCE METRICS
-	===================================================== */
+  /* =====================================================
+     4. BAND PERFORMANCE METRICS
+  ===================================================== */
 
-	const [band_performance] = await pool.query(`
+  const [band_performance] = await pool.query(`
     SELECT
       b.id,
       b.label,
@@ -89,11 +89,11 @@ export async function GET({ url }) {
     ORDER BY avg_attendance DESC
   `, p)
 
-	/* =====================================================
-	   5. TAG-BASED ANALYTICS
-	===================================================== */
+  /* =====================================================
+     5. TAG-BASED ANALYTICS
+  ===================================================== */
 
-	const [event_tags] = await pool.query(`
+  const [event_tags] = await pool.query(`
     SELECT
       t.id,
       t.label,
@@ -108,7 +108,7 @@ export async function GET({ url }) {
     GROUP BY t.id
   `, p)
 
-	const [band_tags] = await pool.query(`
+  const [band_tags] = await pool.query(`
     SELECT
       t.id,
       t.label,
@@ -122,11 +122,11 @@ export async function GET({ url }) {
     GROUP BY t.id
   `, p)
 
-	/* =====================================================
-	   6. BAND ↔ EVENT SYNERGIES
-	===================================================== */
+  /* =====================================================
+     6. BAND ↔ EVENT SYNERGIES
+  ===================================================== */
 
-	const [band_pairs] = await pool.query(`
+  const [band_pairs] = await pool.query(`
     SELECT
       b1.label AS band_a,
       b2.label AS band_b,
@@ -144,11 +144,11 @@ export async function GET({ url }) {
     HAVING shared_events >= 2
   `, p)
 
-	/* =====================================================
-	   7. MARKETING & CONVERSION
-	===================================================== */
+  /* =====================================================
+     7. MARKETING & CONVERSION
+  ===================================================== */
 
-	const [[marketing]] = await pool.query(`
+  const [[marketing]] = await pool.query(`
     SELECT
       AVG(CASE WHEN fbEvent IS NOT NULL THEN soldPresale END) AS presale_with_fb,
       AVG(CASE WHEN fbEvent IS NULL THEN soldPresale END) AS presale_without_fb,
@@ -159,24 +159,25 @@ export async function GET({ url }) {
       AND date BETWEEN ? AND ?
   `, p)
 
-	/* =====================================================
-	   8. OPERATIONAL / CURATION METRICS
-	===================================================== */
+  /* =====================================================
+     8. OPERATIONAL / CURATION METRICS
+  ===================================================== */
 
-	const [low_attendance_events] = await pool.query(`
-    SELECT
-      id,
-      label,
-      date,
-      (soldOnPlace + soldPresale) / NULLIF(cash,0) AS sell_through
-    FROM event
-    WHERE is_visible = true
-      AND date BETWEEN ? AND ?
-      AND (soldOnPlace + soldPresale) / NULLIF(cash,0) < 0.4
-    ORDER BY sell_through ASC
-  `, p)
+  const [low_attendance_events] = await pool.query(`
+  SELECT
+    id,
+    label,
+    date,
+    (soldOnPlace + soldPresale) / NULLIF(cash,0) AS sell_through,
+    (soldOnPlace + soldPresale + soldGuestList) AS attendance
+  FROM event
+  WHERE is_visible = true
+    AND date BETWEEN ? AND ?
+    AND (soldOnPlace + soldPresale) / NULLIF(cash,0) < 0.4
+  ORDER BY sell_through ASC
+`, p)
 
-	const [repeat_bands] = await pool.query(`
+  const [repeat_bands] = await pool.query(`
     SELECT
       b.label,
       COUNT(DISTINCT e.id) AS appearances
@@ -189,11 +190,11 @@ export async function GET({ url }) {
     HAVING appearances > 1
   `, p)
 
-	/* =====================================================
-	   9. USER / PRIVILEGE METRICS
-	===================================================== */
+  /* =====================================================
+     9. USER / PRIVILEGE METRICS
+  ===================================================== */
 
-	const [privileges] = await pool.query(`
+  const [privileges] = await pool.query(`
     SELECT
       p.label,
       COUNT(up.id_user) AS users_with_privilege,
@@ -203,11 +204,11 @@ export async function GET({ url }) {
     GROUP BY p.id
   `)
 
-	/* =====================================================
-	   10. COMPOSITE METRICS
-	===================================================== */
+  /* =====================================================
+     10. COMPOSITE METRICS
+  ===================================================== */
 
-	const [[composite]] = await pool.query(`
+  const [[composite]] = await pool.query(`
     SELECT
       AVG(
         (soldOnPlace + soldPresale) / NULLIF(cash,0) * 0.4 +
@@ -218,33 +219,33 @@ export async function GET({ url }) {
       AND date BETWEEN ? AND ?
   `, p)
 
-	/* =====================================================
-	   RESPONSE
-	===================================================== */
+  /* =====================================================
+     RESPONSE
+  ===================================================== */
 
-	return json({
-		event_performance,
-		revenue,
-		time: {
-			by_weekday: events_by_weekday,
-			seasonality
-		},
-		bands: {
-			performance: band_performance,
-			synergies: band_pairs
-		},
-		tags: {
-			event_tags,
-			band_tags
-		},
-		marketing,
-		operations: {
-			low_attendance_events,
-			repeat_bands
-		},
-		users: {
-			privileges
-		},
-		composite
-	})
+  return json({
+    event_performance,
+    revenue,
+    time: {
+      by_weekday: events_by_weekday,
+      seasonality
+    },
+    bands: {
+      performance: band_performance,
+      synergies: band_pairs
+    },
+    tags: {
+      event_tags,
+      band_tags
+    },
+    marketing,
+    operations: {
+      low_attendance_events,
+      repeat_bands
+    },
+    users: {
+      privileges
+    },
+    composite
+  })
 }
