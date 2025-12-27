@@ -3,6 +3,18 @@
 	const md = new MarkdownIt();
 	const source = `
 
+# 27. 12. 25
+
+## upraveno
+- full admin login
+
+## přidáno
+- práva uživatelů
+- analytics page
+
+## odebráno
+- /info page (redirect na [info zizkarna.cz](https://zizkarna.cz/contacts))
+
 # 31. 5. 25
 
 ## upraveno
