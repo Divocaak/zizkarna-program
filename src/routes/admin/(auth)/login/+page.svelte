@@ -22,7 +22,7 @@
 	}
 </script>
 
-<form on:submit={handleSubmit}>
+<form on:submit={handleSubmit} autocomplete="off" >
 	<label for="login">Login</label>
 	<input id="login" type="text" bind:value={login} required /><br />
 
