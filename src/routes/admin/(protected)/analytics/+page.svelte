@@ -93,6 +93,8 @@
 </script>
 
 <h1>Analytics Dashboard</h1>
+<a href="/admin">zpět</a><br />
+<a href="/admin/analytics/list">eventy</a>
 
 <section class="filters">
 	<label>From <input type="date" bind:value={date_from} /></label>
