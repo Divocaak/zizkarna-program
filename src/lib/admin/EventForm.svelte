@@ -35,6 +35,7 @@
 
 <form
 	method="POST"
+	autocomplete="off" 
 	use:enhance={({ formElement, formData, action, cancel }) => {
 		const oldTags = document.querySelectorAll(`[id^="old-tag-"]`);
 		let removedTagsIds = [];

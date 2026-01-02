@@ -2,6 +2,15 @@
 	import MarkdownIt from 'markdown-it';
 	const md = new MarkdownIt();
 	const source = `
+# 2. 1. 26
+
+## opraveno
+- práva uživatelů (admin sekce)
+- formuláře už se nepředvyplňují (admin sekce)
+
+## přidáno
+- datum přidání kapely do databáze (analytics)
+
 
 # 27. 12. 25
 
@@ -14,6 +23,7 @@
 
 ## odebráno
 - /info page (redirect na [info zizkarna.cz](https://zizkarna.cz/contacts))
+
 
 # 31. 5. 25
 

@@ -13,7 +13,7 @@
 	const refreshTxtColor = () => (txtColor = txtField.value);
 </script>
 
-<form method="POST">
+<form method="POST" autocomplete="off" >
 	{#if data != null && data.id != null}
 		<label for="id">
 			id (readonly)
