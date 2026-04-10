@@ -19,15 +19,7 @@
 		window.location = '/' + event.id;
 	}
 
-	const imagePath = `/dynamic/events/${event.id}.jpg`;
-	let imageExists = false;
-
-	const checkImageExists = async () => {
-		const response = await fetch(imagePath, { method: 'HEAD' });
-		imageExists = response.ok;
-	};
-
-	onMount(checkImageExists);
+	let imagePath = `/dynamic/events/${event.id}.jpg`;
 </script>
 
 <div class="row d-flex justify-content-center mx-0 mx-md-5 px-3 px-md-5">
@@ -37,21 +29,12 @@
 		event="detail-from-image"
 		data={{ eventLabel: event.label }}
 	>
-		{#if imageExists}
-			<LazyImage
-				path={imagePath}
-				alt="plakát k akci {event.label}"
-				additionalClasses="img-fluid border border-dark border-3"
-				disabled={isPast}
-			/>
-		{:else}
-			<LazyImage
-				path="placeholder.jpg"
-				alt="plakát k akci {event.label}"
-				additionalClasses="img-fluid border border-dark border-3"
-				disabled={isPast}
-			/>
-		{/if}
+		<LazyImage
+			src={imagePath}
+			alt={`plakát k akci ${event.label}`}
+			className="img-fluid border border-dark border-3"
+			disabled={isPast}
+		/>
 	</AnalyticsButtonWrapper>
 	<div class="col-12 col-md-6">
 		<a style="text-decoration:none; color:var(--bs-heading-color);" href="/{event.id}">

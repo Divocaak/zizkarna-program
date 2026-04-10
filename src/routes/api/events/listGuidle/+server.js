@@ -1,5 +1,7 @@
 import { pool } from '$lib/db/mysql.js';
 import { json } from '@sveltejs/kit';
+import { readFileSync, existsSync } from 'node:fs';
+import path from 'node:path';
 
 export async function GET({ url }) {
 	const year = url.searchParams.get('year');
@@ -22,7 +24,17 @@ export async function GET({ url }) {
 
 	const result = await Promise.all(
 		events.map(async (event) => {
-			event.poster = `https://program.zizkarna.cz/dynamic/events/${event.id}.jpg`;
+			const posterFile = path.join(
+				process.cwd(),
+				'dynamic',
+				'events',
+				`${event.id}.jpg`
+			);
+			const exists = existsSync(posterFile);
+			event.poster = exists
+				? `https://program.zizkarna.cz/dynamic/events/${event.id}.jpg`
+				: `https://program.zizkarna.cz/placeholder.jpg`;
+
 			event.venue = {
 				"label": "Žižkárna",
 				"address": "Žižkova tř. 28, České Budějovice"
@@ -77,12 +89,16 @@ async function addBands(event, url) {
 
 	await Promise.all(
 		bands.map(async (band) => {
-			const origin = url.origin || 'http://localhost:5173';
-			const response = await fetch(`${origin}/dynamic/bands/${band.id}/band.json`);
-
-			if (!response.ok) return;
-
-			const json = await response.json();
+			const filePath = path.join(
+				process.cwd(),
+				'static',
+				'dynamic',
+				'bands',
+				String(band.id),
+				'band.json'
+			);
+			if (!existsSync(filePath)) return;
+			const json = JSON.parse(readFileSync(filePath, 'utf-8'));
 			if (!json.links?.length) return;
 
 			band.links = json.links;

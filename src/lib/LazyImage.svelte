@@ -1,66 +1,103 @@
 <script>
-	import { onMount } from 'svelte';
-	import { FxReveal as Img } from '@zerodevx/svelte-img';
+	import { onMount, onDestroy } from 'svelte';
 
-	export let path;
+	export let src;
 	export let alt = '';
-	export let additionalClasses = '';
+	export let placeholder = '/placeholder.jpg';
+	export let className = '';
 	export let disabled = false;
-	export let offsetY = 0;
-	export let offsetYSm = 0;
 
-	const src = {
-		sources: {
-			jpeg: `${path} 1920w, ${path} 1024w, ${path} 480w`
-		},
-		img: { src: path, w: 1920, h: 1080 }
-	};
+	let imgSrc = null;
+	let loaded = false;
+	let failed = false;
 
-	let ref, loaded;
+	let container;
+	let observer;
+
+	// setup observer
 	onMount(() => {
-		if (ref.complete) loaded = true;
+		if (!container) return;
+
+		observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting) {
+					imgSrc = src;
+					observer.disconnect();
+				}
+			},
+			{ threshold: 0.1 }
+		);
+
+		observer.observe(container);
 	});
 
-	let innerWidth = 0;
-	$: condition = innerWidth < 800;
+	onDestroy(() => {
+		observer?.disconnect();
+	});
+
+	// reset when src changes
+	$: if (src) {
+		loaded = false;
+		failed = false;
+		imgSrc = null;
+
+		// re-observe when src changes
+		if (container && observer) {
+			observer.observe(container);
+		}
+	}
 </script>
 
-<svelte:window bind:innerWidth />
-
-<div class="wrap">
-	<Img
-		{src}
-		class="my-img {additionalClasses}{disabled ? ' disabled' : ''}"
-		style="top:{condition ? offsetYSm : offsetY}px; "
-		{alt}
-		bind:ref
-		on:load={() => (loaded = true)}
-	/>
-	<div class="blur" class:loaded />
+<div bind:this={container} class="wrap">
+	{#if imgSrc}
+		<img
+			src={failed ? placeholder : imgSrc}
+			{alt}
+			class={`img ${className} ${loaded ? 'loaded' : ''} ${disabled ? 'disabled' : ''}`}
+			on:load={() => (loaded = true)}
+			on:error={() => {
+				if (!failed) {
+					failed = true;
+				}
+			}}
+		/>
+	{:else}
+		<div class="skeleton"></div>
+	{/if}
 </div>
 
 <style>
-	:globa(.my-img) {
-		--reveal-transform: scale(1.02);
-		--reveal-transition: opacity 1s ease-in, transform 0.8s ease-out;
-		--reveal-filter: blur(20px);
-	}
-
 	.wrap {
 		position: relative;
 		overflow: hidden;
 	}
-	.blur {
-		position: absolute;
-		inset: 0;
-		backdrop-filter: blur(20px);
-		pointer-events: none;
-	}
-	.loaded {
-		display: none;
+
+	.img {
+		width: 100%;
+		height: auto;
+		display: block;
+		filter: blur(20px);
+		transform: scale(1.02);
+		transition:
+			filter 0.6s ease,
+			transform 0.6s ease,
+			opacity 0.4s ease;
+		opacity: 0.6;
 	}
 
-	:global(.disabled) {
-		filter: saturate(0%);
+	.img.loaded {
+		filter: blur(0);
+		transform: scale(1);
+		opacity: 1;
+	}
+
+	.skeleton {
+		width: 100%;
+		padding-top: 56.25%; /* 16:9 ratio */
+		background: #eee;
+	}
+
+	.disabled {
+		filter: grayscale(100%) blur(0) !important;
 	}
 </style>

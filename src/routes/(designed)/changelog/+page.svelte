@@ -2,6 +2,17 @@
 	import MarkdownIt from 'markdown-it';
 	const md = new MarkdownIt();
 	const source = `
+# 10. 4. 26
+
+## opraveno
+- odebrána dependency na \`zerodevx/svelte-img\`, tudíž program už nepotřebuje držet legacy-peer-deps
+- zmigrováno na nejnovější verzi SvelteKitu
+- /api/listGuidle placeholder u neexistujících grafik
+
+## upraveno
+- custom LazyImage
+
+
 # 2. 1. 26
 
 ## opraveno
