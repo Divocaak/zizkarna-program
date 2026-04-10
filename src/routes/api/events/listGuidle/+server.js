@@ -33,7 +33,7 @@ export async function GET({ url }) {
 			const exists = existsSync(posterFile);
 			event.poster = exists
 				? `https://program.zizkarna.cz/dynamic/events/${event.id}.jpg`
-				: `https://program.zizkarna.cz/dynamic/events/placeholder.jpg`;
+				: `https://program.zizkarna.cz/placeholder.jpg`;
 
 			event.venue = {
 				"label": "Žižkárna",
