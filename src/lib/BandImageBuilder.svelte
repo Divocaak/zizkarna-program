@@ -18,27 +18,27 @@
 	<div class="image-column">
 		{#each colA as path}
 			<LazyImage
-				path={`/dynamic/bands/${id}/${path}`}
+				src={`/dynamic/bands/${id}/${path}`}
 				alt="fotka {bandName} číslo {path}"
-				additionalClasses="img-fluid column-img "
+				className="img-fluid column-img "
 			/>
 		{/each}
 	</div>
 	<div class="image-column">
 		{#each colB as path}
 			<LazyImage
-				path={`/dynamic/bands/${id}/${path}`}
+				src={`/dynamic/bands/${id}/${path}`}
 				alt="fotka {bandName} číslo {path}"
-				additionalClasses="img-fluid column-img "
+				className="img-fluid column-img "
 			/>
 		{/each}
 	</div>
 	<div class="image-column">
 		{#each colC as path}
 			<LazyImage
-				path={`/dynamic/bands/${id}/${path}`}
+				src={`/dynamic/bands/${id}/${path}`}
 				alt="fotka {bandName} číslo {path}"
-				additionalClasses="img-fluid column-img "
+				className="img-fluid column-img "
 			/>
 		{/each}
 	</div>
