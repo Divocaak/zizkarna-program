@@ -39,6 +39,9 @@ export async function handle({ event, resolve }) {
 
         if (pathname.startsWith('/admin/analytics') && !user.isAnalytics())
             throw redirect(302, '/admin/403');
+        
+        if (pathname.startsWith('/admin/osa') && !user.isOsa())
+            throw redirect(302, '/admin/403');
 
         if (pathname.startsWith('/admin/users') && !user.isUsersAdmin())
             throw redirect(302, '/admin/403');

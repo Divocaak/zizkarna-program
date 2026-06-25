@@ -1,5 +1,5 @@
 import { Privilege } from "$lib/classes/privilege";
-import { PUBLIC_PID_ADMIN, PUBLIC_PID_ANALYTICS, PUBLIC_PID_USERS } from "$env/static/public";
+import { PUBLIC_PID_ADMIN, PUBLIC_PID_ANALYTICS, PUBLIC_PID_USERS, PUBLIC_PID_OSA } from "$env/static/public";
 
 export class User {
 
@@ -47,4 +47,5 @@ export class User {
     isAdmin() { return this.hasPermission(PUBLIC_PID_ADMIN); }
     isAnalytics() { return this.hasPermission(PUBLIC_PID_ANALYTICS); }
     isUsersAdmin() { return this.hasPermission(PUBLIC_PID_USERS); }
+    isOsa() { return this.hasPermission(PUBLIC_PID_OSA); }
 }
